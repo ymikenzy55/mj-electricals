@@ -16,5 +16,6 @@ router.post('/:reviewId/helpful', reviewController.markHelpful);
 // Admin routes
 router.get('/admin/all', protect, admin, reviewController.getAllReviews);
 router.put('/admin/:reviewId/status', protect, admin, reviewController.updateReviewStatus);
+router.delete('/admin/:reviewId', protect, admin, reviewController.adminDeleteReview);
 
 module.exports = router;

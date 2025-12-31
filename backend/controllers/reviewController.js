@@ -284,6 +284,29 @@ exports.updateReviewStatus = async (req, res) => {
   }
 };
 
+// Admin: Delete review
+exports.adminDeleteReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return res.status(404).json({ message: 'Review not found' });
+    }
+
+    const productId = review.product;
+    await review.deleteOne();
+
+    // Update product rating
+    await updateProductRating(productId);
+
+    res.json({ message: 'Review deleted successfully' });
+  } catch (error) {
+    console.error('Admin delete review error:', error);
+    res.status(500).json({ message: 'Failed to delete review', error: error.message });
+  }
+};
+
 // Helper function to update product rating
 async function updateProductRating(productId) {
   try {

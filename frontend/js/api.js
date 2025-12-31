@@ -229,6 +229,12 @@ class API {
     });
   }
 
+  async deleteFeedback(id) {
+    return this.request(`/feedback/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
   // Categories
   async getCategories() {
     return this.request('/categories');
@@ -364,21 +370,15 @@ class API {
     });
   }
 
-  async markReviewHelpful(reviewId) {
-    return this.request(`/reviews/${reviewId}/helpful`, {
-      method: 'POST'
+  async adminDeleteReview(reviewId) {
+    return this.request(`/reviews/admin/${reviewId}`, {
+      method: 'DELETE'
     });
   }
 
-  async getAllReviews(params = {}) {
-    const query = new URLSearchParams(params).toString();
-    return this.request(`/reviews/admin/all?${query}`);
-  }
-
-  async updateReviewStatus(reviewId, status) {
-    return this.request(`/reviews/admin/${reviewId}/status`, {
-      method: 'PUT',
-      body: JSON.stringify({ status })
+  async markReviewHelpful(reviewId) {
+    return this.request(`/reviews/${reviewId}/helpful`, {
+      method: 'POST'
     });
   }
 

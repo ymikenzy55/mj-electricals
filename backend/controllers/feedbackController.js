@@ -117,3 +117,29 @@ exports.respondToFeedback = async (req, res) => {
     });
   }
 };
+
+// Delete feedback (Admin only)
+exports.deleteFeedback = async (req, res) => {
+  try {
+    const feedback = await Feedback.findById(req.params.id);
+
+    if (!feedback) {
+      return res.status(404).json({
+        success: false,
+        message: 'Feedback not found'
+      });
+    }
+
+    await feedback.deleteOne();
+
+    res.json({
+      success: true,
+      message: 'Feedback deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
