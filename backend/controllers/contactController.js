@@ -1,7 +1,7 @@
 const Contact = require('../models/Contact');
 
 // Create contact message (Public - no auth required)
-exports.createContactMessage = async (req, res) => {
+const createContactMessage = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
@@ -38,7 +38,7 @@ exports.createContactMessage = async (req, res) => {
 };
 
 // Get all contact messages (Admin only)
-exports.getAllContactMessages = async (req, res) => {
+const getAllContactMessages = async (req, res) => {
   try {
     const { status, page = 1, limit = 20 } = req.query;
     const query = status ? { status } : {};
@@ -71,7 +71,7 @@ exports.getAllContactMessages = async (req, res) => {
 };
 
 // Respond to contact message (Admin only)
-exports.respondToContact = async (req, res) => {
+const respondToContact = async (req, res) => {
   try {
     const { response } = req.body;
 
