@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found | MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .error-container {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .error-code {
+      font-size: clamp(6rem, 15vw, 12rem);
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .error-title {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: var(--primary-black);
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+
+    .error-message {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--gray-600);
+      max-width: 600px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      animation: fadeInUp 0.6s ease-out 0.4s both;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 0.6s ease-out 0.6s both;
+    }
+
+    .error-icon {
+      font-size: 8rem;
+      color: var(--primary-orange);
+      margin-bottom: 2rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .suggestions {
+      margin-top: 3rem;
+      max-width: 800px;
+      animation: fadeInUp 0.6s ease-out 0.8s both;
+    }
+
+    .suggestions h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary-black);
+    }
+
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .suggestion-card {
+      padding: 1.5rem;
+      background: var(--primary-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--gray-200);
+      transition: var(--transition);
+      text-decoration: none;
+      color: var(--gray-700);
+    }
+
+    .suggestion-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-orange);
+    }
+
+    .suggestion-card i {
+      font-size: 2rem;
+      color: var(--primary-orange);
+      margin-bottom: 0.5rem;
+    }
+
+    .suggestion-card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-black);
+    }
+
+    .suggestion-card p {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <div class="nav-icons">
+        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <div class="nav-container">
+        <ul class="nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+        <div class="support-contact">
+          <i class="fas fa-phone-alt"></i>
+          <div>
+            <strong>+233 XX XXX XXXX</strong>
+            <small>24/7 Support Center</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="error-container">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <div class="error-code">404</div>
+    <h1 class="error-title">Oops! Page Not Found</h1>
+    <p class="error-message">
+      The page you're looking for doesn't exist or has been moved. 
+      Don't worry, let's get you back on track!
+    </p>
+    
+    <div class="error-actions">
+      <a href="index.html" class="btn">
+        <i class="fas fa-home"></i> Go to Homepage
+      </a>
+      <a href="products.html" class="btn btn-secondary">
+        <i class="fas fa-shopping-bag"></i> Browse Products
+      </a>
+    </div>
+
+    <div class="suggestions">
+      <h3>Popular Pages</h3>
+      <div class="suggestions-grid">
+        <a href="products.html" class="suggestion-card">
+          <i class="fas fa-box"></i>
+          <h4>Products</h4>
+          <p>Browse our catalog</p>
+        </a>
+        <a href="categories.html" class="suggestion-card">
+          <i class="fas fa-th"></i>
+          <h4>Categories</h4>
+          <p>Shop by category</p>
+        </a>
+        <a href="about.html" class="suggestion-card">
+          <i class="fas fa-info-circle"></i>
+          <h4>About Us</h4>
+          <p>Learn more about MJE</p>
+        </a>
+        <a href="contact.html" class="suggestion-card">
+          <i class="fas fa-phone"></i>
+          <h4>Contact</h4>
+          <p>Get in touch</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-logo">
+          <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+        </div>
+        <h3>About MJE</h3>
+        <p>Your trusted partner for quality electrical products.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="categories.html">Categories</a></p>
+        <p><a href="about.html">About Us</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>📧 support@mje-ecommerce.com</p>
+        <p>📞 +233 (0) 123-456-789</p>
+        <p>🕒 Mon-Fri, 9AM-6PM</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Need Help?</h3>
+        <p><a href="faq.html">FAQ</a></p>
+        <p><a href="contact.html">Contact Support</a></p>
+        <p><a href="about.html">About Us</a></p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; <span id="current-year"></span> MJE E-Commerce. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/preloader.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

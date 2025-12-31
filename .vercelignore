@@ -1,0 +1,12 @@
+backend
+node_modules
+.env
+*.md
+.git
+.gitignore
+package.json
+package-lock.json
+start-servers.bat
+check-*.js
+migrate-*.js
+*.bat

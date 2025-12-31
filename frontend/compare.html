@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Products - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .compare-container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .compare-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .compare-table-container {
+      overflow-x: auto;
+      background: var(--primary-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+    }
+
+    .compare-table th {
+      background: var(--gray-100);
+      font-weight: 600;
+      color: var(--gray-800);
+      position: sticky;
+      left: 0;
+      z-index: 10;
+    }
+
+    .compare-table th:first-child {
+      text-align: left;
+      background: var(--primary-orange);
+      color: var(--primary-white);
+    }
+
+    .compare-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      background: var(--gray-50);
+      position: sticky;
+      left: 0;
+      z-index: 5;
+    }
+
+    .product-image-compare {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin: 0 auto;
+      display: block;
+    }
+
+    .remove-compare-btn {
+      background: var(--error);
+      color: var(--primary-white);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 0.5rem;
+    }
+
+    .remove-compare-btn:hover {
+      background: var(--error-light);
+      color: var(--error);
+      transform: translateY(-2px);
+    }
+
+    .empty-compare {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-compare-icon {
+      font-size: 5rem;
+      color: var(--gray-300);
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .compare-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .compare-table th,
+      .compare-table td {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .product-image-compare {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <div class="nav-icons">
+        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+          <i class="fas fa-search"></i>
+          <span>Search</span>
+        </button>
+        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+      
+      <!-- Search Dropdown -->
+      <div class="nav-search-dropdown" id="nav-search-dropdown">
+        <div class="search-dropdown-content">
+          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+          <button onclick="performNavSearch()" class="search-btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <div class="nav-container">
+        <ul class="nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+        <div class="support-contact">
+          <i class="fas fa-phone-alt"></i>
+          <div>
+            <strong>+233 XX XXX XXXX</strong>
+            <small>24/7 Support Center</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
+    <div class="mobile-menu-header">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-user auth-link" style="display:none;">
+        <div class="mobile-menu-user-avatar"><i class="fas fa-user-circle"></i></div>
+        <div class="mobile-menu-user-info">
+          <strong id="mobile-menu-username">Loading...</strong>
+          <small id="mobile-menu-user-email">Loading...</small>
+        </div>
+      </div>
+      <ul class="mobile-menu-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      </ul>
+      <ul class="mobile-menu-links mobile-menu-auth">
+        <li class="auth-link" style="display:none;">
+          <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+        <li class="guest-link"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li class="guest-link"><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+      </ul>
+      <div class="mobile-menu-support">
+        <div class="mobile-menu-support-item">
+          <i class="fas fa-phone-alt"></i>
+          <div><strong>24/7 Support</strong><small>+233 597528733</small></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="compare-container">
+    <div class="compare-header">
+      <h1><i class="fas fa-balance-scale"></i> Compare Products</h1>
+      <button class="btn btn-secondary" onclick="clearComparison()" id="clear-compare-btn" style="display: none;">
+        <i class="fas fa-trash"></i> Clear All
+      </button>
+    </div>
+
+    <div id="compare-content">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html"><i class="fas fa-home"></i><br>Home</a></li>
+      <li><a href="products.html"><i class="fas fa-shopping-bag"></i><br>Products</a></li>
+      <li class="auth-link">
+        <a href="cart.html" class="mobile-cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="mobile-cart-badge">0</span>
+          <br>Cart
+        </a>
+      </li>
+      <li><a href="compare.html" class="active"><i class="fas fa-balance-scale"></i><br>Compare</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i><br>About</a></li>
+      <li><a href="contact.html"><i class="fas fa-phone"></i><br>Contact</a></li>
+    </ul>
+  </nav>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About MJE</h3>
+        <p>Your trusted partner for quality electrical products.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="about.html">About Us</a></p>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>📧 support@mje-ecommerce.com</p>
+        <p>📞 +233 (0) 123-456-789</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="current-year"></span> MJE E-Commerce. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/preloader.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/discount.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/compare.js"></script>
+  <script>
+    // Mobile Menu Functions
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+        
+        // Update user data when menu opens
+        if (sidebar.classList.contains('active')) {
+          updateMobileMenuAuth();
+        }
+      }
+    }
+    
+    function closeMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    }
+    
+    function updateMobileMenuAuth() {
+      const state = stateManager?.getState();
+      const username = document.getElementById('mobile-menu-username');
+      const email = document.getElementById('mobile-menu-user-email');
+      
+      if (state && state.isAuthenticated && state.user) {
+        if (username) username.textContent = state.user.name || 'User';
+        if (email) email.textContent = state.user.email || '';
+      } else {
+        if (username) username.textContent = 'Guest';
+        if (email) email.textContent = 'Not logged in';
+      }
+      updateMobileMenuBadges();
+    }
+    
+    function updateMobileMenuBadges() {
+      const cartBadge = document.getElementById('mobile-menu-cart-badge');
+      const wishlistBadge = document.getElementById('mobile-menu-wishlist-badge');
+      const compareBadge = document.getElementById('mobile-menu-compare-badge');
+      
+      if (cartBadge && typeof stateManager !== 'undefined') {
+        const cartCount = stateManager.getCartCount();
+        cartBadge.textContent = cartCount;
+        cartBadge.style.display = cartCount > 0 ? 'inline-block' : 'none';
+      }
+      
+      if (wishlistBadge && typeof wishlistManager !== 'undefined') {
+        const wishlistCount = wishlistManager.getCount();
+        wishlistBadge.textContent = wishlistCount;
+        wishlistBadge.style.display = wishlistCount > 0 ? 'inline-block' : 'none';
+      }
+      
+      if (compareBadge && typeof compareManager !== 'undefined') {
+        const compareCount = compareManager.getCount();
+        compareBadge.textContent = compareCount;
+        compareBadge.style.display = compareCount > 0 ? 'inline-block' : 'none';
+      }
+    }
+
+    // Search functions
+    function toggleNavSearch() {
+      const dropdown = document.getElementById('nav-search-dropdown');
+      if (dropdown) {
+        dropdown.classList.toggle('active');
+        if (dropdown.classList.contains('active')) {
+          document.getElementById('nav-search-input')?.focus();
+        }
+      }
+    }
+
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input')?.value;
+      if (query && query.trim()) {
+        window.location.href = `products.html?search=${encodeURIComponent(query.trim())}`;
+      }
+    }
+  </script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    async function loadComparison() {
+      const products = await compareManager.fetchCompareProducts();
+      const container = document.getElementById('compare-content');
+      const clearBtn = document.getElementById('clear-compare-btn');
+
+      if (products.length === 0) {
+        container.innerHTML = `
+          <div class="empty-compare">
+            <div class="empty-compare-icon">
+              <i class="fas fa-balance-scale"></i>
+            </div>
+            <h2>No Products to Compare</h2>
+            <p>Add products to comparison from the products page</p>
+            <a href="products.html" class="btn">
+              <i class="fas fa-shopping-bag"></i> Browse Products
+            </a>
+          </div>
+        `;
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      clearBtn.style.display = 'block';
+
+      // Build comparison table
+      let tableHTML = `
+        <div class="compare-table-container">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                ${products.map(p => `<th>${p.name}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Image</td>
+                ${products.map(p => `
+                  <td>
+                    <img src="${p.images[0] || 'https://via.placeholder.com/150'}" 
+                         alt="${p.name}" 
+                         class="product-image-compare">
+                    <button class="remove-compare-btn" onclick="removeProduct('${p._id}')">
+                      <i class="fas fa-times"></i> Remove
+                    </button>
+                  </td>
+                `).join('')}
+              </tr>
+              <tr>
+                <td>Product ID</td>
+                ${products.map(p => `<td><strong>${p.productId}</strong></td>`).join('')}
+              </tr>
+              <tr>
+                <td>Category</td>
+                ${products.map(p => `<td>${p.category}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>Wattage</td>
+                ${products.map(p => `<td>${p.wattage}W</td>`).join('')}
+              </tr>
+              <tr>
+                <td>Price</td>
+                ${products.map(p => `<td>${getPriceDisplay(p.price, p.discount || 0)}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>Stock Status</td>
+                ${products.map(p => `
+                  <td style="color: ${p.stock > 10 ? 'var(--success)' : p.stock > 0 ? 'var(--warning)' : 'var(--error)'}; font-weight: 600;">
+                    ${p.stock > 10 ? 'In Stock' : p.stock > 0 ? `Only ${p.stock} left` : 'Out of Stock'}
+                  </td>
+                `).join('')}
+              </tr>
+              <tr>
+                <td>Description</td>
+                ${products.map(p => `<td style="text-align: left;">${p.description}</td>`).join('')}
+              </tr>
+              <tr>
+                <td>Actions</td>
+                ${products.map(p => `
+                  <td>
+                    <a href="product-details.html?id=${p._id}" class="btn" style="margin-bottom: 0.5rem; display: block;">
+                      View Details
+                    </a>
+                    ${p.stock > 0 ? `
+                      <button class="btn" onclick="addToCartFromCompare('${p._id}')" style="display: block; width: 100%;">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                      </button>
+                    ` : ''}
+                  </td>
+                `).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = tableHTML;
+    }
+
+    function removeProduct(productId) {
+      compareManager.removeFromCompare(productId);
+      loadComparison();
+    }
+
+    function clearComparison() {
+      Modal.confirm('Are you sure you want to clear all products from comparison?', () => {
+        compareManager.clearAll();
+        loadComparison();
+      });
+    }
+
+    async function addToCartFromCompare(productId) {
+      const state = stateManager.getState();
+      if (!state.isAuthenticated) {
+        Modal.confirm('Please login to add items to cart. Go to login page?', () => {
+          window.location.href = 'login.html';
+        });
+        return;
+      }
+
+      try {
+        await stateManager.addToCart(productId, 1);
+        toast.success('Product added to cart!');
+        updateCartBadge();
+      } catch (error) {
+        Modal.error('Failed to add to cart: ' + error.message);
+      }
+    }
+
+    function updateCartBadge() {
+      const badges = document.querySelectorAll('.cart-badge');
+      const count = stateManager.getCartCount();
+      badges.forEach(badge => {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+      });
+    }
+
+    loadComparison();
+  </script>
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Dashboard - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/admin-dashboard-enhanced.css">
+  <script src="../js/admin-mobile-toggle.js" defer></script>
+</head>
+<body>
+  <nav class="navbar" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff8c42 100%); box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);">
+    <div class="nav-container">
+      <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Super Admin" style="height: 45px; vertical-align: middle; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+          <span style="font-weight: 700; font-size: 1.1rem; color: white;">MJ Electricals Ghana Limited</span>
+          <span style="font-size: 0.75rem; color: rgba(255,255,255,0.9); font-weight: 500;">Super Admin Dashboard</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="super-admin-dashboard.html" style="color: white; font-weight: 500;"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li><a href="#" onclick="handleLogout()" style="color: white; font-weight: 500;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="dashboard">
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <!-- Debug Info (only visible on mobile) -->
+      <div id="debug-info" style="display: none; position: fixed; top: 70px; right: 10px; background: rgba(240,147,251,0.9); color: white; padding: 10px; border-radius: 5px; z-index: 20000; font-size: 12px; max-width: 200px;">
+        <strong>Debug Info:</strong><br>
+        <span id="debug-text">Waiting...</span>
+      </div>
+      
+      <!-- Sidebar Overlay -->
+      <div class="sidebar-overlay"></div>
+      
+      <aside class="sidebar" id="super-admin-sidebar">
+        <div class="sidebar-header">
+          <h3 class="sidebar-title">Super Admin</h3>
+          <p class="sidebar-subtitle">Full system control</p>
+        </div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#" onclick="showSection('overview', event); return false;" class="active">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Overview</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showSection('users', event); return false;">
+              <i class="fas fa-users"></i>
+              <span>Users</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showSection('admins', event); return false;">
+              <i class="fas fa-user-shield"></i>
+              <span>Admins</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showSection('categories', event); return false;">
+              <i class="fas fa-tags"></i>
+              <span>Categories</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showSection('products', event); return false;">
+              <i class="fas fa-box"></i>
+              <span>Products</span>
+              <span class="menu-badge" id="out-of-stock-badge" style="display:none; background: #ef4444;">0</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showSection('orders', event); return false;">
+              <i class="fas fa-shopping-cart"></i>
+              <span>Orders</span>
+              <span class="menu-badge" id="pending-orders-badge" style="display:none;">0</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="showSection('feedback', event); return false;">
+              <i class="fas fa-comments"></i>
+              <span>Feedback</span>
+            </a>
+          </li>
+          <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
+            <a href="index.html" style="color: #10b981; font-weight: 600;">
+              <i class="fas fa-store"></i>
+              <span>Go to Store</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="handleLogout(); return false;" style="color: #ef4444; font-weight: 600;">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="dashboard-content">
+        <div id="alert-container"></div>
+
+        <section id="overview-section">
+          <h2>Super Admin Dashboard</h2>
+          
+          <!-- Overall Stats -->
+          <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--gray-700);">Overall Statistics</h3>
+          <div class="stats-grid mt-2">
+            <div class="stat-card">
+              <div class="stat-value" id="stat-users">0</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-products">0</div>
+              <div class="stat-label">Total Products</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-orders">0</div>
+              <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="stat-revenue">GH₵ 0</div>
+              <div class="stat-label">Total Revenue</div>
+            </div>
+          </div>
+
+          <!-- Today's Stats -->
+          <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-orange);">
+            <i class="fas fa-calendar-day"></i> Today's Performance
+          </h3>
+          <div class="stats-grid mt-2">
+            <div class="stat-card" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: white; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);">
+              <div class="stat-value" id="stat-today-orders" style="color: white;">0</div>
+              <div class="stat-label" style="color: rgba(255,255,255,0.95);">Orders Today</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ff8c42 0%, #ffa726 100%); color: white; box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);">
+              <div class="stat-value" id="stat-today-revenue" style="color: white;">GH₵ 0</div>
+              <div class="stat-label" style="color: rgba(255,255,255,0.95);">Revenue Today</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="users-section" style="display:none;">
+          <h2>Manage Users</h2>
+          <div id="users-list" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <section id="admins-section" style="display:none;">
+          <h2>Manage Admins</h2>
+          
+          <button class="btn mt-2" onclick="showAdminForm()">Create New Admin</button>
+          
+          <div id="admin-form" style="display:none; max-width: 500px; margin-top: 1rem;">
+            <h3>New Admin Details</h3>
+            <form id="admin-form-element">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="admin-name" required>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="admin-email" required>
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="admin-password" required minlength="8">
+              </div>
+              <button type="submit" class="btn">Create Admin</button>
+              <button type="button" class="btn btn-secondary" onclick="hideAdminForm()">Cancel</button>
+            </form>
+          </div>
+
+          <div id="admins-list" class="mt-3">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <section id="categories-section" style="display:none;">
+          <h2>Manage Categories</h2>
+          <form id="category-form" style="max-width: 400px;" class="mt-2">
+            <div class="form-group">
+              <label>Category Name</label>
+              <input type="text" id="category-name" required>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea id="category-description" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn">Add Category</button>
+          </form>
+          <div id="categories-list" class="mt-3"></div>
+        </section>
+
+        <section id="products-section" style="display:none;">
+          <h2>Manage Products</h2>
+          <button class="btn mt-2" onclick="showProductForm()">Add New Product</button>
+          
+          <div id="product-form" style="display:none; max-width: 600px; margin-top: 1rem;">
+            <h3>Product Details</h3>
+            <form id="product-form-element">
+              <input type="hidden" id="product-id">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="product-name" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="product-category" required></select>
+              </div>
+              <div class="form-group">
+                <label>Wattage</label>
+                <input type="number" id="product-wattage" required>
+              </div>
+              <div class="form-group">
+                <label>Price</label>
+                <input type="number" step="0.01" id="product-price" required>
+              </div>
+              <div class="form-group">
+                <label>Stock</label>
+                <input type="number" id="product-stock" required>
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="product-description" rows="3" required></textarea>
+              </div>
+              <div class="form-group">
+                <label>Product Image</label>
+                <input type="file" id="product-image-file" accept="image/*" onchange="handleImageSelect(event)">
+                <input type="text" id="product-image" placeholder="Or enter image URL" style="margin-top: 0.5rem;">
+                <div id="image-preview" style="margin-top: 0.5rem;"></div>
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="product-status">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+              <button type="submit" class="btn">Save Product</button>
+              <button type="button" class="btn btn-secondary" onclick="hideProductForm()">Cancel</button>
+            </form>
+          </div>
+
+          <div id="products-list" class="mt-3">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <section id="orders-section" style="display:none;">
+          <h2>All Orders</h2>
+          <div id="orders-list" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <section id="feedback-section" style="display:none;">
+          <h2>All Feedback</h2>
+          <div id="feedback-list" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    // Wait for user to load before checking role
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!requireAuth()) {
+        return;
+      }
+      
+      // Wait for user data to load
+      await stateManager.loadUser();
+      const state = stateManager.getState();
+      
+      // Check if user is super admin
+      if (!state.user || state.user.role !== 'superadmin') {
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // User is authenticated and is super admin, load the page
+      loadStats();
+    });
+
+    function showSection(section, event) {
+      // Hide all sections
+      document.querySelectorAll('.dashboard-content section').forEach(s => {
+        s.style.display = 'none';
+      });
+      
+      // Show selected section
+      const targetSection = document.getElementById(`${section}-section`);
+      if (targetSection) {
+        targetSection.style.display = 'block';
+      }
+
+      // Update active menu item
+      document.querySelectorAll('.sidebar-menu a').forEach(a => {
+        a.classList.remove('active');
+      });
+      
+      // Handle event properly - get the anchor element
+      if (event) {
+        const target = event.target.closest('a');
+        if (target) {
+          target.classList.add('active');
+        }
+      }
+
+      // Close mobile sidebar after selection
+      if (window.innerWidth <= 968 && window.toggleMobileSidebar) {
+        window.toggleMobileSidebar();
+      }
+
+      // Load section data
+      if (section === 'users') loadUsers();
+      if (section === 'admins') loadAdmins();
+      if (section === 'categories') loadCategories();
+      if (section === 'products') loadProducts();
+      if (section === 'orders') loadOrders();
+      if (section === 'feedback') loadFeedback();
+    }
+
+    async function loadStats() {
+      try {
+        const response = await api.getDashboardStats();
+        document.getElementById('stat-users').textContent = response.stats.totalUsers;
+        document.getElementById('stat-products').textContent = response.stats.totalProducts;
+        document.getElementById('stat-orders').textContent = response.stats.totalOrders;
+        document.getElementById('stat-revenue').textContent = 
+          `GH₵ ${response.stats.totalRevenue.toFixed(2)}`;
+        
+        // Today's stats
+        document.getElementById('stat-today-orders').textContent = response.stats.todayOrders || 0;
+        document.getElementById('stat-today-revenue').textContent = 
+          `GH₵ ${(response.stats.todayRevenue || 0).toFixed(2)}`;
+        
+        // Update notification badges
+        updateNotificationBadges();
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+      }
+    }
+
+    // Update notification badges for pending orders and out of stock products
+    async function updateNotificationBadges() {
+      try {
+        // Get pending orders count
+        const ordersResponse = await api.getAllOrders();
+        const pendingOrders = ordersResponse.orders.filter(o => o.status === 'pending').length;
+        
+        const pendingBadge = document.getElementById('pending-orders-badge');
+        if (pendingOrders > 0) {
+          pendingBadge.textContent = pendingOrders;
+          pendingBadge.style.display = 'inline-block';
+        } else {
+          pendingBadge.style.display = 'none';
+        }
+
+        // Get out of stock products count
+        const productsResponse = await api.getProducts({ limit: 1000 });
+        const outOfStock = productsResponse.products.filter(p => p.stock === 0).length;
+        
+        const stockBadge = document.getElementById('out-of-stock-badge');
+        if (outOfStock > 0) {
+          stockBadge.textContent = outOfStock;
+          stockBadge.style.display = 'inline-block';
+        } else {
+          stockBadge.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Failed to update notification badges:', error);
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const response = await api.getAllUsers({ role: 'user' });
+        const container = document.getElementById('users-list');
+
+        container.innerHTML = `
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${response.users.map(user => `
+                  <tr>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.isActive ? 'Active' : 'Inactive'}</td>
+                    <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <button class="btn btn-secondary" onclick="changeUserRole('${user._id}', 'admin')">
+                        Make Admin
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (error) {
+        document.getElementById('users-list').innerHTML = '<p>Failed to load users</p>';
+      }
+    }
+
+    async function loadAdmins() {
+      try {
+        const response = await api.getAllUsers({ role: 'admin' });
+        const container = document.getElementById('admins-list');
+
+        container.innerHTML = `
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${response.users.map(admin => `
+                  <tr>
+                    <td>${admin.name}</td>
+                    <td>${admin.email}</td>
+                    <td>${admin.isActive ? 'Active' : 'Inactive'}</td>
+                    <td>${new Date(admin.createdAt).toLocaleDateString()}</td>
+                    <td>
+                      <button class="btn btn-secondary" onclick="changeUserRole('${admin._id}', 'user')">
+                        Demote to User
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (error) {
+        document.getElementById('admins-list').innerHTML = '<p>Failed to load admins</p>';
+      }
+    }
+
+    function showAdminForm() {
+      document.getElementById('admin-form').style.display = 'block';
+    }
+
+    function hideAdminForm() {
+      document.getElementById('admin-form').style.display = 'none';
+      document.getElementById('admin-form-element').reset();
+    }
+
+    document.getElementById('admin-form-element').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const adminData = {
+        name: document.getElementById('admin-name').value,
+        email: document.getElementById('admin-email').value,
+        password: document.getElementById('admin-password').value
+      };
+
+      try {
+        await api.createAdmin(adminData);
+        showAlert('Admin created successfully', 'success');
+        hideAdminForm();
+        loadAdmins();
+      } catch (error) {
+        showAlert(error.message, 'error');
+      }
+    });
+
+    async function changeUserRole(userId, newRole) {
+      Modal.confirm(`Are you sure you want to change this user's role to ${newRole}?`, async () => {
+        try {
+          await api.request(`/admin/users/${userId}/role`, {
+            method: 'PUT',
+            body: JSON.stringify({ role: newRole })
+          });
+          showAlert('User role updated successfully', 'success');
+          loadUsers();
+          loadAdmins();
+        } catch (error) {
+          showAlert(error.message, 'error');
+        }
+      });
+    }
+
+    let currentProductPage = 1;
+    const productsPerPage = 20;
+    let allProducts = [];
+
+    async function loadProducts(page = 1) {
+      try {
+        const response = await api.getProducts({ limit: 1000 });
+        allProducts = response.products;
+        currentProductPage = page;
+        
+        const startIndex = (page - 1) * productsPerPage;
+        const endIndex = startIndex + productsPerPage;
+        const paginatedProducts = allProducts.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(allProducts.length / productsPerPage);
+        
+        const container = document.getElementById('products-list');
+
+        container.innerHTML = `
+          <div class="table-container" style="margin: 0; width: 100%;">
+            <table style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>Product ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${paginatedProducts.map(p => `
+                  <tr>
+                    <td>${p.productId}</td>
+                    <td>${p.name}</td>
+                    <td>${p.category}</td>
+                    <td>GH₵ ${p.price.toFixed(2)}</td>
+                    <td style="color: ${p.stock === 0 ? '#ef4444' : p.stock < 10 ? '#f59e0b' : '#10b981'}; font-weight: 600;">${p.stock}</td>
+                    <td>${p.status}</td>
+                    <td>
+                      <button class="btn btn-secondary" onclick='editProduct(${JSON.stringify(p)})'>Edit</button>
+                      <button class="btn btn-secondary" onclick="deleteProduct('${p._id}')">Delete</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          ${totalPages > 1 ? `
+            <div class="pagination" style="margin-top: 1.5rem;">
+              <button class="btn btn-secondary" onclick="loadProducts(${page - 1})" ${page === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Previous
+              </button>
+              <span style="padding: 0 1rem;">Page ${page} of ${totalPages}</span>
+              <button class="btn btn-secondary" onclick="loadProducts(${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+                Next <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          ` : ''}
+        `;
+        
+        // Update notification badge
+        updateNotificationBadges();
+      } catch (error) {
+        document.getElementById('products-list').innerHTML = '<p>Failed to load products</p>';
+      }
+    }
+
+    function showProductForm() {
+      document.getElementById('product-form').style.display = 'block';
+      loadCategoriesForSelect();
+    }
+
+    function hideProductForm() {
+      document.getElementById('product-form').style.display = 'none';
+      document.getElementById('product-form-element').reset();
+      document.getElementById('product-id').value = '';
+      document.getElementById('image-preview').innerHTML = '';
+    }
+
+    async function loadCategoriesForSelect() {
+      try {
+        const response = await api.getCategories();
+        const select = document.getElementById('product-category');
+        select.innerHTML = response.categories.map(cat => 
+          `<option value="${cat.name}">${cat.name}</option>`
+        ).join('');
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      }
+    }
+
+    function editProduct(product) {
+      showProductForm();
+      document.getElementById('product-id').value = product._id;
+      document.getElementById('product-name').value = product.name;
+      document.getElementById('product-category').value = product.category;
+      document.getElementById('product-wattage').value = product.wattage;
+      document.getElementById('product-price').value = product.price;
+      document.getElementById('product-stock').value = product.stock;
+      document.getElementById('product-description').value = product.description;
+      document.getElementById('product-image').value = product.images[0] || '';
+      document.getElementById('product-status').value = product.status;
+      
+      if (product.images[0]) {
+        document.getElementById('image-preview').innerHTML = 
+          `<img src="${product.images[0]}" style="max-width: 200px; border-radius: 5px;">`;
+      }
+    }
+
+    document.getElementById('product-form-element').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const productData = {
+        name: document.getElementById('product-name').value,
+        category: document.getElementById('product-category').value,
+        wattage: document.getElementById('product-wattage').value,
+        price: document.getElementById('product-price').value,
+        stock: document.getElementById('product-stock').value,
+        description: document.getElementById('product-description').value,
+        images: [document.getElementById('product-image').value].filter(Boolean),
+        status: document.getElementById('product-status').value
+      };
+
+      try {
+        const productId = document.getElementById('product-id').value;
+        if (productId) {
+          await api.updateProduct(productId, productData);
+          showAlert('Product updated successfully', 'success');
+        } else {
+          await api.createProduct(productData);
+          showAlert('Product created successfully', 'success');
+        }
+        hideProductForm();
+        loadProducts();
+        loadStats();
+      } catch (error) {
+        showAlert(error.message, 'error');
+      }
+    });
+
+    async function deleteProduct(id) {
+      if (!confirm('Delete this product?')) return;
+      try {
+        await api.deleteProduct(id);
+        showAlert('Product deleted successfully', 'success');
+        loadProducts();
+        loadStats();
+      } catch (error) {
+        showAlert(error.message, 'error');
+      }
+    }
+
+    let currentOrderPage = 1;
+    const ordersPerPage = 20;
+    let allOrders = [];
+
+    async function loadOrders(page = 1) {
+      try {
+        const response = await api.getAllOrders();
+        allOrders = response.orders;
+        currentOrderPage = page;
+        
+        const startIndex = (page - 1) * ordersPerPage;
+        const endIndex = startIndex + ordersPerPage;
+        const paginatedOrders = allOrders.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(allOrders.length / ordersPerPage);
+        
+        const container = document.getElementById('orders-list');
+
+        container.innerHTML = `
+          <div class="table-container" style="margin: 0; width: 100%;">
+            <table style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${paginatedOrders.map(order => `
+                  <tr>
+                    <td>#${order._id.slice(-8)}</td>
+                    <td>${order.user.name}</td>
+                    <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td style="font-weight: 600; color: var(--primary-orange);">GH₵ ${order.totalAmount.toFixed(2)}</td>
+                    <td><span class="status-badge ${order.status}">${order.status}</span></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          ${totalPages > 1 ? `
+            <div class="pagination" style="margin-top: 1.5rem;">
+              <button class="btn btn-secondary" onclick="loadOrders(${page - 1})" ${page === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Previous
+              </button>
+              <span style="padding: 0 1rem;">Page ${page} of ${totalPages}</span>
+              <button class="btn btn-secondary" onclick="loadOrders(${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+                Next <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          ` : ''}
+        `;
+        
+        // Update notification badge
+        updateNotificationBadges();
+      } catch (error) {
+        document.getElementById('orders-list').innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders available yet</p>';
+      }
+    }
+
+    async function loadFeedback() {
+      try {
+        const response = await api.getAllFeedbacks();
+        const container = document.getElementById('feedback-list');
+
+        container.innerHTML = response.feedbacks.map(fb => `
+          <div style="background: var(--gray-light); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+            <p><strong>${fb.user.name}</strong> (${fb.user.email})</p>
+            <p>${fb.message}</p>
+            <p><small>${new Date(fb.createdAt).toLocaleString()}</small></p>
+            ${fb.response ? `
+              <div style="background: white; padding: 1rem; margin-top: 0.5rem; border-radius: 5px;">
+                <p><strong>Response:</strong> ${fb.response}</p>
+              </div>
+            ` : '<p style="color: var(--primary-orange);"><em>Pending response</em></p>'}
+          </div>
+        `).join('');
+      } catch (error) {
+        document.getElementById('feedback-list').innerHTML = '<p>Failed to load feedback</p>';
+      }
+    }
+
+    async function loadCategories() {
+      try {
+        const response = await api.getCategories();
+        const container = document.getElementById('categories-list');
+
+        container.innerHTML = `
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${response.categories.map(cat => `
+                  <tr>
+                    <td>${cat.name}</td>
+                    <td>${cat.description || '-'}</td>
+                    <td>${cat.isActive ? 'Active' : 'Inactive'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (error) {
+        document.getElementById('categories-list').innerHTML = '<p>Failed to load categories</p>';
+      }
+    }
+
+    document.getElementById('category-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await api.createCategory({
+          name: document.getElementById('category-name').value,
+          description: document.getElementById('category-description').value
+        });
+        showAlert('Category created successfully', 'success');
+        e.target.reset();
+        loadCategories();
+      } catch (error) {
+        showAlert(error.message, 'error');
+      }
+    });
+
+    function handleImageSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('image-preview');
+          preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; border-radius: 5px;">`;
+          document.getElementById('product-image').value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function showAlert(message, type) {
+      toast.show(message, type);
+    }
+  </script>
+</body>
+</html>
+

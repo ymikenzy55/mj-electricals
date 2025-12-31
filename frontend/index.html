@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MJE E-Commerce - Home</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <div class="nav-icons">
+        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+          <i class="fas fa-search"></i>
+          <span>Search</span>
+        </button>
+        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+      
+      <!-- Search Dropdown -->
+      <div class="nav-search-dropdown" id="nav-search-dropdown">
+        <div class="search-dropdown-content">
+          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+          <button onclick="performNavSearch()" class="search-btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <div class="nav-container">
+        <ul class="nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+        <div class="support-contact">
+          <i class="fas fa-phone-alt"></i>
+          <div>
+            <strong>+233 XX XXX XXXX</strong>
+            <small>24/7 Support Center</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero-section">
+    <div id="hero-banners" class="hero-banners">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+    <div class="hero-overlay"></div>
+  </section>
+
+  <section class="categories-section">
+    <div class="container">
+      <h2 class="section-title">Shop by Category</h2>
+      <p class="section-subtitle">Browse our wide range of electrical products</p>
+      <div id="categories-grid" class="categories-grid">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section - Moved here -->
+  <section class="container featured-products-section">
+    <h2 class="section-title">Featured Products</h2>
+    <p class="section-subtitle">Check out our top picks for you</p>
+    <div id="featured-products" class="products-grid">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="trust-badges">
+      <div class="trust-badge">
+        <div class="trust-badge-icon">
+          <i class="fas fa-shipping-fast"></i>
+        </div>
+        <div class="trust-badge-content">
+          <h4>Fast Delivery</h4>
+          <p>Quick shipping across Ghana</p>
+        </div>
+      </div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="trust-badge-content">
+          <h4>Secure Payment</h4>
+          <p>100% secure transactions</p>
+        </div>
+      </div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">
+          <i class="fas fa-headset"></i>
+        </div>
+        <div class="trust-badge-content">
+          <h4>24/7 Support</h4>
+          <p>Always here to help you</p>
+        </div>
+      </div>
+      <div class="trust-badge">
+        <div class="trust-badge-icon">
+          <i class="fas fa-undo-alt"></i>
+        </div>
+        <div class="trust-badge-content">
+          <h4>Easy Returns</h4>
+          <p>Hassle-free return policy</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="mobile-nav">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html" class="active"><i class="fas fa-home"></i><br>Home</a></li>
+      <li><a href="products.html"><i class="fas fa-shopping-bag"></i><br>Products</a></li>
+      <li class="auth-link" style="display:none">
+        <a href="cart.html" class="mobile-cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="mobile-cart-badge">0</span>
+          <br>Cart
+        </a>
+      </li>
+      <li class="auth-link" style="display:none">
+        <a href="user-dashboard.html">
+          <i class="fas fa-user"></i><br>Account
+        </a>
+      </li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i><br>About</a></li>
+      <li><a href="contact.html"><i class="fas fa-phone"></i><br>Contact</a></li>
+    </ul>
+  </nav>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-logo">
+          <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+        </div>
+        <h3>About MJE</h3>
+        <p>Your trusted partner for quality electrical products. We provide the best lighting solutions and electrical components.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="categories.html">Categories</a></p>
+        <p><a href="about.html">About Us</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>📧 support@mje-ecommerce.com</p>
+        <p>📞 +233 (0) 123-456-789</p>
+        <p>🕒 Mon-Fri, 9AM-6PM</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <p>Subscribe to get updates on new products and special offers!</p>
+        <form class="newsletter-form" id="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" id="newsletter-email" placeholder="Your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 MJE E-Commerce. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/preloader.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/discount.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/compare.js"></script>
+  <script>
+    async function loadFeaturedProducts() {
+      try {
+        const response = await api.getProducts({ limit: 8, status: 'active' });
+        const container = document.getElementById('featured-products');
+        
+        if (response.products.length === 0) {
+          container.innerHTML = '<p class="text-center">No products available</p>';
+          return;
+        }
+
+        container.innerHTML = response.products.map(product => `
+          <div class="product-card" data-product-id="${product._id}">
+            ${getDiscountBadge(product.discount || 0)}
+            <div class="wishlist-btn-placeholder" data-product-id="${product._id}"></div>
+            <div class="compare-btn-placeholder" data-product-id="${product._id}"></div>
+            <img src="${product.images[0] || 'https://via.placeholder.com/250'}" 
+                 alt="${product.name}" 
+                 class="product-image"
+                 onclick="window.location.href='product-details.html?id=${product._id}'" 
+                 style="cursor: pointer;"
+                 title="Click to view details">
+            <div class="product-info">
+              <div class="product-id">${product.productId}</div>
+              <h3 class="product-name">${product.name}</h3>
+              <p class="product-category">${product.category} | ${product.wattage}W</p>
+              ${getPriceDisplay(product.price, product.discount || 0)}
+              <p style="color: ${product.stock > 10 ? '#28a745' : product.stock > 0 ? '#ffc107' : '#dc3545'}; font-weight: 600; font-size: 0.875rem;">
+                ${product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left!` : 'Out of Stock'}
+              </p>
+              <button class="btn add-to-cart-btn" onclick="addToCartFromHome('${product._id}', event)" ${product.stock === 0 ? 'disabled' : ''}>
+                <i class="fas fa-shopping-cart"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        // Add wishlist and compare buttons after rendering
+        setTimeout(() => {
+          document.querySelectorAll('.wishlist-btn-placeholder').forEach(placeholder => {
+            const productId = placeholder.dataset.productId;
+            const wishlistBtn = wishlistManager.createWishlistButton(productId);
+            placeholder.replaceWith(wishlistBtn);
+          });
+
+          document.querySelectorAll('.compare-btn-placeholder').forEach(placeholder => {
+            const productId = placeholder.dataset.productId;
+            const compareBtn = compareManager.createCompareButton(productId);
+            placeholder.replaceWith(compareBtn);
+          });
+        }, 100);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+        document.getElementById('featured-products').innerHTML = 
+          '<p class="text-center">Failed to load products</p>';
+      }
+    }
+
+    async function loadBanners() {
+      try {
+        const response = await api.getBanners({ status: 'active' });
+        const container = document.getElementById('hero-banners');
+        
+        if (!response.banners || response.banners.length === 0) {
+          // Show default hero if no banners
+          container.innerHTML = `
+            <div class="default-hero">
+              <h1>Welcome to MJE E-Commerce</h1>
+              <p>Your one-stop shop for quality electrical products</p>
+              <a href="products.html" class="btn">Shop Now</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Show banners carousel with animations
+        container.innerHTML = `
+          <div class="banner-carousel">
+            ${response.banners.map((banner, index) => `
+              <div class="banner-slide ${index === 0 ? 'active' : ''}" style="background-image: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)), url('${banner.image}')">
+                <div class="banner-content animate-fade-in-up">
+                  <h1 class="banner-title">${banner.title}</h1>
+                  ${banner.subtitle ? `<p class="banner-subtitle">${banner.subtitle}</p>` : ''}
+                  ${banner.link ? `<a href="${banner.link}" class="btn btn-hero">Shop Now <i class="fas fa-arrow-right"></i></a>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          ${response.banners.length > 1 ? `
+            <button class="banner-nav banner-prev" onclick="changeBanner(-1)" aria-label="Previous banner">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="banner-nav banner-next" onclick="changeBanner(1)" aria-label="Next banner">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="banner-indicators">
+              ${response.banners.map((_, index) => `
+                <button class="banner-dot ${index === 0 ? 'active' : ''}" onclick="currentBanner(${index})" aria-label="Go to banner ${index + 1}"></button>
+              `).join('')}
+            </div>
+          ` : ''}
+        `;
+
+        // Auto-rotate banners
+        if (response.banners.length > 1) {
+          setInterval(() => changeBanner(1), 5000);
+        }
+      } catch (error) {
+        console.error('Failed to load banners:', error);
+        document.getElementById('hero-banners').innerHTML = `
+          <div class="default-hero">
+            <h1>Welcome to MJE E-Commerce</h1>
+            <p>Your one-stop shop for quality electrical products</p>
+            <a href="products.html" class="btn">Shop Now</a>
+          </div>
+        `;
+      }
+    }
+
+    let currentBannerIndex = 0;
+
+    function changeBanner(direction) {
+      const slides = document.querySelectorAll('.banner-slide');
+      const dots = document.querySelectorAll('.banner-dot');
+      
+      if (slides.length === 0) return;
+      
+      slides[currentBannerIndex].classList.remove('active');
+      if (dots[currentBannerIndex]) dots[currentBannerIndex].classList.remove('active');
+      
+      currentBannerIndex = (currentBannerIndex + direction + slides.length) % slides.length;
+      
+      slides[currentBannerIndex].classList.add('active');
+      if (dots[currentBannerIndex]) dots[currentBannerIndex].classList.add('active');
+      
+      // Re-trigger animation
+      const content = slides[currentBannerIndex].querySelector('.banner-content');
+      if (content) {
+        content.style.animation = 'none';
+        setTimeout(() => {
+          content.style.animation = '';
+        }, 10);
+      }
+    }
+
+    function currentBanner(index) {
+      const slides = document.querySelectorAll('.banner-slide');
+      const dots = document.querySelectorAll('.banner-dot');
+      
+      if (slides.length === 0) return;
+      
+      slides[currentBannerIndex].classList.remove('active');
+      if (dots[currentBannerIndex]) dots[currentBannerIndex].classList.remove('active');
+      
+      currentBannerIndex = index;
+      
+      slides[currentBannerIndex].classList.add('active');
+      if (dots[currentBannerIndex]) dots[currentBannerIndex].classList.add('active');
+      
+      // Re-trigger animation
+      const content = slides[currentBannerIndex].querySelector('.banner-content');
+      if (content) {
+        content.style.animation = 'none';
+        setTimeout(() => {
+          content.style.animation = '';
+        }, 10);
+      }
+    }
+
+    loadBanners();
+    loadCategories();
+    loadFeaturedProducts();
+
+    async function loadCategories() {
+      try {
+        const response = await api.getCategories();
+        const container = document.getElementById('categories-grid');
+        
+        if (!response.categories || response.categories.length === 0) {
+          container.innerHTML = '<p class="text-center">No categories available</p>';
+          return;
+        }
+
+        container.innerHTML = response.categories.map(category => `
+          <a href="products.html?category=${encodeURIComponent(category.name)}" class="category-card">
+            <div class="category-icon">
+              <img src="${category.image || 'https://via.placeholder.com/150'}" alt="${category.name}">
+            </div>
+            <h3 class="category-name">${category.name}</h3>
+            <p class="category-count">${category.productCount || 0} Items</p>
+          </a>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+        document.getElementById('categories-grid').innerHTML = 
+          '<p class="text-center">Failed to load categories</p>';
+      }
+    }
+
+    function performSearch() {
+      const query = document.getElementById('search-input').value;
+      if (query.trim()) {
+        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+
+    // Allow Enter key to search
+    document.getElementById('search-input')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    // Scroll to top button
+    window.addEventListener('scroll', () => {
+      const scrollBtn = document.getElementById('scrollToTop');
+      if (window.pageYOffset > 300) {
+        scrollBtn.classList.add('visible');
+      } else {
+        scrollBtn.classList.remove('visible');
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function addToCartFromHome(productId, event) {
+      const state = stateManager.getState();
+      if (!state.isAuthenticated) {
+        Modal.confirm('Please login to add items to cart. Go to login page?', () => {
+          window.location.href = 'login.html';
+        });
+        return;
+      }
+
+      const button = event.target.closest('button');
+      const originalText = button.innerHTML;
+      
+      try {
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        
+        await stateManager.addToCart(productId, 1);
+        
+        button.innerHTML = '<i class="fas fa-check"></i> Added!';
+        button.style.background = '#28a745';
+        
+        // Update cart badge
+        updateCartBadge();
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.style.background = '';
+          button.disabled = false;
+        }, 2000);
+        
+        toast.success('Product added to cart!');
+      } catch (error) {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        toast.error('Failed to add to cart: ' + error.message);
+      }
+    }
+
+    function updateCartBadge() {
+      const badge = document.querySelector('.cart-badge');
+      const mobileBadge = document.querySelector('.mobile-cart-badge');
+      const mobileMenuBadge = document.getElementById('mobile-menu-cart-badge');
+      
+      if (typeof stateManager !== 'undefined') {
+        const count = stateManager.getCartCount();
+        
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+        
+        if (mobileBadge) {
+          mobileBadge.textContent = count;
+          mobileBadge.style.display = count > 0 ? 'flex' : 'none';
+        }
+        
+        if (mobileMenuBadge) {
+          mobileMenuBadge.textContent = count;
+          mobileMenuBadge.style.display = count > 0 ? 'inline-block' : 'none';
+        }
+      }
+    }
+
+    async function subscribeNewsletter(event) {
+      event.preventDefault();
+      const email = document.getElementById('newsletter-email').value;
+      
+      try {
+        const response = await api.subscribeNewsletter(email);
+        toast.success('Thank you for subscribing to our newsletter!');
+        document.getElementById('newsletter-form').reset();
+      } catch (error) {
+        toast.error(error.message || 'Failed to subscribe. Please try again.');
+      }
+    }
+  </script>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
+    <div class="mobile-menu-header">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-user auth-link" style="display:none;">
+        <div class="mobile-menu-user-avatar"><i class="fas fa-user-circle"></i></div>
+        <div class="mobile-menu-user-info">
+          <strong id="mobile-menu-username">User</strong>
+          <small id="mobile-menu-user-email">user@example.com</small>
+        </div>
+      </div>
+      <ul class="mobile-menu-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      </ul>
+      <ul class="mobile-menu-links mobile-menu-auth">
+        <li class="auth-link" style="display:none;">
+          <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist <span class="mobile-menu-badge" id="mobile-menu-wishlist-badge">0</span></a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="compare.html"><i class="fas fa-balance-scale"></i> Compare <span class="mobile-menu-badge" id="mobile-menu-compare-badge">0</span></a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+        <li class="guest-link"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li class="guest-link"><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+      </ul>
+      <div class="mobile-menu-support">
+        <div class="mobile-menu-support-item">
+          <i class="fas fa-phone-alt"></i>
+          <div><strong>24/7 Support</strong><small>+233 597528733</small></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      hamburger.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+    }
+    function closeMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      hamburger.classList.remove('active');
+      document.body.classList.remove('menu-open');
+    }
+    function updateMobileMenuAuth() {
+      const state = stateManager?.getState();
+      if (state && state.isAuthenticated && state.user) {
+        const username = document.getElementById('mobile-menu-username');
+        const email = document.getElementById('mobile-menu-user-email');
+        if (username) username.textContent = state.user.name || 'User';
+        if (email) email.textContent = state.user.email || '';
+      }
+      updateMobileMenuBadges();
+    }
+    function updateMobileMenuBadges() {
+      const cartBadge = document.getElementById('mobile-menu-cart-badge');
+      const wishlistBadge = document.getElementById('mobile-menu-wishlist-badge');
+      const compareBadge = document.getElementById('mobile-menu-compare-badge');
+      if (cartBadge && stateManager) {
+        const cartCount = stateManager.getCartCount();
+        cartBadge.textContent = cartCount;
+        cartBadge.style.display = cartCount > 0 ? 'inline-block' : 'none';
+      }
+      if (wishlistBadge && wishlistManager) {
+        const wishlistCount = wishlistManager.getCount();
+        wishlistBadge.textContent = wishlistCount;
+        wishlistBadge.style.display = wishlistCount > 0 ? 'inline-block' : 'none';
+      }
+      if (compareBadge && compareManager) {
+        const compareCount = compareManager.getCount();
+        compareBadge.textContent = compareCount;
+        compareBadge.style.display = compareCount > 0 ? 'inline-block' : 'none';
+      }
+    }
+    setTimeout(updateMobileMenuAuth, 500);
+    
+    // Search functionality
+    function toggleNavSearch() {
+      const dropdown = document.getElementById('nav-search-dropdown');
+      const input = document.getElementById('nav-search-input');
+      dropdown.classList.toggle('active');
+      if (dropdown.classList.contains('active')) {
+        setTimeout(() => input.focus(), 100);
+      }
+    }
+    
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input').value.trim();
+      if (query) {
+        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+    
+    // Close search dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('nav-search-dropdown');
+      const searchToggle = document.querySelector('.search-toggle');
+      if (dropdown && !dropdown.contains(event.target) && !searchToggle.contains(event.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>

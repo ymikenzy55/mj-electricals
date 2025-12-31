@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <style>
+    .checkout-progress {
+      display: flex;
+      justify-content: space-between;
+      margin: 2rem 0;
+      position: relative;
+    }
+    .checkout-progress::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gray-300);
+      z-index: 0;
+    }
+    .progress-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s;
+    }
+    .progress-step:hover .progress-step-circle {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .progress-step.completed:hover .progress-step-circle {
+      background: #218838;
+    }
+    .progress-step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--gray-300);
+      margin: 0 auto 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .progress-step.active .progress-step-circle {
+      background: var(--primary-orange);
+      border-color: var(--primary-orange);
+      color: white;
+    }
+    .progress-step.completed .progress-step-circle {
+      background: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+    .checkout-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 1.5rem;
+    }
+    .payment-method {
+      border: 2px solid var(--gray-300);
+      padding: 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1rem;
+    }
+    .payment-method:hover {
+      border-color: var(--primary-orange);
+      background: #fff5f0;
+    }
+    .payment-method.selected {
+      border-color: var(--primary-orange);
+      background: #fff5f0;
+    }
+    .order-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    .order-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    @media (max-width: 768px) {
+      .checkout-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .checkout-progress {
+        font-size: 0.85rem;
+      }
+      .progress-step-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <div class="nav-icons">
+        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+          <i class="fas fa-search"></i>
+          <span>Search</span>
+        </button>
+        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+      
+      <!-- Search Dropdown -->
+      <div class="nav-search-dropdown" id="nav-search-dropdown">
+        <div class="search-dropdown-content">
+          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+          <button onclick="performNavSearch()" class="search-btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <div class="nav-container">
+        <ul class="nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+        <div class="support-contact">
+          <i class="fas fa-phone-alt"></i>
+          <div>
+            <strong>+233 XX XXX XXXX</strong>
+            <small>24/7 Support Center</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
+    <div class="mobile-menu-header">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-user auth-link" style="display:none;">
+        <div class="mobile-menu-user-avatar"><i class="fas fa-user-circle"></i></div>
+        <div class="mobile-menu-user-info">
+          <strong id="mobile-menu-username">Loading...</strong>
+          <small id="mobile-menu-user-email">Loading...</small>
+        </div>
+      </div>
+      <ul class="mobile-menu-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      </ul>
+      <ul class="mobile-menu-links mobile-menu-auth">
+        <li class="auth-link" style="display:none;">
+          <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+        <li class="guest-link"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li class="guest-link"><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+      </ul>
+      <div class="mobile-menu-support">
+        <div class="mobile-menu-support-item">
+          <i class="fas fa-phone-alt"></i>
+          <div><strong>24/7 Support</strong><small>+233 597528733</small></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1200px;">
+    <h1 style="margin: 2rem 0 1rem;"><i class="fas fa-shopping-bag"></i> Secure Checkout</h1>
+
+    <!-- Progress Indicator -->
+    <div class="checkout-progress">
+      <div class="progress-step active" id="step-1" onclick="goToStep(1)" style="cursor: pointer;">
+        <div class="progress-step-circle">1</div>
+        <div>Shipping</div>
+      </div>
+      <div class="progress-step" id="step-2" onclick="goToStep(2)" style="cursor: pointer;">
+        <div class="progress-step-circle">2</div>
+        <div>Payment</div>
+      </div>
+      <div class="progress-step" id="step-3" onclick="goToStep(3)" style="cursor: pointer;">
+        <div class="progress-step-circle">3</div>
+        <div>Review</div>
+      </div>
+    </div>
+
+    <div id="alert-container"></div>
+
+    <div class="checkout-grid" style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem;">
+      <div>
+        <!-- Shipping Address Section -->
+        <div class="checkout-section" id="shipping-section">
+          <h2 style="margin-top: 0;"><i class="fas fa-truck"></i> Shipping Address</h2>
+          <form id="shipping-form">
+            <div class="form-group">
+              <label><i class="fas fa-user"></i> Full Name *</label>
+              <input type="text" id="fullName" required>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-phone"></i> Phone Number *</label>
+              <input type="tel" id="phone" required>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-city"></i> City/Region *</label>
+              <select id="city" required onchange="updateDeliveryCharge()">
+                <option value="">Select City/Region</option>
+              </select>
+              <small id="delivery-info" style="color: var(--gray-600); display: none;"></small>
+            </div>
+            <button type="button" class="btn" onclick="proceedToPayment()" style="width: 100%;">
+              Continue to Payment <i class="fas fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Payment Method Section -->
+        <div class="checkout-section" id="payment-section" style="display: none;">
+          <h2 style="margin-top: 0;"><i class="fas fa-credit-card"></i> Payment Method</h2>
+          
+          <div class="payment-method" onclick="selectPayment('momo')">
+            <input type="radio" name="payment" id="momo" value="momo" checked>
+            <label for="momo" style="cursor: pointer; margin-left: 0.5rem;">
+              <strong><i class="fas fa-mobile-alt"></i> Mobile Money</strong>
+              <p style="margin: 0.5rem 0 0 1.5rem; color: var(--gray-600);">Pay with MTN, Vodafone, or AirtelTigo</p>
+            </label>
+          </div>
+
+          <div class="payment-method" onclick="selectPayment('card')">
+            <input type="radio" name="payment" id="card" value="card">
+            <label for="card" style="cursor: pointer; margin-left: 0.5rem;">
+              <strong><i class="fas fa-credit-card"></i> Credit/Debit Card</strong>
+              <p style="margin: 0.5rem 0 0 1.5rem; color: var(--gray-600);">Visa, Mastercard, Verve</p>
+            </label>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="backToShipping()" style="flex: 1;">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn" onclick="proceedToReview()" style="flex: 1;">
+              Continue to Review <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Review Order Section -->
+        <div class="checkout-section" id="review-section" style="display: none;">
+          <h2 style="margin-top: 0;"><i class="fas fa-check-circle"></i> Review Your Order</h2>
+          
+          <div style="background: var(--gray-light); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="margin-top: 0;"><i class="fas fa-truck"></i> Shipping To:</h3>
+            <div id="review-shipping"></div>
+          </div>
+
+          <div style="background: var(--gray-light); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="margin-top: 0;"><i class="fas fa-credit-card"></i> Payment Method:</h3>
+            <div id="review-payment"></div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="button" class="btn btn-secondary" onclick="backToPayment()" style="flex: 1;">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn" onclick="placeOrder()" style="flex: 1;">
+              <i class="fas fa-check"></i> Place Order
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary Sidebar -->
+      <div>
+        <div class="checkout-section" style="position: sticky; top: 20px;">
+          <h2 style="margin-top: 0;"><i class="fas fa-receipt"></i> Order Summary</h2>
+          <div id="order-summary">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- Trust Badges -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1.5rem; border-radius: 10px; color: white; margin-top: 1rem;">
+          <h3 style="margin-top: 0;"><i class="fas fa-shield-alt"></i> Secure Checkout</h3>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> SSL Encrypted</li>
+            <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> Safe Payment</li>
+            <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> Money Back Guarantee</li>
+            <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> 24/7 Support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About MJE</h3>
+        <p>Your trusted partner for quality electrical products.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>📧 support@mje-ecommerce.com</p>
+        <p>📞 +233 (0) 123-456-789</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Secure Checkout</h3>
+        <p>Your payment information is secure and encrypted.</p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 MJE E-Commerce. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    // Mobile Menu Functions
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+        
+        // Update user credentials when menu opens
+        if (sidebar.classList.contains('active')) {
+          updateMobileMenuUserInfo();
+        }
+      }
+    }
+    
+    function updateMobileMenuUserInfo() {
+      const state = stateManager.getState();
+      const usernameEl = document.getElementById('mobile-menu-username');
+      const emailEl = document.getElementById('mobile-menu-user-email');
+      const cartBadge = document.getElementById('mobile-menu-cart-badge');
+      
+      if (state.isAuthenticated && state.user) {
+        if (usernameEl) usernameEl.textContent = state.user.name || 'User';
+        if (emailEl) emailEl.textContent = state.user.email || '';
+      }
+      
+      // Update cart badge
+      if (cartBadge) {
+        const cartCount = stateManager.getCartCount();
+        cartBadge.textContent = cartCount;
+        cartBadge.style.display = cartCount > 0 ? 'inline-block' : 'none';
+      }
+    }
+    
+    function closeMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    }
+
+    // Search functions
+    function toggleNavSearch() {
+      const dropdown = document.getElementById('nav-search-dropdown');
+      if (dropdown) {
+        dropdown.classList.toggle('active');
+        if (dropdown.classList.contains('active')) {
+          document.getElementById('nav-search-input')?.focus();
+        }
+      }
+    }
+
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input')?.value;
+      if (query && query.trim()) {
+        window.location.href = `products.html?search=${encodeURIComponent(query.trim())}`;
+      }
+    }
+  </script>
+  <script>
+    // Paystack Configuration
+    const PAYSTACK_PUBLIC_KEY = 'pk_test_0ffa48fa6b983aa895c4b51ff0b47d4dd1855b40';
+    
+    let shippingData = {};
+    let paymentMethod = 'momo';
+    let deliveryCharge = 0;
+    let availableCities = [];
+
+    // Wait for authentication before loading
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        console.log('Checkout page loading...');
+        
+        if (!requireAuth('Please sign in to proceed with checkout')) {
+          console.log('Auth required, redirecting...');
+          return;
+        }
+        
+        console.log('User authenticated, loading data...');
+        
+        // Wait for user to be loaded
+        await stateManager.loadUser();
+        console.log('User loaded');
+        
+        // Load available cities
+        await loadCities();
+        console.log('Cities loaded');
+        
+        // Now load the order summary
+        await loadOrderSummary();
+        console.log('Order summary loaded');
+        
+        // Pre-fill user data
+        const state = stateManager.getState();
+        if (state.user) {
+          document.getElementById('fullName').value = state.user.name || '';
+        }
+      } catch (error) {
+        console.error('Error during checkout initialization:', error);
+        const container = document.getElementById('order-summary');
+        if (container) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: var(--error);">
+              <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+              <p>Failed to load checkout. Please try again.</p>
+              <button onclick="location.reload()" class="btn">Reload Page</button>
+            </div>
+          `;
+        }
+      }
+    });
+
+    async function loadCities() {
+      try {
+        const response = await api.getDeliveryCharges({ active: true });
+        availableCities = response.deliveryCharges || [];
+        
+        console.log('Loaded cities:', availableCities);
+        
+        const citySelect = document.getElementById('city');
+        citySelect.innerHTML = '<option value="">Select City</option>' +
+          availableCities.map(city => 
+            `<option value="${city.city}" data-charge="${city.charge}" data-days="${city.estimatedDays}">
+              ${city.city} (GH₵ ${city.charge} - ${city.estimatedDays} days)
+            </option>`
+          ).join('');
+          
+        if (availableCities.length === 0) {
+          toast.warning('No delivery cities available. Please contact admin.');
+        }
+      } catch (error) {
+        console.error('Failed to load cities:', error);
+        toast.error('Failed to load delivery cities');
+      }
+    }
+
+    async function updateDeliveryCharge() {
+      const citySelect = document.getElementById('city');
+      const selectedOption = citySelect.options[citySelect.selectedIndex];
+      const deliveryInfo = document.getElementById('delivery-info');
+      
+      if (selectedOption.value) {
+        deliveryCharge = parseFloat(selectedOption.dataset.charge) || 0;
+        const days = selectedOption.dataset.days || '3';
+        
+        deliveryInfo.textContent = `Delivery: GH₵ ${deliveryCharge.toFixed(2)} (${days} days)`;
+        deliveryInfo.style.display = 'block';
+        deliveryInfo.style.color = 'var(--primary-orange)';
+        deliveryInfo.style.fontWeight = '600';
+      } else {
+        deliveryCharge = 0;
+        deliveryInfo.style.display = 'none';
+      }
+      
+      // Update order summary
+      await loadOrderSummary();
+    }
+
+    function goToStep(stepNumber) {
+      // Only allow going back or to completed steps
+      const step1 = document.getElementById('step-1');
+      const step2 = document.getElementById('step-2');
+      const step3 = document.getElementById('step-3');
+      
+      if (stepNumber === 1) {
+        // Always allow going back to step 1
+        document.getElementById('payment-section').style.display = 'none';
+        document.getElementById('review-section').style.display = 'none';
+        document.getElementById('shipping-section').style.display = 'block';
+        
+        step1.classList.add('active');
+        step2.classList.remove('active');
+        step3.classList.remove('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (stepNumber === 2 && step1.classList.contains('completed')) {
+        // Can go to step 2 if step 1 is completed
+        document.getElementById('shipping-section').style.display = 'none';
+        document.getElementById('review-section').style.display = 'none';
+        document.getElementById('payment-section').style.display = 'block';
+        
+        step1.classList.remove('active');
+        step2.classList.add('active');
+        step3.classList.remove('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (stepNumber === 3 && step2.classList.contains('completed')) {
+        // Can go to step 3 if step 2 is completed
+        document.getElementById('shipping-section').style.display = 'none';
+        document.getElementById('payment-section').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+        
+        step1.classList.remove('active');
+        step2.classList.remove('active');
+        step3.classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        toast.info('Please complete the current step first');
+      }
+    }
+
+    async function loadOrderSummary() {
+      try {
+        await stateManager.loadCart();
+        const state = stateManager.getState();
+        const container = document.getElementById('order-summary');
+
+        if (!state.cart || state.cart.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">Your cart is empty. <a href="products.html">Browse products</a></p>';
+          return;
+        }
+
+        const subtotal = stateManager.getCartTotal();
+        const total = subtotal + deliveryCharge;
+
+        container.innerHTML = `
+          <div id="order-items">
+            ${state.cart.map(item => `
+              <div class="order-item">
+                <img src="${item.product.images[0] || 'https://via.placeholder.com/80'}" alt="${item.product.name}">
+                <div style="flex: 1;">
+                  <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem;">${item.product.name}</h4>
+                  <p style="margin: 0; color: var(--gray-600); font-size: 0.85rem;">Qty: ${item.quantity}</p>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--primary-orange); font-weight: 600;">${formatPrice(item.product.price * item.quantity)}</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <hr style="margin: 1.5rem 0;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span>Subtotal:</span>
+            <span>${formatPrice(subtotal)}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span>Delivery Charge:</span>
+            <span>${deliveryCharge > 0 ? formatPrice(deliveryCharge) : 'Select city'}</span>
+          </div>
+          <hr style="margin: 1rem 0;">
+          <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: bold;">
+            <span>Total:</span>
+            <span style="color: var(--primary-orange);">${formatPrice(total)}</span>
+          </div>
+          ${deliveryCharge === 0 ? '<p style="color: var(--error); font-size: 0.85rem; margin-top: 1rem;"><i class="fas fa-info-circle"></i> Please select a city to see delivery charge</p>' : ''}
+        `;
+      } catch (error) {
+        console.error('Error loading order summary:', error);
+        const container = document.getElementById('order-summary');
+        container.innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load order summary. Please refresh the page.</p>';
+      }
+    }
+
+    function selectPayment(method) {
+      document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('selected');
+      });
+      
+      // Find and select the clicked element
+      const clickedElement = document.querySelector(`#${method}`).closest('.payment-method');
+      if (clickedElement) {
+        clickedElement.classList.add('selected');
+      }
+      
+      document.getElementById(method).checked = true;
+      paymentMethod = method;
+    }
+
+    function proceedToPayment() {
+      // Check if cart is empty
+      const state = stateManager.getState();
+      if (!state.cart || state.cart.length === 0) {
+        Modal.error('Your cart is empty! Please add products to your cart before proceeding to checkout.', () => {
+          window.location.href = 'products.html';
+        });
+        return;
+      }
+
+      const form = document.getElementById('shipping-form');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      
+      // Validate delivery charge is selected
+      if (deliveryCharge === 0) {
+        toast.error('Please select a city to calculate delivery charge');
+        return;
+      }
+
+      shippingData = {
+        fullName: document.getElementById('fullName').value,
+        phone: document.getElementById('phone').value,
+        city: document.getElementById('city').value
+      };
+
+      document.getElementById('shipping-section').style.display = 'none';
+      document.getElementById('payment-section').style.display = 'block';
+      
+      document.getElementById('step-1').classList.remove('active');
+      document.getElementById('step-1').classList.add('completed');
+      document.getElementById('step-2').classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToShipping() {
+      document.getElementById('payment-section').style.display = 'none';
+      document.getElementById('shipping-section').style.display = 'block';
+      
+      document.getElementById('step-2').classList.remove('active');
+      document.getElementById('step-1').classList.remove('completed');
+      document.getElementById('step-1').classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function proceedToReview() {
+      const paymentLabels = {
+        'momo': 'Mobile Money (MTN, Vodafone, AirtelTigo)',
+        'card': 'Credit/Debit Card via Paystack'
+      };
+
+      document.getElementById('review-shipping').innerHTML = `
+        <p style="margin: 0.25rem 0;"><strong>${shippingData.fullName}</strong></p>
+        <p style="margin: 0.25rem 0;">${shippingData.phone}</p>
+        <p style="margin: 0.25rem 0;">${shippingData.city}</p>
+      `;
+
+      document.getElementById('review-payment').innerHTML = `
+        <p style="margin: 0;"><strong>${paymentLabels[paymentMethod]}</strong></p>
+      `;
+
+      document.getElementById('payment-section').style.display = 'none';
+      document.getElementById('review-section').style.display = 'block';
+      
+      document.getElementById('step-2').classList.remove('active');
+      document.getElementById('step-2').classList.add('completed');
+      document.getElementById('step-3').classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToPayment() {
+      document.getElementById('review-section').style.display = 'none';
+      document.getElementById('payment-section').style.display = 'block';
+      
+      document.getElementById('step-3').classList.remove('active');
+      document.getElementById('step-2').classList.remove('completed');
+      document.getElementById('step-2').classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function placeOrder() {
+      if (deliveryCharge === 0) {
+        toast.error('Please select a city to calculate delivery charge');
+        return;
+      }
+
+      const state = stateManager.getState();
+      const subtotal = stateManager.getCartTotal();
+      const totalAmount = subtotal + deliveryCharge;
+
+      const orderData = {
+        items: state.cart.map(item => ({
+          product: item.product._id,
+          productId: item.product.productId,
+          name: item.product.name,
+          quantity: item.quantity,
+          price: item.product.price
+        })),
+        subtotal: subtotal,
+        deliveryCharge: deliveryCharge,
+        totalAmount: totalAmount,
+        customerInfo: {
+          fullName: shippingData.fullName,
+          phone: shippingData.phone,
+          email: state.user.email
+        },
+        shippingAddress: {
+          city: shippingData.city,
+          country: 'Ghana'
+        },
+        paymentMethod: paymentMethod
+      };
+
+      try {
+        const loadingToast = toast.loading('Processing your order...');
+        const response = await api.createOrder(orderData);
+        const orderId = response.order._id;
+        
+        loadingToast.remove();
+        
+        // Always initiate Paystack payment (no COD option)
+        toast.info('Redirecting to payment gateway...');
+        
+        // Initialize Paystack payment
+        const paymentResponse = await api.initializePayment({
+          orderId: orderId,
+          email: state.user.email,
+          amount: totalAmount
+        });
+        
+        // Open Paystack payment modal
+        const handler = PaystackPop.setup({
+          key: PAYSTACK_PUBLIC_KEY,
+          email: state.user.email,
+          amount: Math.round(totalAmount * 100), // Convert to kobo/pesewas
+          currency: 'GHS',
+          ref: paymentResponse.data.reference,
+          metadata: {
+            orderId: orderId,
+            custom_fields: [
+              {
+                display_name: "Order ID",
+                variable_name: "order_id",
+                value: orderId
+              }
+            ]
+          },
+          callback: function(response) {
+            // Payment successful - handle verification
+            toast.success('Payment successful! Verifying...');
+            
+            // Use promise chain instead of async/await with retry logic
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            const verifyWithRetry = () => {
+              return api.verifyPayment(response.reference)
+                .catch((error) => {
+                  retryCount++;
+                  if (retryCount < maxRetries) {
+                    console.log(`Verification failed, retrying... (${retryCount}/${maxRetries})`);
+                    toast.info(`Retrying verification... (${retryCount}/${maxRetries})`);
+                    return new Promise(resolve => setTimeout(resolve, 2000))
+                      .then(() => verifyWithRetry());
+                  }
+                  throw error;
+                });
+            };
+            
+            verifyWithRetry()
+              .then(() => {
+                return stateManager.clearCart();
+              })
+              .then(() => {
+                toast.success('Order completed successfully!');
+                // Redirect to payment success page
+                window.location.href = `payment-success.html?orderId=${orderId}&reference=${response.reference}`;
+              })
+              .catch((error) => {
+                console.error('Payment verification error:', error);
+                toast.error('Payment verification failed. Redirecting...');
+                // Redirect to failed page with details
+                setTimeout(() => {
+                  window.location.href = `payment-failed.html?orderId=${orderId}&reason=verification_failed`;
+                }, 2000);
+              });
+          },
+          onClose: function() {
+            // User closed payment modal
+            toast.warning('Payment cancelled. Your order is saved but unpaid.');
+            setTimeout(() => {
+              window.location.href = `payment-failed.html?orderId=${orderId}&reason=user_cancelled`;
+            }, 2000);
+          }
+        });
+        
+        handler.openIframe();
+      } catch (error) {
+        // Remove loading toast if it exists
+        const loadingToasts = document.querySelectorAll('.toast-loading');
+        loadingToasts.forEach(t => t.remove());
+        
+        console.error('Place order error:', error);
+        
+        // Check if it's a network error
+        if (!navigator.onLine) {
+          toast.error('No internet connection. Please check your network and try again.');
+        } else if (error.message && error.message.includes('network')) {
+          toast.error('Network error. Please check your connection and try again.');
+        } else if (error.message && error.message.includes('timeout')) {
+          toast.error('Request timeout. Please try again.');
+        } else {
+          toast.error(error.message || 'Failed to place order. Please try again.');
+        }
+        
+        // If order was created but payment failed, redirect to failed page
+        if (orderId) {
+          setTimeout(() => {
+            window.location.href = `payment-failed.html?orderId=${orderId}&reason=payment_init_failed`;
+          }, 3000);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

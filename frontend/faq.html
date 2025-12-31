@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: #f8f9fa;
+    }
+    
+    .faq-simple-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      min-height: 60vh;
+    }
+    
+    .faq-simple-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .faq-simple-header h1 {
+      font-size: 2.5rem;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    
+    .faq-simple-header p {
+      font-size: 1.1rem;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .contact-callout-simple {
+      background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+      border: 2px solid #ff9966;
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem auto;
+      max-width: 700px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(255, 107, 61, 0.1);
+    }
+    
+    .contact-callout-icon-simple {
+      font-size: 3rem;
+      color: #ff6b3d;
+      margin-bottom: 1rem;
+    }
+    
+    .contact-callout-simple h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.3rem;
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+    
+    .contact-callout-simple p {
+      margin: 0 0 1.5rem 0;
+      color: #666;
+      font-size: 1rem;
+    }
+    
+    .contact-callout-simple a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #ff6b3d;
+      color: white;
+      text-decoration: none;
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(255, 107, 61, 0.3);
+    }
+    
+    .contact-callout-simple a:hover {
+      background: #e55a2f;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 107, 61, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+      .faq-simple-container {
+        padding: 2rem 1rem;
+      }
+      
+      .faq-simple-header h1 {
+        font-size: 2rem;
+      }
+      
+      .faq-simple-header p {
+        font-size: 1rem;
+      }
+      
+      .contact-callout-simple {
+        padding: 1.5rem;
+      }
+      
+      .contact-callout-icon-simple {
+        font-size: 2.5rem;
+      }
+      
+      .contact-callout-simple h3 {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <div class="nav-icons">
+        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+          <i class="fas fa-search"></i>
+          <span>Search</span>
+        </button>
+        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+      
+      <div class="nav-search-dropdown" id="nav-search-dropdown">
+        <div class="search-dropdown-content">
+          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+          <button onclick="performNavSearch()" class="search-btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <div class="nav-container">
+        <ul class="nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+          <li><a href="faq.html" class="active"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+        <div class="support-contact">
+          <i class="fas fa-phone-alt"></i>
+          <div>
+            <strong>+233 XX XXX XXXX</strong>
+            <small>24/7 Support Center</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
+    <div class="mobile-menu-header">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-user auth-link" style="display:none;">
+        <div class="mobile-menu-user-avatar"><i class="fas fa-user-circle"></i></div>
+        <div class="mobile-menu-user-info">
+          <strong id="mobile-menu-username">Loading...</strong>
+          <small id="mobile-menu-user-email">Loading...</small>
+        </div>
+      </div>
+      <ul class="mobile-menu-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+        <li><a href="contact.html#faq" class="active"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      </ul>
+      <ul class="mobile-menu-links mobile-menu-auth">
+        <li class="auth-link" style="display:none;">
+          <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+        <li class="guest-link"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li class="guest-link"><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+      </ul>
+      <div class="mobile-menu-support">
+        <div class="mobile-menu-support-item">
+          <i class="fas fa-phone-alt"></i>
+          <div><strong>24/7 Support</strong><small>+233 597528733</small></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="faq-simple-container">
+    <div class="faq-simple-header">
+      <h1>Frequently Asked Questions</h1>
+      <p>Find answers to common questions about shopping with MJ Electricals</p>
+    </div>
+
+    <style>
+      .faq-category-box {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+      
+      .faq-category-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+      }
+      
+      .faq-category-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #ff6b3d 0%, #ff8c42 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+      }
+      
+      .faq-category-header h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        color: #1a1a1a;
+      }
+      
+      .faq-item {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 1.25rem 0;
+      }
+      
+      .faq-item:last-child {
+        border-bottom: none;
+      }
+      
+      .faq-question {
+        width: 100%;
+        background: none;
+        border: none;
+        text-align: left;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: #1a1a1a;
+        transition: color 0.3s;
+      }
+      
+      .faq-question:hover {
+        color: #ff6b3d;
+      }
+      
+      .faq-question i {
+        font-size: 1.2rem;
+        color: #999;
+        transition: transform 0.3s, color 0.3s;
+      }
+      
+      .faq-question.active i {
+        transform: rotate(180deg);
+        color: #ff6b3d;
+      }
+      
+      .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.4s ease;
+        padding: 0;
+      }
+      
+      .faq-answer.active {
+        max-height: 500px;
+        padding: 1rem 0 0 0;
+      }
+      
+      .faq-answer p {
+        color: #666;
+        line-height: 1.7;
+        margin: 0;
+      }
+    </style>
+
+    <!-- Orders & Shipping -->
+    <div class="faq-category-box">
+      <div class="faq-category-header">
+        <div class="faq-category-icon">
+          <i class="fas fa-box"></i>
+        </div>
+        <h2>Orders & Shipping</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          How long does delivery take?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Delivery typically takes 2-3 business days within major cities (Accra, Kumasi, Takoradi). Other locations may take 3-5 business days depending on your area.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What are the delivery charges?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Delivery charges vary by location. You'll see the exact delivery cost during checkout when you select your city/region.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can I track my order?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes! Once your order is placed, you can track its status from your Dashboard under "My Orders".</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What if I'm not home during delivery?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Our delivery team will attempt to contact you via the phone number provided during checkout.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Do you deliver to all cities in Ghana?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>We deliver to most major cities and towns across Ghana. During checkout, you'll see a list of available delivery locations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products & Stock -->
+    <div class="faq-category-box">
+      <div class="faq-category-header">
+        <div class="faq-category-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h2>Products & Stock</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Are all products genuine?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, we only sell 100% genuine products from authorized distributors and manufacturers.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Do products come with warranty?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, all our products come with manufacturer warranties. The warranty period varies by product.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What if a product is out of stock?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Out of stock products will show a "Notify Me" option. Click this to receive an email notification when available.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can I request for specific products not listed?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Absolutely! Contact us through the Contact page and we'll do our best to source the product for you.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Do you sell in bulk for contractors?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, we offer bulk purchasing options. Contact our sales team for special pricing on bulk orders.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment & Returns -->
+    <div class="faq-category-box">
+      <div class="faq-category-header">
+        <div class="faq-category-icon">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <h2>Payment & Returns</h2>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          What payment methods do you accept?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>We accept secure online payments through Paystack, which supports Mobile Money and Credit/Debit Cards.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Is it safe to pay online?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Absolutely! We use Paystack, a PCI-DSS compliant payment gateway with bank-level SSL encryption.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can I return a product?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, we accept returns within 7 days of delivery for unused products in original packaging.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          Can I cancel my order?
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, you can cancel orders that haven't been shipped yet from your Dashboard > My Orders.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Callout - Now at the bottom -->
+    <div class="contact-callout-simple">
+      <div class="contact-callout-icon-simple">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <h3>Can't find what you're looking for?</h3>
+      <p>Our customer service team is here to help!</p>
+      <a href="contact.html">
+        Contact Us <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-logo">
+          <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+        </div>
+        <h3>About MJE</h3>
+        <p>Your trusted partner for quality electrical products.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="categories.html">Categories</a></p>
+        <p><a href="about.html">About Us</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>📧 support@mje-ecommerce.com</p>
+        <p>📞 +233 597528733</p>
+        <p>🕒 Mon-Fri, 9AM-6PM</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <p>Subscribe to get updates!</p>
+        <form class="newsletter-form" id="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" id="newsletter-email" placeholder="Your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 MJE E-Commerce. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+        
+        if (sidebar.classList.contains('active')) {
+          updateMobileMenuAuth();
+        }
+      }
+    }
+    
+    function closeMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    }
+    
+    function updateMobileMenuAuth() {
+      const state = stateManager?.getState();
+      const username = document.getElementById('mobile-menu-username');
+      const email = document.getElementById('mobile-menu-user-email');
+      
+      if (state && state.isAuthenticated && state.user) {
+        if (username) username.textContent = state.user.name || 'User';
+        if (email) email.textContent = state.user.email || '';
+      } else {
+        if (username) username.textContent = 'Guest';
+        if (email) email.textContent = 'Not logged in';
+      }
+      updateMobileMenuBadges();
+    }
+    
+    function updateMobileMenuBadges() {
+      const cartBadge = document.getElementById('mobile-menu-cart-badge');
+      
+      if (cartBadge && typeof stateManager !== 'undefined') {
+        const cartCount = stateManager.getCartCount();
+        cartBadge.textContent = cartCount;
+        cartBadge.style.display = cartCount > 0 ? 'inline-block' : 'none';
+      }
+    }
+    
+    function toggleNavSearch() {
+      const dropdown = document.getElementById('nav-search-dropdown');
+      const input = document.getElementById('nav-search-input');
+      dropdown.classList.toggle('active');
+      if (dropdown.classList.contains('active')) {
+        setTimeout(() => input.focus(), 100);
+      }
+    }
+    
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input').value.trim();
+      if (query) {
+        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+    
+    async function subscribeNewsletter(event) {
+      event.preventDefault();
+      const email = document.getElementById('newsletter-email').value;
+      
+      try {
+        await api.subscribeNewsletter(email);
+        toast.success('Successfully subscribed to newsletter!');
+        document.getElementById('newsletter-form').reset();
+      } catch (error) {
+        toast.error(error.message || 'Failed to subscribe');
+      }
+    }
+
+    function toggleFaq(button) {
+      const answer = button.nextElementSibling;
+      const isActive = button.classList.contains('active');
+      
+      // Close all other answers
+      document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.classList.remove('active');
+        btn.nextElementSibling.classList.remove('active');
+      });
+      
+      // Toggle current answer
+      if (!isActive) {
+        button.classList.add('active');
+        answer.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

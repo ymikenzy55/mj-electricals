@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- Simple Auth Page Navbar -->
+  <nav class="navbar" style="box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div class="nav-container" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem;">
+      <a href="index.html" class="logo" style="display: flex; align-items: center;">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 50px;">
+      </a>
+      <a href="index.html" class="btn btn-secondary" style="text-decoration: none;">
+        <i class="fas fa-home"></i> Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 500px; margin-top: 3rem;">
+    <h1 class="text-center mb-3">Login</h1>
+    
+    <div id="alert-container"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div style="position: relative;">
+          <input type="password" id="password" required style="padding-right: 45px;">
+          <button type="button" onclick="togglePasswordVisibility('password')" 
+                  style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #666; padding: 5px;">
+            <i class="fas fa-eye" id="password-toggle-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn" style="width: 100%;">Login</button>
+    </form>
+
+    <p class="text-center mt-2">
+      Don't have an account? <a href="register.html">Register here</a>
+    </p>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    // Password visibility toggle
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(inputId + '-toggle-icon');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+  </script>
+  <script>
+    // Check for Google OAuth token in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const name = urlParams.get('name');
+    const error = urlParams.get('error');
+
+    if (error) {
+      toast.error('Google authentication failed. Please try again.');
+    } else if (token) {
+      // Store token and redirect
+      localStorage.setItem('token', token);
+      api.setToken(token);
+      
+      // Get user data
+      api.getMe().then(response => {
+        stateManager.setState({ user: response.user });
+        toast.success(`Welcome back, ${name}!`);
+        
+        setTimeout(() => {
+          // Check if there's a redirect URL saved
+          const redirectUrl = localStorage.getItem('redirectAfterLogin');
+          if (redirectUrl) {
+            localStorage.removeItem('redirectAfterLogin');
+            window.location.href = redirectUrl;
+            return;
+          }
+          
+          // Otherwise redirect based on role
+          const role = response.user.role;
+          if (role === 'superadmin') {
+            window.location.href = 'super-admin-dashboard.html';
+          } else if (role === 'admin') {
+            window.location.href = 'admin-dashboard.html';
+          } else {
+            window.location.href = 'user-dashboard.html';
+          }
+        }, 1000);
+      }).catch(error => {
+        toast.error('Failed to fetch user data');
+      });
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const alertContainer = document.getElementById('alert-container');
+
+      try {
+        await handleLogin(email, password);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/index.html", "destination": "/index.html" },
+    { "source": "/about.html", "destination": "/pages/about.html" },
+    { "source": "/products.html", "destination": "/pages/products.html" },
+    { "source": "/cart.html", "destination": "/pages/cart.html" },
+    { "source": "/checkout.html", "destination": "/pages/checkout.html" },
+    { "source": "/login.html", "destination": "/pages/login.html" },
+    { "source": "/register.html", "destination": "/pages/register.html" },
+    { "source": "/contact.html", "destination": "/pages/contact.html" },
+    { "source": "/faq.html", "destination": "/pages/faq.html" },
+    { "source": "/wishlist.html", "destination": "/pages/wishlist.html" },
+    { "source": "/compare.html", "destination": "/pages/compare.html" },
+    { "source": "/categories.html", "destination": "/pages/categories.html" },
+    { "source": "/product-details.html", "destination": "/pages/product-details.html" },
+    { "source": "/user-dashboard.html", "destination": "/pages/user-dashboard.html" },
+    { "source": "/admin-dashboard.html", "destination": "/pages/admin-dashboard.html" },
+    { "source": "/super-admin-dashboard.html", "destination": "/pages/super-admin-dashboard.html" },
+    { "source": "/payment-success.html", "destination": "/pages/payment-success.html" },
+    { "source": "/payment-failed.html", "destination": "/pages/payment-failed.html" }
+  ]
+}

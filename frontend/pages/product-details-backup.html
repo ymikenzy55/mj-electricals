@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px; vertical-align: middle;">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li class="guest-link"><a href="login.html">Login</a></li>
+        <li class="auth-link" style="display:none"><a href="cart.html" class="cart-icon">
+          Cart <span class="cart-badge">0</span>
+        </a></li>
+        <li class="auth-link" style="display:none"><a href="user-dashboard.html">Dashboard</a></li>
+        <li class="auth-link" style="display:none"><a href="#" onclick="handleLogout()">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div id="alert-container"></div>
+    
+    <div id="product-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2rem;">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div id="reviews-section" style="margin-top: 4rem; display: none;">
+      <h2 style="margin-bottom: 2rem;">Customer Reviews</h2>
+      
+      <!-- Rating Summary -->
+      <div id="rating-summary" style="background: var(--primary-white); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); margin-bottom: 2rem;">
+        <!-- Will be populated by JavaScript -->
+      </div>
+
+      <!-- Write Review Button (for authenticated users) -->
+      <div id="write-review-btn-container" class="auth-link" style="display: none; margin-bottom: 2rem;">
+        <button class="btn" onclick="showReviewForm()">
+          <i class="fas fa-star"></i> Write a Review
+        </button>
+      </div>
+
+      <!-- Review Form -->
+      <div id="review-form-container" style="display: none; background: var(--primary-white); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1.5rem;">Write Your Review</h3>
+        <form id="review-form" onsubmit="submitReview(event)">
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Rating *</label>
+            <div class="star-rating" id="star-rating">
+              <i class="far fa-star" data-rating="1"></i>
+              <i class="far fa-star" data-rating="2"></i>
+              <i class="far fa-star" data-rating="3"></i>
+              <i class="far fa-star" data-rating="4"></i>
+              <i class="far fa-star" data-rating="5"></i>
+            </div>
+            <input type="hidden" id="rating-input" required>
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="review-title" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Title *</label>
+            <input type="text" id="review-title" required maxlength="100" 
+                   style="width: 100%; padding: 0.75rem; border: 2px solid var(--gray-300); border-radius: var(--radius); font-size: 1rem;"
+                   placeholder="Sum up your experience">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label for="review-comment" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Review *</label>
+            <textarea id="review-comment" required maxlength="1000" rows="5"
+                      style="width: 100%; padding: 0.75rem; border: 2px solid var(--gray-300); border-radius: var(--radius); font-size: 1rem; resize: vertical;"
+                      placeholder="Share your thoughts about this product"></textarea>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn">Submit Review</button>
+            <button type="button" class="btn btn-secondary" onclick="hideReviewForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Reviews List -->
+      <div id="reviews-list">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+
+      <!-- Load More Button -->
+      <div id="load-more-container" style="text-align: center; margin-top: 2rem; display: none;">
+        <button class="btn btn-secondary" onclick="loadMoreReviews()">Load More Reviews</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html"><i class="fas fa-home"></i><br>Home</a></li>
+      <li><a href="products.html" class="active"><i class="fas fa-shopping-bag"></i><br>Products</a></li>
+      <li class="auth-link">
+        <a href="cart.html" class="mobile-cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="mobile-cart-badge">0</span>
+          <br>Cart
+        </a>
+      </li>
+      <li><a href="user-dashboard.html" class="auth-link"><i class="fas fa-user"></i><br>Dashboard</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i><br>About</a></li>
+      <li><a href="contact.html"><i class="fas fa-phone"></i><br>Contact</a></li>
+    </ul>
+  </nav>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/discount.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    if (!productId) {
+      window.location.href = 'products.html';
+    }
+
+    async function loadProduct() {
+      try {
+        const response = await api.getProduct(productId);
+        const product = response.product;
+        const container = document.getElementById('product-details');
+
+        container.innerHTML = `
+          <div style="position: relative;">
+            ${getDiscountBadge(product.discount || 0)}
+            <img src="${product.images[0] || 'https://via.placeholder.com/500'}" 
+                 alt="${product.name}" 
+                 style="width: 100%; border-radius: 10px; box-shadow: var(--shadow);">
+            
+            <!-- Image Gallery Thumbnails -->
+            ${product.images.length > 1 ? `
+              <div style="display: flex; gap: 0.5rem; margin-top: 1rem; overflow-x: auto;">
+                ${product.images.map((img, idx) => `
+                  <img src="${img}" alt="${product.name}" 
+                       style="width: 80px; height: 80px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid ${idx === 0 ? 'var(--primary-orange)' : 'transparent'};"
+                       onclick="changeMainImage('${img}', this)">
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+          <div>
+            <div class="product-id" style="font-size: 1rem;">${product.productId}</div>
+            <h1 style="margin: 1rem 0;">${product.name}</h1>
+            
+            <!-- Rating Display -->
+            <div style="display: flex; align-items: center; gap: 1rem; margin: 1rem 0;">
+              <div style="color: #FF6B3D; font-size: 1.25rem;">
+                ${'★'.repeat(Math.round(product.averageRating || 0))}${'☆'.repeat(5 - Math.round(product.averageRating || 0))}
+              </div>
+              <span style="color: var(--gray-600);">${product.averageRating ? product.averageRating.toFixed(1) : '0.0'} (${product.reviewCount || 0} reviews)</span>
+            </div>
+            
+            <p style="color: var(--gray-dark); font-size: 1.125rem;">
+              <i class="fas fa-tag"></i> ${product.category} | <i class="fas fa-bolt"></i> ${product.wattage}W
+            </p>
+            <div style="margin: 1.5rem 0;">
+              ${getPriceDisplay(product.price, product.discount || 0)}
+            </div>
+            
+            <!-- Stock Status -->
+            <div style="background: ${product.stock > 10 ? '#d4edda' : product.stock > 0 ? '#fff3cd' : '#f8d7da'}; 
+                        padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid ${product.stock > 10 ? '#28a745' : product.stock > 0 ? '#ffc107' : '#dc3545'};">
+              <strong><i class="fas fa-box"></i> Stock Status:</strong> 
+              <span style="color: ${product.stock > 10 ? '#28a745' : product.stock > 0 ? '#ffc107' : '#dc3545'}; font-weight: 600;">
+                ${product.stock > 10 ? `${product.stock} available` : product.stock > 0 ? `Only ${product.stock} left - Order soon!` : 'Out of stock'}
+              </span>
+            </div>
+            
+            <!-- Description -->
+            <div style="background: var(--gray-light); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+              <h3 style="margin-top: 0;"><i class="fas fa-info-circle"></i> Description</h3>
+              <p style="line-height: 1.8; margin: 0;">
+                ${product.description}
+              </p>
+            </div>
+            
+            <!-- Specifications -->
+            <div style="background: var(--gray-light); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+              <h3 style="margin-top: 0;"><i class="fas fa-list"></i> Specifications</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid var(--gray-300);">
+                  <td style="padding: 0.75rem 0; font-weight: 600;"><i class="fas fa-barcode"></i> Product ID</td>
+                  <td style="padding: 0.75rem 0;">${product.productId}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--gray-300);">
+                  <td style="padding: 0.75rem 0; font-weight: 600;"><i class="fas fa-tag"></i> Category</td>
+                  <td style="padding: 0.75rem 0;">${product.category}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--gray-300);">
+                  <td style="padding: 0.75rem 0; font-weight: 600;"><i class="fas fa-bolt"></i> Wattage</td>
+                  <td style="padding: 0.75rem 0;">${product.wattage}W</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--gray-300);">
+                  <td style="padding: 0.75rem 0; font-weight: 600;"><i class="fas fa-box"></i> Stock</td>
+                  <td style="padding: 0.75rem 0;">${product.stock} units</td>
+                </tr>
+                ${product.discount > 0 ? `
+                <tr>
+                  <td style="padding: 0.75rem 0; font-weight: 600;"><i class="fas fa-percent"></i> Discount</td>
+                  <td style="padding: 0.75rem 0; color: var(--primary-orange); font-weight: 600;">${product.discount}% OFF</td>
+                </tr>
+                ` : ''}
+              </table>
+            </div>
+            
+            <!-- Add to Cart Section -->
+            ${product.stock > 0 ? `
+              <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-top: 2rem;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;"><i class="fas fa-shopping-cart"></i> Quantity:</label>
+                    <input type="number" id="quantity" value="1" min="1" max="${product.stock}" 
+                           style="width: 100px; padding: 0.75rem; border: 2px solid var(--gray-medium); border-radius: 5px; font-size: 1rem;">
+                  </div>
+                  <button class="btn" onclick="addToCart()" style="flex: 1; padding: 1rem; font-size: 1.1rem;">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                  </button>
+                  <button class="btn btn-secondary" onclick="addToWishlist()" style="padding: 1rem;">
+                    <i class="fas fa-heart"></i>
+                  </button>
+                </div>
+              </div>
+            ` : '<div style="background: #f8d7da; padding: 1.5rem; border-radius: 10px; text-align: center; margin-top: 2rem;"><p style="color: #721c24; font-weight: bold; margin: 0;"><i class="fas fa-exclamation-triangle"></i> Out of Stock</p></div>'}
+            
+            <!-- Features -->
+            <div style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white;">
+              <h3 style="margin-top: 0;"><i class="fas fa-check-circle"></i> Why Choose This Product?</h3>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> High Quality Materials</li>
+                <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> Energy Efficient</li>
+                <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> Long Lasting Performance</li>
+                <li style="padding: 0.5rem 0;"><i class="fas fa-check"></i> Warranty Included</li>
+              </ul>
+            </div>
+          </div>
+        `;
+        
+        // Load related products
+        loadRelatedProducts(product.category);
+      } catch (error) {
+        console.error('Failed to load product:', error);
+        document.getElementById('product-details').innerHTML = 
+          '<p class="text-center">Failed to load product details</p>';
+      }
+    }
+
+    function changeMainImage(imgSrc, element) {
+      const mainImg = document.querySelector('#product-details img');
+      mainImg.src = imgSrc;
+      
+      // Update border on thumbnails
+      document.querySelectorAll('#product-details img[onclick]').forEach(img => {
+        img.style.border = '2px solid transparent';
+      });
+      element.style.border = '2px solid var(--primary-orange)';
+    }
+
+    async function addToWishlist() {
+      const state = stateManager.getState();
+      if (!state.isAuthenticated) {
+        Modal.confirm('Please login to add items to wishlist. Go to login page?', () => {
+          window.location.href = 'login.html';
+        });
+        return;
+      }
+
+      try {
+        await api.addToWishlist(productId);
+        showAlert('Product added to wishlist!', 'success');
+      } catch (error) {
+        showAlert('Failed to add to wishlist: ' + error.message, 'error');
+      }
+    }
+
+    async function loadRelatedProducts(category) {
+      try {
+        const response = await api.getProducts({ category, limit: 4 });
+        const relatedProducts = response.products.filter(p => p._id !== productId).slice(0, 4);
+        
+        if (relatedProducts.length > 0) {
+          const relatedSection = document.createElement('div');
+          relatedSection.style.cssText = 'margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--gray-200);';
+          relatedSection.innerHTML = `
+            <h2 style="margin-bottom: 2rem;"><i class="fas fa-lightbulb"></i> Related Products</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem;">
+              ${relatedProducts.map(p => `
+                <a href="product-details.html?id=${p._id}" style="text-decoration: none; color: inherit;">
+                  <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.3s; cursor: pointer;" 
+                       onmouseover="this.style.transform='translateY(-5px)'" 
+                       onmouseout="this.style.transform='translateY(0)'">
+                    <img src="${p.images[0] || 'https://via.placeholder.com/200'}" 
+                         alt="${p.name}" 
+                         style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 1rem;">
+                      <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem;">${p.name}</h4>
+                      <p style="color: var(--primary-orange); font-weight: 600; margin: 0;">${formatPrice(p.price)}</p>
+                    </div>
+                  </div>
+                </a>
+              `).join('')}
+            </div>
+          `;
+          document.getElementById('reviews-section').before(relatedSection);
+        }
+      } catch (error) {
+        console.error('Failed to load related products:', error);
+      }
+    }
+
+    async function addToCart() {
+      const state = stateManager.getState();
+      if (!state.isAuthenticated) {
+        Modal.confirm('Please login to add items to cart. Go to login page?', () => {
+          window.location.href = 'login.html';
+        });
+        return;
+      }
+
+      const quantity = parseInt(document.getElementById('quantity').value);
+      
+      try {
+        console.log('Adding to cart:', productId, quantity);
+        await stateManager.addToCart(productId, quantity);
+        console.log('Added successfully, cart count:', stateManager.getCartCount());
+        showAlert('Product added to cart!', 'success');
+        // Update cart badge
+        updateCartBadge();
+      } catch (error) {
+        console.error('Add to cart error:', error);
+        showAlert('Failed to add to cart: ' + error.message, 'error');
+      }
+    }
+
+    function updateCartBadge() {
+      const badge = document.querySelector('.cart-badge');
+      if (badge) {
+        const count = stateManager.getCartCount();
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+      }
+    }
+
+    function showAlert(message, type) {
+      Modal.show({ type, message });
+    }
+
+    // Reviews functionality
+    let currentPage = 1;
+    let selectedRating = 0;
+
+    // Star rating interaction
+    document.addEventListener('DOMContentLoaded', () => {
+      const stars = document.querySelectorAll('#star-rating i');
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          selectedRating = parseInt(this.dataset.rating);
+          document.getElementById('rating-input').value = selectedRating;
+          updateStarDisplay(selectedRating);
+        });
+        
+        star.addEventListener('mouseenter', function() {
+          const rating = parseInt(this.dataset.rating);
+          updateStarDisplay(rating);
+        });
+      });
+
+      document.getElementById('star-rating').addEventListener('mouseleave', () => {
+        updateStarDisplay(selectedRating);
+      });
+    });
+
+    function updateStarDisplay(rating) {
+      const stars = document.querySelectorAll('#star-rating i');
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.classList.remove('far');
+          star.classList.add('fas');
+          star.style.color = '#FF6B3D';
+        } else {
+          star.classList.remove('fas');
+          star.classList.add('far');
+          star.style.color = '#ccc';
+        }
+      });
+    }
+
+    function showReviewForm() {
+      document.getElementById('review-form-container').style.display = 'block';
+      document.getElementById('write-review-btn-container').style.display = 'none';
+      document.getElementById('review-form-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function hideReviewForm() {
+      document.getElementById('review-form-container').style.display = 'none';
+      document.getElementById('write-review-btn-container').style.display = 'block';
+      document.getElementById('review-form').reset();
+      selectedRating = 0;
+      updateStarDisplay(0);
+    }
+
+    async function submitReview(event) {
+      event.preventDefault();
+
+      const rating = parseInt(document.getElementById('rating-input').value);
+      const title = document.getElementById('review-title').value;
+      const comment = document.getElementById('review-comment').value;
+
+      if (!rating) {
+        Modal.error('Please select a rating');
+        return;
+      }
+
+      try {
+        await api.createReview({
+          productId,
+          rating,
+          title,
+          comment
+        });
+
+        Modal.success('Review submitted successfully!');
+        hideReviewForm();
+        loadReviews(); // Reload reviews
+      } catch (error) {
+        Modal.error(error.message || 'Failed to submit review');
+      }
+    }
+
+    async function loadReviews() {
+      try {
+        const response = await api.getProductReviews(productId, {
+          page: currentPage,
+          limit: 5
+        });
+
+        // Show reviews section
+        document.getElementById('reviews-section').style.display = 'block';
+
+        // Display rating summary
+        displayRatingSummary(response);
+
+        // Display reviews
+        displayReviews(response.reviews, currentPage === 1);
+
+        // Show/hide load more button
+        const loadMoreContainer = document.getElementById('load-more-container');
+        if (response.currentPage < response.pages) {
+          loadMoreContainer.style.display = 'block';
+        } else {
+          loadMoreContainer.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Failed to load reviews:', error);
+      }
+    }
+
+    function displayRatingSummary(data) {
+      const { total, ratingStats } = data;
+      
+      if (total === 0) {
+        document.getElementById('rating-summary').innerHTML = `
+          <p style="text-align: center; color: var(--gray-600);">No reviews yet. Be the first to review this product!</p>
+        `;
+        return;
+      }
+
+      // Calculate average rating
+      let totalRating = 0;
+      let totalCount = 0;
+      for (let rating in ratingStats) {
+        totalRating += parseInt(rating) * ratingStats[rating];
+        totalCount += ratingStats[rating];
+      }
+      const avgRating = (totalRating / totalCount).toFixed(1);
+
+      // Generate rating bars
+      let ratingBars = '';
+      for (let i = 5; i >= 1; i--) {
+        const count = ratingStats[i] || 0;
+        const percentage = totalCount > 0 ? (count / totalCount * 100).toFixed(0) : 0;
+        ratingBars += `
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <span style="width: 60px;">${i} stars</span>
+            <div style="flex: 1; height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+              <div style="width: ${percentage}%; height: 100%; background: var(--primary-orange);"></div>
+            </div>
+            <span style="width: 50px; text-align: right; color: var(--gray-600);">${count}</span>
+          </div>
+        `;
+      }
+
+      document.getElementById('rating-summary').innerHTML = `
+        <div style="display: grid; grid-template-columns: auto 1fr; gap: 3rem; align-items: start;">
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; font-weight: 700; color: var(--primary-orange);">${avgRating}</div>
+            <div style="color: #FF6B3D; font-size: 1.5rem; margin: 0.5rem 0;">
+              ${'★'.repeat(Math.round(avgRating))}${'☆'.repeat(5 - Math.round(avgRating))}
+            </div>
+            <div style="color: var(--gray-600);">${total} review${total !== 1 ? 's' : ''}</div>
+          </div>
+          <div>
+            ${ratingBars}
+          </div>
+        </div>
+      `;
+    }
+
+    function displayReviews(reviews, clearFirst = false) {
+      const container = document.getElementById('reviews-list');
+      
+      if (clearFirst) {
+        container.innerHTML = '';
+      }
+
+      if (reviews.length === 0 && clearFirst) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray-600);">No reviews yet.</p>';
+        return;
+      }
+
+      reviews.forEach(review => {
+        const reviewCard = document.createElement('div');
+        reviewCard.style.cssText = 'background: var(--primary-white); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; border-left: 4px solid var(--primary-orange);';
+        
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+        const date = new Date(review.createdAt).toLocaleDateString();
+        
+        reviewCard.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <div>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.25rem;">
+                ${review.user.name}
+                ${review.verified ? '<span style="color: var(--success); font-size: 0.9rem; margin-left: 0.5rem;"><i class="fas fa-check-circle"></i> Verified Purchase</span>' : ''}
+              </div>
+              <div style="color: #FF6B3D; font-size: 1.25rem; margin-bottom: 0.25rem;">${stars}</div>
+              <div style="color: var(--gray-600); font-size: 0.9rem;">${date}</div>
+            </div>
+          </div>
+          <h4 style="margin-bottom: 0.5rem; font-size: 1.1rem;">${review.title}</h4>
+          <p style="color: var(--gray-700); line-height: 1.6; margin-bottom: 1rem;">${review.comment}</p>
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <button onclick="markHelpful('${review._id}')" style="background: none; border: 1px solid var(--gray-300); padding: 0.5rem 1rem; border-radius: var(--radius); cursor: pointer; color: var(--gray-700); transition: var(--transition);">
+              <i class="fas fa-thumbs-up"></i> Helpful (${review.helpful})
+            </button>
+          </div>
+        `;
+        
+        container.appendChild(reviewCard);
+      });
+    }
+
+    async function loadMoreReviews() {
+      currentPage++;
+      await loadReviews();
+    }
+
+    async function markHelpful(reviewId) {
+      try {
+        await api.markReviewHelpful(reviewId);
+        loadReviews(); // Reload to show updated count
+      } catch (error) {
+        console.error('Failed to mark as helpful:', error);
+      }
+    }
+
+    loadProduct();
+    loadReviews();
+  </script>
+</body>
+</html>

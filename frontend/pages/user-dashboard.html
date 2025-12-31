@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .dashboard-header {
+      background: linear-gradient(135deg, #FF6B3D 0%, #FF8C42 50%, #FFA500 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Mobile Hamburger Menu */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 1rem;
+      z-index: 1001;
+      width: 50px;
+      height: 50px;
+      background: var(--primary-orange);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+    }
+    
+    .mobile-menu-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    .mobile-menu-toggle.active {
+      background: var(--primary-orange-dark);
+    }
+    
+    .mobile-dashboard-sidebar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 280px;
+      height: 100vh;
+      background: white;
+      box-shadow: var(--shadow-xl);
+      z-index: 1000;
+      transition: left 0.3s ease;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    
+    .mobile-dashboard-sidebar.active {
+      left: 0;
+    }
+    
+    .mobile-sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 2px solid var(--gray-200);
+      margin-bottom: 1rem;
+    }
+    
+    .mobile-sidebar-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--gray-600);
+      cursor: pointer;
+    }
+    
+    .mobile-sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .mobile-sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .mobile-sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      text-decoration: none;
+      color: var(--gray-dark);
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+    
+    .mobile-sidebar-menu a:hover {
+      background: var(--gray-100);
+    }
+    
+    .mobile-sidebar-menu a.active {
+      background: var(--primary-orange);
+      color: white;
+    }
+    
+    .mobile-sidebar-menu i {
+      font-size: 1.25rem;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .mobile-menu-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    
+    .mobile-menu-overlay.active {
+      display: block;
+    }
+    
+    .mobile-dashboard-menu {
+      display: none;
+      position: fixed;
+      bottom: 70px;
+      left: 0;
+      right: 0;
+      background: white;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 999;
+      overflow-x: auto;
+    }
+    .mobile-dashboard-menu ul {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .mobile-dashboard-menu li {
+      flex: 1;
+      min-width: 100px;
+    }
+    .mobile-dashboard-menu a {
+      display: block;
+      padding: 1rem;
+      text-align: center;
+      text-decoration: none;
+      color: var(--gray-dark);
+      border-bottom: 3px solid transparent;
+    }
+    .mobile-dashboard-menu a.active {
+      color: var(--primary-orange);
+      border-bottom-color: var(--primary-orange);
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .dashboard {
+        grid-template-columns: 1fr !important;
+      }
+      .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mobile-dashboard-sidebar {
+        display: block;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar will be loaded by navbar-loader.js -->
+
+  <!-- Dashboard Mobile Menu Toggle Button -->
+  <button class="mobile-menu-toggle" onclick="toggleDashboardSidebar()" id="mobile-dashboard-btn">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Dashboard Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" onclick="closeDashboardSidebar()" id="dashboard-overlay"></div>
+
+  <!-- Mobile Dashboard Sidebar -->
+  <div class="mobile-dashboard-sidebar" id="mobile-dashboard-sidebar">
+    <div class="mobile-sidebar-header">
+      <h3 style="margin: 0;"><i class="fas fa-th-large"></i> Dashboard</h3>
+      <button class="mobile-sidebar-close" onclick="closeDashboardSidebar()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <ul class="mobile-sidebar-menu">
+      <li>
+        <a href="#" onclick="showSection('overview', event); closeDashboardSidebar();" id="mobile-sidebar-overview" class="active">
+          <i class="fas fa-home"></i>
+          <span>Overview</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="showSection('profile', event); closeDashboardSidebar();" id="mobile-sidebar-profile">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="showSection('orders', event); closeDashboardSidebar();" id="mobile-sidebar-orders">
+          <i class="fas fa-shopping-bag"></i>
+          <span>My Orders</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="showSection('wishlist', event); closeDashboardSidebar();" id="mobile-sidebar-wishlist">
+          <i class="fas fa-heart"></i>
+          <span>Wishlist</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="showSection('feedback', event); closeDashboardSidebar();" id="mobile-sidebar-feedback">
+          <i class="fas fa-comment"></i>
+          <span>Feedback</span>
+        </a>
+      </li>
+      <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
+        <a href="#" onclick="handleLogout(event)" style="color: #ef4444; font-weight: 600;">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <!-- Welcome Header -->
+    <div class="dashboard-header">
+      <h1 style="margin: 0 0 0.5rem 0;" id="welcome-header">
+        <i class="fas fa-user-circle"></i> <span id="welcome-text">Welcome</span>, <span id="user-name">User</span>!
+      </h1>
+      <p style="margin: 0; opacity: 0.9;">Manage your orders, profile, and preferences</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card" style="border-top: 4px solid #FF6B3D;">
+        <div class="stat-icon" style="color: #FF6B3D;"><i class="fas fa-shopping-bag"></i></div>
+        <h3 id="total-orders" style="margin: 0.5rem 0; font-size: 2rem;">0</h3>
+        <p style="margin: 0; color: var(--gray-600);">Total Orders</p>
+      </div>
+      <div class="stat-card" style="border-top: 4px solid #28a745;">
+        <div class="stat-icon" style="color: #28a745;"><i class="fas fa-check-circle"></i></div>
+        <h3 id="completed-orders" style="margin: 0.5rem 0; font-size: 2rem;">0</h3>
+        <p style="margin: 0; color: var(--gray-600);">Completed</p>
+      </div>
+      <div class="stat-card" style="border-top: 4px solid #ffc107;">
+        <div class="stat-icon" style="color: #ffc107;"><i class="fas fa-clock"></i></div>
+        <h3 id="pending-orders" style="margin: 0.5rem 0; font-size: 2rem;">0</h3>
+        <p style="margin: 0; color: var(--gray-600);">Pending</p>
+      </div>
+      <div class="stat-card" style="border-top: 4px solid #17a2b8;">
+        <div class="stat-icon" style="color: #17a2b8; font-weight: 700;">₵</div>
+        <h3 id="total-spent" style="margin: 0.5rem 0; font-size: 2rem;">GH₵ 0</h3>
+        <p style="margin: 0; color: var(--gray-600);">Total Spent</p>
+      </div>
+    </div>
+
+    <div class="dashboard">
+      <aside class="sidebar">
+        <ul class="sidebar-menu">
+          <li><a href="#" onclick="showSection('overview', event)" class="active" id="menu-overview"><i class="fas fa-home"></i> Overview</a></li>
+          <li><a href="#" onclick="showSection('profile', event)" id="menu-profile"><i class="fas fa-user"></i> Profile</a></li>
+          <li><a href="#" onclick="showSection('orders', event)" id="menu-orders"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+          <li><a href="#" onclick="showSection('wishlist', event)" id="menu-wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
+          <li><a href="#" onclick="showSection('feedback', event)" id="menu-feedback"><i class="fas fa-comment"></i> Feedback</a></li>
+          <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
+            <a href="#" onclick="handleLogout(event)" style="color: #ef4444; font-weight: 600;">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="dashboard-content">
+        <div id="alert-container"></div>
+
+        <!-- Overview Section -->
+        <section id="overview-section">
+          <h2><i class="fas fa-chart-line"></i> Dashboard Overview</h2>
+          
+          <!-- Recent Orders -->
+          <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-top: 1.5rem;">
+            <h3 style="margin-top: 0;"><i class="fas fa-history"></i> Recent Orders</h3>
+            <div id="recent-orders">
+              <div class="loading"><div class="spinner"></div></div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div style="margin-top: 1.5rem;">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+              <a href="products.html" class="btn" style="text-align: center; text-decoration: none;">
+                <i class="fas fa-shopping-bag"></i> Browse Products
+              </a>
+              <a href="cart.html" class="btn btn-secondary" style="text-align: center; text-decoration: none;">
+                <i class="fas fa-shopping-cart"></i> View Cart
+              </a>
+              <a href="wishlist.html" class="btn btn-secondary" style="text-align: center; text-decoration: none;">
+                <i class="fas fa-heart"></i> My Wishlist
+              </a>
+              <button onclick="showSection('feedback', event)" class="btn btn-secondary">
+                <i class="fas fa-comment"></i> Send Feedback
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile-section" style="display:none;">
+          <h2><i class="fas fa-user"></i> My Profile</h2>
+          <div id="profile-info" class="mt-2"></div>
+          
+          <h3 class="mt-3"><i class="fas fa-key"></i> Change Password</h3>
+          <form id="password-form" style="max-width: 500px;">
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" id="current-password" required>
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" id="new-password" required minlength="8">
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Update Password</button>
+          </form>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders-section" style="display:none;">
+          <h2><i class="fas fa-shopping-bag"></i> My Orders</h2>
+          
+          <!-- Order Filters -->
+          <div style="margin: 1.5rem 0; display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="filterOrders('all')" id="filter-all">All Orders</button>
+            <button class="btn btn-secondary" onclick="filterOrders('pending')" id="filter-pending">Pending</button>
+            <button class="btn btn-secondary" onclick="filterOrders('processing')" id="filter-processing">Processing</button>
+            <button class="btn btn-secondary" onclick="filterOrders('shipped')" id="filter-shipped">Shipped</button>
+            <button class="btn btn-secondary" onclick="filterOrders('delivered')" id="filter-delivered">Delivered</button>
+          </div>
+
+          <div id="orders-container" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <!-- Wishlist Section -->
+        <section id="wishlist-section" style="display:none;">
+          <h2><i class="fas fa-heart"></i> My Wishlist</h2>
+          <div id="wishlist-container" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <!-- Feedback Section -->
+        <section id="feedback-section" style="display:none;">
+          <h2><i class="fas fa-comment"></i> Feedback</h2>
+          
+          <form id="feedback-form" class="mt-2" style="max-width: 600px;">
+            <div class="form-group">
+              <label>Your Message</label>
+              <textarea id="feedback-message" rows="4" required placeholder="Share your thoughts, suggestions, or concerns..."></textarea>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Submit Feedback</button>
+          </form>
+
+          <h3 class="mt-3"><i class="fas fa-history"></i> My Feedback History</h3>
+          <div id="feedback-container" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile Dashboard Menu -->
+  <div class="mobile-dashboard-menu">
+    <ul>
+      <li><a href="#" onclick="showSection('overview', event)" id="mobile-menu-overview" class="active"><i class="fas fa-home"></i><br>Overview</a></li>
+      <li><a href="#" onclick="showSection('profile', event)" id="mobile-menu-profile"><i class="fas fa-user"></i><br>Profile</a></li>
+      <li><a href="#" onclick="showSection('orders', event)" id="mobile-menu-orders"><i class="fas fa-shopping-bag"></i><br>Orders</a></li>
+      <li><a href="#" onclick="showSection('wishlist', event)" id="mobile-menu-wishlist"><i class="fas fa-heart"></i><br>Wishlist</a></li>
+      <li><a href="#" onclick="showSection('feedback', event)" id="mobile-menu-feedback"><i class="fas fa-comment"></i><br>Feedback</a></li>
+    </ul>
+  </div>
+
+  <nav class="mobile-nav">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html"><i class="fas fa-home"></i><br>Home</a></li>
+      <li><a href="products.html"><i class="fas fa-shopping-bag"></i><br>Products</a></li>
+      <li>
+        <a href="cart.html" class="mobile-cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="mobile-cart-badge">0</span>
+          <br>Cart
+        </a>
+      </li>
+      <li><a href="user-dashboard.html" class="active"><i class="fas fa-user"></i><br>Dashboard</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i><br>About</a></li>
+      <li><a href="contact.html"><i class="fas fa-phone"></i><br>Contact</a></li>
+    </ul>
+  </nav>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/navbar-loader.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script>
+    let allOrders = [];    let 
+currentFilter = 'all';
+
+    // Tab switching function
+    function showSection(section, event) {
+      // Prevent default link behavior
+      if (event) {
+        event.preventDefault();
+      }
+      
+      // Hide all sections
+      document.querySelectorAll('.dashboard-content section').forEach(s => {
+        s.style.display = 'none';
+      });
+      
+      // Show selected section
+      document.getElementById(`${section}-section`).style.display = 'block';
+
+      // Hide/show dashboard header and stats based on section
+      const dashboardHeader = document.querySelector('.dashboard-header');
+      const statsGrid = document.querySelector('.stats-grid');
+      
+      if (section === 'overview') {
+        // Show header and stats for overview
+        if (dashboardHeader) dashboardHeader.style.display = 'block';
+        if (statsGrid) statsGrid.style.display = 'grid';
+      } else {
+        // Hide header and stats for other sections
+        if (dashboardHeader) dashboardHeader.style.display = 'none';
+        if (statsGrid) statsGrid.style.display = 'none';
+      }
+
+      // Update desktop menu active state
+      document.querySelectorAll('.sidebar-menu a').forEach(a => {
+        a.classList.remove('active');
+      });
+      document.getElementById(`menu-${section}`)?.classList.add('active');
+
+      // Update mobile menu active state
+      document.querySelectorAll('.mobile-dashboard-menu a').forEach(a => {
+        a.classList.remove('active');
+      });
+      document.getElementById(`mobile-menu-${section}`)?.classList.add('active');
+
+      // Update mobile sidebar active state
+      document.querySelectorAll('.mobile-sidebar-menu a').forEach(a => {
+        a.classList.remove('active');
+      });
+      document.getElementById(`mobile-sidebar-${section}`)?.classList.add('active');
+
+      // Scroll to top of dashboard content (works on both mobile and desktop)
+      // This ensures users see the selected section immediately without scrolling
+      const container = document.querySelector('.container');
+      if (container) {
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        // Fallback: scroll to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Load section data
+      if (section === 'profile') loadProfile();
+      if (section === 'orders') loadOrders();
+      if (section === 'wishlist') loadWishlist();
+      if (section === 'feedback') loadFeedback();
+    }
+
+    // Dashboard mobile sidebar toggle functions (separate from navbar mobile menu)
+    function toggleDashboardSidebar() {
+      const sidebar = document.getElementById('mobile-dashboard-sidebar');
+      const overlay = document.getElementById('dashboard-overlay');
+      const btn = document.getElementById('mobile-dashboard-btn');
+      
+      if (sidebar && overlay && btn) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        btn.classList.toggle('active');
+        
+        // Change icon
+        const icon = btn.querySelector('i');
+        if (sidebar.classList.contains('active')) {
+          icon.className = 'fas fa-times';
+        } else {
+          icon.className = 'fas fa-bars';
+        }
+      }
+    }
+
+    function closeDashboardSidebar() {
+      const sidebar = document.getElementById('mobile-dashboard-sidebar');
+      const overlay = document.getElementById('dashboard-overlay');
+      const btn = document.getElementById('mobile-dashboard-btn');
+      
+      if (sidebar && overlay && btn) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        btn.classList.remove('active');
+        
+        // Reset icon
+        const icon = btn.querySelector('i');
+        if (icon) {
+          icon.className = 'fas fa-bars';
+        }
+      }
+    }
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!requireAuth()) return;
+      
+      await stateManager.loadUser();
+      const state = stateManager.getState();
+      
+      if (state.user) {
+        document.getElementById('user-name').textContent = state.user.name;
+        
+        // Check if user is new (created within last 24 hours)
+        const userCreatedAt = new Date(state.user.createdAt);
+        const now = new Date();
+        const hoursSinceCreation = (now - userCreatedAt) / (1000 * 60 * 60);
+        
+        // Show "Welcome" for new users (less than 24 hours), "Welcome back" for returning users
+        const welcomeText = document.getElementById('welcome-text');
+        if (hoursSinceCreation < 24) {
+          welcomeText.textContent = 'Welcome';
+        } else {
+          welcomeText.textContent = 'Welcome back';
+        }
+        
+        loadDashboardStats();
+        loadRecentOrders();
+      }
+    });
+
+    async function loadDashboardStats() {
+      try {
+        const ordersResponse = await api.getUserOrders();
+        const orders = ordersResponse.orders || [];
+        
+        const totalOrders = orders.length;
+        // Count completed orders (completed, shipped, or delivered status)
+        const completedOrders = orders.filter(o => 
+          o.status === 'completed' || o.status === 'shipped' || o.status === 'delivered'
+        ).length;
+        const pendingOrders = orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
+        // Calculate total spent from completed orders only (not cancelled or pending)
+        const totalSpent = orders
+          .filter(o => o.status === 'completed' || o.status === 'shipped' || o.status === 'delivered')
+          .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+
+        document.getElementById('total-orders').textContent = totalOrders.toLocaleString();
+        document.getElementById('completed-orders').textContent = completedOrders.toLocaleString();
+        document.getElementById('pending-orders').textContent = pendingOrders.toLocaleString();
+        document.getElementById('total-spent').textContent = formatPrice(totalSpent);
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+        // Set default values on error
+        document.getElementById('total-orders').textContent = '0';
+        document.getElementById('completed-orders').textContent = '0';
+        document.getElementById('pending-orders').textContent = '0';
+        document.getElementById('total-spent').textContent = formatPrice(0);
+      }
+    }
+
+    async function loadRecentOrders() {
+      try {
+        const response = await api.getUserOrders();
+        const orders = response.orders || [];
+        const recentOrders = orders.slice(0, 5);
+        
+        const container = document.getElementById('recent-orders');
+        
+        if (recentOrders.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No orders yet. <a href="products.html">Start shopping!</a></p>';
+          return;
+        }
+
+        container.innerHTML = recentOrders.map(order => `
+          <div style="border-bottom: 1px solid var(--gray-200); padding: 1rem 0;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+              <div>
+                <strong>Order #${order._id.slice(-8)}</strong>
+                <p style="margin: 0.25rem 0; color: var(--gray-600); font-size: 0.9rem;">
+                  ${new Date(order.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <span class="status-badge ${order.status}">${order.status}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--gray-700);">${order.items.length} item(s)</span>
+              <strong style="color: var(--primary-orange);">${formatPrice(order.totalAmount || 0)}</strong>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load recent orders:', error);
+        // Show friendly message for empty orders
+        document.getElementById('recent-orders').innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders yet. Start shopping to see your orders here!</p>';
+      }
+    }
+
+    async function loadProfile() {
+      const state = stateManager.getState();
+      const user = state.user;
+      
+      if (!user) return;
+
+      const memberSince = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-GB', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }) : 'N/A';
+
+      document.getElementById('profile-info').innerHTML = `
+        <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: var(--shadow-md);">
+          <div style="display: grid; gap: 1rem;">
+            <div>
+              <label style="font-weight: 600; color: var(--gray-700);">Name</label>
+              <p style="margin: 0.5rem 0; font-size: 1.1rem;">${user.name || 'N/A'}</p>
+            </div>
+            <div>
+              <label style="font-weight: 600; color: var(--gray-700);">Email</label>
+              <p style="margin: 0.5rem 0; font-size: 1.1rem;">${user.email || 'N/A'}</p>
+            </div>
+            <div>
+              <label style="font-weight: 600; color: var(--gray-700);">Account Type</label>
+              <p style="margin: 0.5rem 0; font-size: 1.1rem; text-transform: capitalize;">${user.role || 'user'}</p>
+            </div>
+            <div>
+              <label style="font-weight: 600; color: var(--gray-700);">Member Since</label>
+              <p style="margin: 0.5rem 0; font-size: 1.1rem;">${memberSince}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('password-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword = document.getElementById('new-password').value;
+
+      try {
+        await api.updatePassword({ currentPassword, newPassword });
+        toast.success('Password updated successfully!');
+        e.target.reset();
+      } catch (error) {
+        toast.error(error.message || 'Failed to update password');
+      }
+    });
+
+    async function loadOrders() {
+      try {
+        const response = await api.getUserOrders();
+        allOrders = response.orders || [];
+        displayOrders(allOrders);
+      } catch (error) {
+        console.error('Failed to load orders:', error);
+        document.getElementById('orders-container').innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders available yet</p>';
+      }
+    }
+
+    function filterOrders(status) {
+      currentFilter = status;
+      
+      // Update filter button states
+      document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+        btn.classList.remove('btn');
+        btn.classList.add('btn-secondary');
+      });
+      document.getElementById(`filter-${status}`).classList.remove('btn-secondary');
+      document.getElementById(`filter-${status}`).classList.add('btn');
+
+      const filtered = status === 'all' 
+        ? allOrders 
+        : allOrders.filter(order => order.status === status);
+      
+      displayOrders(filtered);
+    }
+
+    function displayOrders(orders) {
+      const container = document.getElementById('orders-container');
+      
+      if (orders.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No orders found.</p>';
+        return;
+      }
+
+      container.innerHTML = orders.map(order => `
+        <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h3 style="margin: 0 0 0.5rem 0;">Order #${order._id.slice(-8)}</h3>
+              <p style="margin: 0; color: var(--gray-600);">
+                <i class="fas fa-calendar"></i> ${new Date(order.createdAt).toLocaleDateString()} at ${new Date(order.createdAt).toLocaleTimeString()}
+              </p>
+            </div>
+            <span class="status-badge ${order.status}">${order.status}</span>
+          </div>
+          
+          <div style="border-top: 1px solid var(--gray-200); padding-top: 1rem; margin-top: 1rem;">
+            <h4 style="margin: 0 0 1rem 0;">Items (${order.items.length})</h4>
+            ${order.items.map(item => `
+              <div style="display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-100);">
+                <img src="${item.product?.images?.[0] || 'https://via.placeholder.com/80'}" 
+                     alt="${item.product?.name || 'Product'}" 
+                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                <div style="flex: 1;">
+                  <h5 style="margin: 0 0 0.5rem 0;">${item.product?.name || 'Product'}</h5>
+                  <p style="margin: 0; color: var(--gray-600);">Quantity: ${item.quantity}</p>
+                  <p style="margin: 0.25rem 0 0 0; color: var(--primary-orange); font-weight: 600;">${formatPrice(item.price || 0)} each</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--gray-200);">
+            <div>
+              <p style="margin: 0; color: var(--gray-600);"><i class="fas fa-credit-card"></i> ${order.paymentMethod || 'N/A'}</p>
+              <p style="margin: 0.25rem 0 0 0; color: var(--gray-600); font-size: 0.9rem;"><i class="fas fa-truck"></i> ${order.shippingAddress || 'N/A'}</p>
+              ${order.refundStatus === 'processed' ? `
+                <p style="margin: 0.5rem 0 0 0; color: #10b981; font-weight: 600; font-size: 0.95rem;">
+                  <i class="fas fa-check-circle"></i> Refund Processed on ${new Date(order.refundedAt).toLocaleDateString()}
+                </p>
+              ` : order.status === 'cancelled' && order.refundStatus !== 'processed' ? `
+                <p style="margin: 0.5rem 0 0 0; color: #f59e0b; font-weight: 600; font-size: 0.95rem;">
+                  <i class="fas fa-clock"></i> Refund Pending - Admin will process soon
+                </p>
+              ` : ''}
+            </div>
+            <div style="text-align: right;">
+              <p style="margin: 0; color: var(--gray-600);">Total</p>
+              <p style="margin: 0.25rem 0 0 0; font-size: 1.5rem; font-weight: 700; color: var(--primary-orange);">${formatPrice(order.totalAmount || 0)}</p>
+            </div>
+          </div>
+          
+          ${order.status === 'pending' ? `
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+              <button onclick="cancelUserOrder('${order._id}')" class="btn btn-secondary" style="width: 100%; background: #ef4444; color: white;">
+                <i class="fas fa-times-circle"></i> Cancel Order & Request Refund
+              </button>
+              <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: var(--gray-600); text-align: center;">
+                <i class="fas fa-info-circle"></i> Admin will be notified to process your refund
+              </p>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function loadWishlist() {
+      try {
+        const response = await api.getWishlist();
+        const wishlist = response.wishlist || [];
+        const container = document.getElementById('wishlist-container');
+        
+        if (wishlist.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">Your wishlist is empty. <a href="products.html">Browse products</a></p>';
+          return;
+        }
+
+        container.innerHTML = `
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+            ${wishlist.map(item => `
+              <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-md); position: relative;">
+                <button onclick="removeFromWishlist('${item._id}')" 
+                        style="position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 50%; background: white; border: 2px solid var(--error); color: var(--error); cursor: pointer; z-index: 10;">
+                  <i class="fas fa-times"></i>
+                </button>
+                <img src="${item.images?.[0] || 'https://via.placeholder.com/250'}" 
+                     alt="${item.name || 'Product'}" 
+                     style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                  <h4 style="margin: 0 0 0.5rem 0;">${item.name || 'Product'}</h4>
+                  <p style="margin: 0 0 1rem 0; color: var(--primary-orange); font-weight: 600; font-size: 1.25rem;">${formatPrice(item.price || 0)}</p>
+                  <button onclick="addToCartFromWishlist('${item._id}')" class="btn" style="width: 100%;">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch (error) {
+        console.error('Failed to load wishlist:', error);
+        document.getElementById('wishlist-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load wishlist</p>';
+      }
+    }
+
+    async function removeFromWishlist(productId) {
+      try {
+        await api.removeFromWishlist(productId);
+        toast.success('Removed from wishlist');
+        loadWishlist();
+      } catch (error) {
+        toast.error('Failed to remove from wishlist');
+      }
+    }
+
+    async function addToCartFromWishlist(productId) {
+      try {
+        await stateManager.addToCart(productId, 1);
+        toast.success('Added to cart!');
+      } catch (error) {
+        toast.error('Failed to add to cart');
+      }
+    }
+
+    async function loadFeedback() {
+      try {
+        const response = await api.getMyFeedback();
+        const feedbacks = response.feedbacks || [];
+        const container = document.getElementById('feedback-container');
+        
+        if (feedbacks.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No feedback submitted yet.</p>';
+          return;
+        }
+
+        container.innerHTML = feedbacks.map(feedback => `
+          <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+              <div>
+                <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">
+                  ${new Date(feedback.createdAt).toLocaleDateString()} at ${new Date(feedback.createdAt).toLocaleTimeString()}
+                </p>
+              </div>
+              <span class="status-badge ${feedback.status}">${feedback.status}</span>
+            </div>
+            <p style="margin: 0; line-height: 1.6;">${feedback.message}</p>
+            ${feedback.response ? `
+              <div style="background: var(--gray-light); padding: 1rem; border-radius: 8px; margin-top: 1rem; border-left: 4px solid var(--primary-orange);">
+                <strong style="color: var(--primary-orange);">Admin Response:</strong>
+                <p style="margin: 0.5rem 0 0 0;">${feedback.response}</p>
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load feedback:', error);
+        document.getElementById('feedback-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load feedback</p>';
+      }
+    }
+
+    document.getElementById('feedback-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const message = document.getElementById('feedback-message').value;
+
+      try {
+        await api.submitFeedback({ message });
+        toast.success('Feedback submitted successfully!');
+        e.target.reset();
+        loadFeedback();
+      } catch (error) {
+        toast.error(error.message || 'Failed to submit feedback');
+      }
+    });
+
+    // Cancel order function for users
+    async function cancelUserOrder(orderId) {
+      Modal.confirm(
+        'Are you sure you want to cancel this order? The admin will be notified to process your refund.',
+        async () => {
+          try {
+            await api.cancelOrder(orderId);
+            toast.success('Order cancelled successfully! Admin will process your refund shortly.');
+            loadOrders();
+            loadDashboardStats();
+            loadRecentOrders();
+          } catch (error) {
+            toast.error(error.message || 'Failed to cancel order');
+          }
+        }
+      );
+    }
+
+    // Logout function
+    function handleLogout(event) {
+      event.preventDefault();
+      Modal.confirm(
+        'Are you sure you want to logout?',
+        () => {
+          // Use stateManager.logout() which is the correct function
+          stateManager.logout();
+        }
+      );
+    }
+  </script>
+</body>
+</html>

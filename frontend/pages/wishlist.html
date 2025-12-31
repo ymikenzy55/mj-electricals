@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wishlist - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <div class="nav-icons">
+        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+          <i class="fas fa-search"></i>
+          <span>Search</span>
+        </button>
+        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+      
+      <!-- Search Dropdown -->
+      <div class="nav-search-dropdown" id="nav-search-dropdown">
+        <div class="search-dropdown-content">
+          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+          <button onclick="performNavSearch()" class="search-btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <div class="nav-container">
+        <ul class="nav-links">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+        </ul>
+        <div class="support-contact">
+          <i class="fas fa-phone-alt"></i>
+          <div>
+            <strong>+233 XX XXX XXXX</strong>
+            <small>24/7 Support Center</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
+    <div class="mobile-menu-header">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-user auth-link" style="display:none;">
+        <div class="mobile-menu-user-avatar"><i class="fas fa-user-circle"></i></div>
+        <div class="mobile-menu-user-info">
+          <strong id="mobile-menu-username">Loading...</strong>
+          <small id="mobile-menu-user-email">Loading...</small>
+        </div>
+      </div>
+      <ul class="mobile-menu-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      </ul>
+      <ul class="mobile-menu-links mobile-menu-auth">
+        <li class="auth-link" style="display:none;">
+          <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+        <li class="guest-link"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li class="guest-link"><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+      </ul>
+      <div class="mobile-menu-support">
+        <div class="mobile-menu-support-item">
+          <i class="fas fa-phone-alt"></i>
+          <div><strong>24/7 Support</strong><small>+233 597528733</small></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="wishlist-header">
+      <h1><i class="fas fa-heart"></i> My Wishlist</h1>
+      <button class="btn btn-secondary" onclick="clearWishlist()" id="clear-wishlist-btn" style="display: none;">
+        <i class="fas fa-trash"></i> Clear Wishlist
+      </button>
+    </div>
+
+    <div id="wishlist-container">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html"><i class="fas fa-home"></i><br>Home</a></li>
+      <li><a href="products.html"><i class="fas fa-shopping-bag"></i><br>Products</a></li>
+      <li class="auth-link" style="display:none">
+        <a href="cart.html" class="mobile-cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="mobile-cart-badge">0</span>
+          <br>Cart
+        </a>
+      </li>
+      <li class="auth-link" style="display:none">
+        <a href="wishlist.html" class="active">
+          <i class="fas fa-heart"></i>
+          <span class="mobile-wishlist-badge">0</span>
+          <br>Wishlist
+        </a>
+      </li>
+      <li class="auth-link" style="display:none">
+        <a href="user-dashboard.html">
+          <i class="fas fa-user"></i><br>Account
+        </a>
+      </li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i><br>About</a></li>
+    </ul>
+  </nav>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-logo">
+          <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+        </div>
+        <h3>About MJE</h3>
+        <p>Your trusted partner for quality electrical products.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="categories.html">Categories</a></p>
+        <p><a href="about.html">About Us</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>📧 support@mje-ecommerce.com</p>
+        <p>📞 +233 (0) 123-456-789</p>
+        <p>🕒 Mon-Fri, 9AM-6PM</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <p>Subscribe to get updates on new products!</p>
+        <form class="newsletter-form" id="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" id="newsletter-email" placeholder="Your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; <span id="current-year"></span> MJE E-Commerce. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/preloader.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/discount.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    // Mobile Menu Functions
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+        
+        // Update user data when menu opens
+        if (sidebar.classList.contains('active')) {
+          updateMobileMenuAuth();
+        }
+      }
+    }
+    
+    function closeMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    }
+    
+    function updateMobileMenuAuth() {
+      const state = stateManager?.getState();
+      const username = document.getElementById('mobile-menu-username');
+      const email = document.getElementById('mobile-menu-user-email');
+      
+      if (state && state.isAuthenticated && state.user) {
+        if (username) username.textContent = state.user.name || 'User';
+        if (email) email.textContent = state.user.email || '';
+      } else {
+        if (username) username.textContent = 'Guest';
+        if (email) email.textContent = 'Not logged in';
+      }
+      updateMobileMenuBadges();
+    }
+    
+    function updateMobileMenuBadges() {
+      const cartBadge = document.getElementById('mobile-menu-cart-badge');
+      const wishlistBadge = document.getElementById('mobile-menu-wishlist-badge');
+      const compareBadge = document.getElementById('mobile-menu-compare-badge');
+      
+      if (cartBadge && typeof stateManager !== 'undefined') {
+        const cartCount = stateManager.getCartCount();
+        cartBadge.textContent = cartCount;
+        cartBadge.style.display = cartCount > 0 ? 'inline-block' : 'none';
+      }
+      
+      if (wishlistBadge && typeof wishlistManager !== 'undefined') {
+        const wishlistCount = wishlistManager.getCount();
+        wishlistBadge.textContent = wishlistCount;
+        wishlistBadge.style.display = wishlistCount > 0 ? 'inline-block' : 'none';
+      }
+      
+      if (compareBadge && typeof compareManager !== 'undefined') {
+        const compareCount = compareManager.getCount();
+        compareBadge.textContent = compareCount;
+        compareBadge.style.display = compareCount > 0 ? 'inline-block' : 'none';
+      }
+    }
+
+    // Search functions
+    function toggleNavSearch() {
+      const dropdown = document.getElementById('nav-search-dropdown');
+      if (dropdown) {
+        dropdown.classList.toggle('active');
+        if (dropdown.classList.contains('active')) {
+          document.getElementById('nav-search-input')?.focus();
+        }
+      }
+    }
+
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input')?.value;
+      if (query && query.trim()) {
+        window.location.href = `products.html?search=${encodeURIComponent(query.trim())}`;
+      }
+    }
+
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    async function loadWishlist() {
+      try {
+        const response = await api.getWishlist();
+        const wishlist = response.wishlist;
+        const container = document.getElementById('wishlist-container');
+        const clearBtn = document.getElementById('clear-wishlist-btn');
+
+        if (!wishlist.items || wishlist.items.length === 0) {
+          container.innerHTML = `
+            <div class="empty-cart">
+              <div class="empty-cart-icon">
+                <i class="fas fa-heart-broken"></i>
+              </div>
+              <h2>Your Wishlist is Empty</h2>
+              <p>Save your favorite items here for later!</p>
+              <a href="products.html" class="btn">
+                <i class="fas fa-shopping-bag"></i> Browse Products
+              </a>
+            </div>
+          `;
+          clearBtn.style.display = 'none';
+          updateWishlistBadge(0);
+          return;
+        }
+
+        clearBtn.style.display = 'block';
+        updateWishlistBadge(wishlist.items.length);
+
+        container.innerHTML = `
+          <div class="wishlist-grid">
+            ${wishlist.items.map(item => {
+              const product = item.product;
+              if (!product) return '';
+              
+              return `
+                <div class="wishlist-card">
+                  <button class="remove-wishlist-btn" onclick="removeFromWishlist('${product._id}')" title="Remove from wishlist">
+                    <i class="fas fa-times"></i>
+                  </button>
+                  ${getDiscountBadge(product.discount || 0)}
+                  <a href="product-details.html?id=${product._id}">
+                    <img src="${product.images[0] || 'https://via.placeholder.com/250'}" 
+                         alt="${product.name}" class="wishlist-image">
+                  </a>
+                  <div class="wishlist-info">
+                    <div class="product-id">${product.productId}</div>
+                    <h3 class="wishlist-product-name">
+                      <a href="product-details.html?id=${product._id}">${product.name}</a>
+                    </h3>
+                    <p class="wishlist-category">${product.category} | ${product.wattage}W</p>
+                    ${getPriceDisplay(product.price, product.discount || 0)}
+                    <div class="wishlist-stock">
+                      <span class="${product.stock > 10 ? 'in-stock' : product.stock > 0 ? 'low-stock' : 'out-of-stock'}">
+                        ${product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock'}
+                      </span>
+                    </div>
+                    <div class="wishlist-actions">
+                      ${product.stock > 0 ? `
+                        <button class="btn" onclick="moveToCart('${product._id}')">
+                          <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                      ` : `
+                        <button class="btn" disabled>
+                          Out of Stock
+                        </button>
+                      `}
+                      <a href="product-details.html?id=${product._id}" class="btn btn-secondary">
+                        View Details
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      } catch (error) {
+        console.error('Failed to load wishlist:', error);
+        document.getElementById('wishlist-container').innerHTML = `
+          <div class="empty-cart">
+            <div class="empty-cart-icon">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Failed to Load Wishlist</h2>
+            <p>${error.message}</p>
+            <button class="btn" onclick="loadWishlist()">
+              <i class="fas fa-redo"></i> Try Again
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    async function removeFromWishlist(productId) {
+      try {
+        await api.removeFromWishlist(productId);
+        toast.success('Product removed from wishlist');
+        loadWishlist();
+      } catch (error) {
+        toast.error('Failed to remove from wishlist: ' + error.message);
+      }
+    }
+
+    async function clearWishlist() {
+      Modal.confirm('Are you sure you want to clear your entire wishlist?', async () => {
+        try {
+          await api.clearWishlist();
+          toast.success('Wishlist cleared');
+          loadWishlist();
+        } catch (error) {
+          toast.error('Failed to clear wishlist: ' + error.message);
+        }
+      });
+    }
+
+    async function moveToCart(productId) {
+      try {
+        await stateManager.addToCart(productId, 1);
+        await api.removeFromWishlist(productId);
+        toast.success('Product moved to cart!');
+        loadWishlist();
+        updateCartBadge();
+      } catch (error) {
+        toast.error('Failed to move to cart: ' + error.message);
+      }
+    }
+
+    function updateWishlistBadge(count) {
+      const badges = document.querySelectorAll('.wishlist-badge, .mobile-wishlist-badge');
+      badges.forEach(badge => {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+      });
+    }
+
+    function updateCartBadge() {
+      const badges = document.querySelectorAll('.cart-badge, .mobile-cart-badge');
+      const count = stateManager.getCartCount();
+      badges.forEach(badge => {
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+      });
+    }
+
+    async function subscribeNewsletter(event) {
+      event.preventDefault();
+      const email = document.getElementById('newsletter-email').value;
+      
+      try {
+        await api.subscribeNewsletter(email);
+        toast.success('Thank you for subscribing!');
+        document.getElementById('newsletter-form').reset();
+      } catch (error) {
+        toast.error(error.message || 'Failed to subscribe');
+      }
+    }
+
+    loadWishlist();
+  </script>
+</body>
+</html>

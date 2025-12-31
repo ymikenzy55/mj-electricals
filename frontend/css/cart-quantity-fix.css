@@ -1,0 +1,101 @@
+/* ========================================
+   CART QUANTITY BUTTON FIXES
+   Mobile-optimized, fast-responding buttons
+   ======================================== */
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gray-100);
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--gray-300);
+}
+
+.quantity-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--primary-orange);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background: var(--primary-orange-dark);
+  transform: scale(1.05);
+}
+
+.quantity-btn:active:not(:disabled) {
+  transform: scale(0.95);
+  transition: all 0.05s ease;
+}
+
+.quantity-btn:disabled {
+  background: var(--gray-400);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.quantity-input {
+  width: 60px;
+  height: 36px;
+  border: none;
+  background: white;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  color: var(--primary-black);
+}
+
+.quantity-input:focus {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: 2px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .quantity-controls {
+    gap: 0.75rem;
+    padding: 0.35rem;
+  }
+  
+  .quantity-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+    /* Larger touch targets for mobile */
+  }
+  
+  .quantity-input {
+    width: 50px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 380px) {
+  .quantity-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+  }
+  
+  .quantity-input {
+    width: 45px;
+    height: 36px;
+  }
+}

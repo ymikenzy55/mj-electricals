@@ -1,0 +1,19 @@
+# Ngrok Configuration File
+# Place this in your ngrok config directory or use: ngrok start --config ngrok.yml --all
+
+version: "2"
+authtoken: YOUR_AUTH_TOKEN_HERE
+
+tunnels:
+  frontend:
+    proto: http
+    addr: 8000
+    inspect: true
+  
+  backend:
+    proto: http
+    addr: 5000
+    inspect: true
+
+# Note: Multiple tunnels require a paid ngrok plan
+# Free tier: Use only one tunnel at a time

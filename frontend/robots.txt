@@ -1,0 +1,25 @@
+# robots.txt for MJE E-Commerce
+
+User-agent: *
+Allow: /
+Disallow: /pages/admin-dashboard.html
+Disallow: /pages/super-admin-dashboard.html
+Disallow: /pages/user-dashboard.html
+Disallow: /pages/cart.html
+Disallow: /pages/checkout.html
+Disallow: /pages/login.html
+Disallow: /pages/register.html
+
+# Allow search engines to index product pages
+Allow: /pages/products.html
+Allow: /pages/product-details.html
+Allow: /pages/categories.html
+Allow: /pages/index.html
+Allow: /pages/about.html
+Allow: /pages/contact.html
+
+# Sitemap location
+Sitemap: http://localhost:8080/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1

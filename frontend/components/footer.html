@@ -1,0 +1,65 @@
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <div class="footer-logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+      </div>
+      <h3>About MJE</h3>
+      <p>Your trusted partner for quality electrical products. We provide the best lighting solutions and electrical components.</p>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <p><a href="index.html">Home</a></p>
+      <p><a href="products.html">Products</a></p>
+      <p><a href="categories.html">Categories</a></p>
+      <p><a href="about.html">About Us</a></p>
+      <p><a href="contact.html">Contact</a></p>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Contact Info</h3>
+      <p>📧 support@mje-ecommerce.com</p>
+      <p>📞 +233 (0) 123-456-789</p>
+      <p>🕒 Mon-Fri, 9AM-6PM</p>
+    </div>
+    
+    <div class="footer-section">
+      <h3>Newsletter</h3>
+      <p>Subscribe to get updates on new products and special offers!</p>
+      <form class="newsletter-form" id="newsletter-form" onsubmit="subscribeNewsletter(event)">
+        <input type="email" id="newsletter-email" placeholder="Your email" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; <span id="current-year"></span> MJ Electricals E-Commerce. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// Set dynamic copyright year
+document.addEventListener('DOMContentLoaded', () => {
+  const yearElement = document.getElementById('current-year');
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
+});
+
+async function subscribeNewsletter(event) {
+  event.preventDefault();
+  const email = document.getElementById('newsletter-email').value;
+  
+  try {
+    const response = await api.subscribeNewsletter(email);
+    if (response.success) {
+      Modal.success('Thank you for subscribing to our newsletter!');
+      document.getElementById('newsletter-form').reset();
+    }
+  } catch (error) {
+    Modal.error(error.message || 'Failed to subscribe. Please try again.');
+  }
+}
+</script>

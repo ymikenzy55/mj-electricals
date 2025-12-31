@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Failed - MJE E-Commerce</title>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .payment-failed-container {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 3rem 2rem;
+      text-align: center;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .failed-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 2rem;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .failed-icon i {
+      font-size: 4rem;
+      color: white;
+    }
+
+    .payment-failed-container h1 {
+      color: #ef4444;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .payment-failed-container p {
+      color: var(--gray-600);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .order-info {
+      background: #fef2f2;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 2rem 0;
+      border-left: 4px solid #ef4444;
+    }
+
+    .order-info p {
+      margin: 0.5rem 0;
+      color: var(--gray-700);
+      font-size: 1rem;
+    }
+
+    .order-info strong {
+      color: var(--gray-900);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .btn-retry {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-retry:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--gray-700);
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid var(--gray-300);
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary-orange);
+      color: var(--primary-orange);
+    }
+
+    .help-section {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .help-section h3 {
+      color: var(--gray-700);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .help-section ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .help-section li {
+      padding: 0.75rem 0;
+      color: var(--gray-600);
+      display: flex;
+      align-items: start;
+      gap: 0.75rem;
+    }
+
+    .help-section li i {
+      color: #ef4444;
+      margin-top: 0.25rem;
+    }
+
+    .contact-support {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f9fafb;
+      border-radius: 10px;
+    }
+
+    .contact-support p {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+    }
+
+    .contact-support a {
+      color: var(--primary-orange);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact-support a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .payment-failed-container {
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
+      }
+
+      .failed-icon {
+        width: 100px;
+        height: 100px;
+      }
+
+      .failed-icon i {
+        font-size: 3rem;
+      }
+
+      .payment-failed-container h1 {
+        font-size: 1.5rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn-retry,
+      .btn-secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar will be loaded by navbar-loader.js -->
+
+  <div class="container">
+    <div class="payment-failed-container">
+      <div class="failed-icon">
+        <i class="fas fa-times-circle"></i>
+      </div>
+
+      <h1>Payment Failed</h1>
+      <p>We couldn't process your payment. Don't worry, your order has been saved and no charges were made.</p>
+
+      <div class="order-info" id="order-info">
+        <p><strong>Order ID:</strong> <span id="order-id">Loading...</span></p>
+        <p><strong>Amount:</strong> <span id="order-amount">Loading...</span></p>
+        <p><strong>Status:</strong> <span style="color: #f59e0b; font-weight: 600;">Pending Payment</span></p>
+      </div>
+
+      <div class="action-buttons">
+        <a href="#" class="btn-retry" id="retry-payment">
+          <i class="fas fa-redo"></i> Retry Payment
+        </a>
+        <a href="user-dashboard.html" class="btn-secondary">
+          <i class="fas fa-th-large"></i> Go to Dashboard
+        </a>
+        <a href="products.html" class="btn-secondary">
+          <i class="fas fa-shopping-bag"></i> Continue Shopping
+        </a>
+      </div>
+
+      <div class="help-section">
+        <h3>Common reasons for payment failure:</h3>
+        <ul>
+          <li>
+            <i class="fas fa-wifi"></i>
+            <span>Poor internet connection - Please check your network and try again</span>
+          </li>
+          <li>
+            <i class="fas fa-credit-card"></i>
+            <span>Insufficient funds - Ensure your account has enough balance</span>
+          </li>
+          <li>
+            <i class="fas fa-ban"></i>
+            <span>Card declined - Contact your bank for authorization</span>
+          </li>
+          <li>
+            <i class="fas fa-lock"></i>
+            <span>Security restrictions - Your bank may require verification</span>
+          </li>
+          <li>
+            <i class="fas fa-clock"></i>
+            <span>Session timeout - Payment took too long to complete</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="contact-support">
+        <p><strong>Need Help?</strong></p>
+        <p>Contact our support team:</p>
+        <p>
+          <i class="fas fa-envelope"></i> 
+          <a href="mailto:support@mje.com">support@mje.com</a>
+        </p>
+        <p>
+          <i class="fas fa-phone"></i> 
+          <a href="tel:+233123456789">+233 123 456 789</a>
+        </p>
+        <p style="margin-top: 1rem;">
+          <a href="contact.html">Visit Contact Page</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-nav">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html"><i class="fas fa-home"></i><br>Home</a></li>
+      <li><a href="products.html"><i class="fas fa-shopping-bag"></i><br>Products</a></li>
+      <li>
+        <a href="cart.html" class="mobile-cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="mobile-cart-badge">0</span>
+          <br>Cart
+        </a>
+      </li>
+      <li><a href="user-dashboard.html"><i class="fas fa-user"></i><br>Account</a></li>
+      <li><a href="contact.html"><i class="fas fa-phone"></i><br>Contact</a></li>
+    </ul>
+  </nav>
+
+  <script src="../js/modal.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/navbar-loader.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/toast.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Get order ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('orderId');
+      const reason = urlParams.get('reason') || 'unknown';
+
+      if (!orderId) {
+        document.getElementById('order-info').innerHTML = `
+          <p style="color: #ef4444;">No order information found.</p>
+        `;
+        document.getElementById('retry-payment').style.display = 'none';
+        return;
+      }
+
+      try {
+        // Load order details
+        const response = await api.getOrder(orderId);
+        const order = response.order;
+
+        document.getElementById('order-id').textContent = `#${orderId.slice(-8)}`;
+        document.getElementById('order-amount').textContent = `GH₵ ${order.totalAmount.toFixed(2)}`;
+
+        // Set up retry payment button
+        document.getElementById('retry-payment').addEventListener('click', async (e) => {
+          e.preventDefault();
+          
+          // Redirect back to checkout with order ID
+          window.location.href = `checkout.html?retry=true&orderId=${orderId}`;
+        });
+
+        // Log failure reason for analytics
+        console.log('Payment failed:', {
+          orderId,
+          reason,
+          amount: order.totalAmount,
+          timestamp: new Date().toISOString()
+        });
+
+      } catch (error) {
+        console.error('Failed to load order:', error);
+        toast.error('Failed to load order details');
+        document.getElementById('order-info').innerHTML = `
+          <p style="color: #ef4444;">Failed to load order details. Please contact support.</p>
+        `;
+      }
+
+      // Load user state for cart badge
+      await stateManager.loadUser();
+    });
+  </script>
+</body>
+</html>
