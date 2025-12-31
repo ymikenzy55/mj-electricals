@@ -199,7 +199,7 @@ class StateManager {
     this.migrateGuestCart();
     
     // Log for debugging
-    console.log('User logged in successfully:', user.email);
+    logger.info('User logged in successfully:', user.email);
   }
 
   async migrateGuestCart() {

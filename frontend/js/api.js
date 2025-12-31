@@ -12,7 +12,7 @@ const getApiUrl = () => {
 };
 
 const API_URL = getApiUrl();
-console.log('API URL:', API_URL);
+logger.info('API URL:', API_URL);
 
 class API {
   constructor() {
@@ -52,7 +52,7 @@ class API {
       if (!response.ok) {
         // Handle 401 Unauthorized - token might be expired
         if (response.status === 401 && !skipAuth) {
-          console.warn('Token expired or invalid, clearing auth state');
+          logger.warn('Token expired or invalid, clearing auth state');
           this.clearToken();
           // Don't auto-redirect, let the page handle it
         }

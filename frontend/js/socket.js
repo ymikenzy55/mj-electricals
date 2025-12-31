@@ -20,7 +20,7 @@ class SocketManager {
     this.socket = io(getSocketUrl());
 
     this.socket.on('connect', () => {
-      console.log('Socket connected');
+      logger.info('Socket connected');
       this.connected = true;
 
       // Authenticate socket with user ID
@@ -31,7 +31,7 @@ class SocketManager {
     });
 
     this.socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+      logger.info('Socket disconnected');
       this.connected = false;
     });
 
