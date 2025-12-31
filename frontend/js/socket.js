@@ -8,7 +8,16 @@ class SocketManager {
   connect() {
     if (this.socket) return;
 
-    this.socket = io('http://localhost:5000');
+    // Auto-detect socket URL based on environment
+    const getSocketUrl = () => {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('10.') || hostname.startsWith('192.168.')) {
+        return 'http://localhost:5000';
+      }
+      return 'https://mj-electricals.onrender.com';
+    };
+
+    this.socket = io(getSocketUrl());
 
     this.socket.on('connect', () => {
       console.log('Socket connected');
@@ -33,19 +42,19 @@ class SocketManager {
   setupListeners() {
     // Order status updates
     this.socket.on('order:statusUpdate', (data) => {
-      this.showNotification(`Order ${data.orderId} status: ${data.status}`);
-      // Refresh orders if on orders page
-      if (window.location.pathname.includes('orders')) {
-        window.location.reload();
+      this.showNotification(`Order #${data.orderId.slice(-8)} status: ${data.status}`);
+      // Dynamically update if on orders page
+      if (typeof loadOrders === 'function') {
+        loadOrders();
       }
     });
 
     // Feedback responses
     this.socket.on('feedback:response', (feedback) => {
       this.showNotification('Admin responded to your feedback');
-      // Refresh feedback if on feedback page
-      if (window.location.pathname.includes('feedback')) {
-        window.location.reload();
+      // Dynamically update if on feedback page
+      if (typeof loadFeedback === 'function') {
+        loadFeedback();
       }
     });
 
@@ -53,11 +62,16 @@ class SocketManager {
     this.socket.on('order:new', (data) => {
       const state = stateManager.getState();
       if (state.user && ['admin', 'superadmin'].includes(state.user.role)) {
-        this.showNotification('New order received!', 'info');
-        // Refresh admin dashboard
-        if (window.location.pathname.includes('admin') || window.location.pathname.includes('dashboard')) {
-          window.location.reload();
+        this.showNotification('🔔 New order received!', 'success');
+        // Update stats and orders dynamically
+        if (typeof loadStats === 'function') {
+          loadStats();
         }
+        if (typeof loadOrders === 'function') {
+          loadOrders();
+        }
+        // Update notification badge
+        this.updateOrderBadge();
       }
     });
 
@@ -66,6 +80,9 @@ class SocketManager {
       const state = stateManager.getState();
       if (state.user && ['admin', 'superadmin'].includes(state.user.role)) {
         this.showNotification(`⚠️ Low Stock: ${data.productName} - Only ${data.stock} left!`, 'warning');
+        if (typeof updateOutOfStockBadge === 'function') {
+          updateOutOfStockBadge();
+        }
       }
     });
 
@@ -74,6 +91,9 @@ class SocketManager {
       const state = stateManager.getState();
       if (state.user && ['admin', 'superadmin'].includes(state.user.role)) {
         this.showNotification(`🚨 OUT OF STOCK: ${data.productName} (${data.productCode})`, 'error');
+        if (typeof updateOutOfStockBadge === 'function') {
+          updateOutOfStockBadge();
+        }
       }
     });
 
@@ -81,25 +101,77 @@ class SocketManager {
     this.socket.on('feedback:new', (data) => {
       const state = stateManager.getState();
       if (state.user && ['admin', 'superadmin'].includes(state.user.role)) {
-        this.showNotification('New feedback received!', 'info');
+        this.showNotification('💬 New feedback received!', 'info');
+        if (typeof loadStats === 'function') {
+          loadStats();
+        }
+        if (typeof loadFeedback === 'function') {
+          loadFeedback();
+        }
+      }
+    });
+
+    // New contact message (for admins)
+    this.socket.on('contact:new', (data) => {
+      const state = stateManager.getState();
+      if (state.user && ['admin', 'superadmin'].includes(state.user.role)) {
+        this.showNotification('📧 New contact message received!', 'info');
       }
     });
 
     // Product updates
     this.socket.on('product:updated', (product) => {
-      if (window.location.pathname.includes('products')) {
-        window.location.reload();
+      if (typeof loadProducts === 'function') {
+        loadProducts();
+      }
+    });
+
+    // Product created
+    this.socket.on('product:created', (product) => {
+      if (typeof loadProducts === 'function') {
+        loadProducts();
       }
     });
   }
 
+  updateOrderBadge() {
+    const badge = document.getElementById('pending-orders-badge');
+    if (badge) {
+      const currentCount = parseInt(badge.textContent) || 0;
+      badge.textContent = currentCount + 1;
+      badge.style.display = 'inline-block';
+      // Add pulse animation
+      badge.style.animation = 'pulse 0.5s ease';
+      setTimeout(() => {
+        badge.style.animation = '';
+      }, 500);
+    }
+  }
+
   showNotification(message, type = 'info') {
-    // Create notification element
+    // Use toast if available, otherwise create notification
+    if (typeof toast !== 'undefined') {
+      switch(type) {
+        case 'success':
+          toast.success(message);
+          break;
+        case 'warning':
+          toast.warning(message);
+          break;
+        case 'error':
+          toast.error(message);
+          break;
+        default:
+          toast.info(message);
+      }
+      return;
+    }
+
+    // Fallback notification
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.textContent = message;
     
-    // Color based on type
     const colors = {
       info: '#3b82f6',
       success: '#10b981',
@@ -124,7 +196,6 @@ class SocketManager {
 
     document.body.appendChild(notification);
 
-    // Auto-dismiss after 5 seconds (longer for important messages)
     const duration = type === 'error' || type === 'warning' ? 7000 : 4000;
     setTimeout(() => {
       notification.style.animation = 'slideOut 0.3s ease';
