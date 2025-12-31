@@ -39,6 +39,7 @@ class StateManager {
         return;
       }
 
+      // Verify token is still valid
       const response = await api.getMe();
       this.setState({
         user: response.user,
@@ -49,7 +50,14 @@ class StateManager {
       await this.loadCart();
     } catch (error) {
       console.error('Failed to load user:', error);
-      this.logout();
+      // Don't logout immediately - token might still be valid
+      // Only clear if it's a 401 error
+      if (error.message && error.message.includes('401')) {
+        this.logout();
+      } else {
+        // Keep user logged in but log the error
+        console.warn('Temporary error loading user, keeping session');
+      }
     }
   }
 
@@ -179,6 +187,8 @@ class StateManager {
   }
 
   login(token, user) {
+    // Store token in localStorage for persistence
+    localStorage.setItem('token', token);
     api.setToken(token);
     this.setState({
       user,
@@ -187,6 +197,9 @@ class StateManager {
     
     // Migrate guest cart if exists
     this.migrateGuestCart();
+    
+    // Log for debugging
+    console.log('User logged in successfully:', user.email);
   }
 
   async migrateGuestCart() {

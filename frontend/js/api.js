@@ -50,6 +50,12 @@ class API {
       const data = await response.json();
 
       if (!response.ok) {
+        // Handle 401 Unauthorized - token might be expired
+        if (response.status === 401 && !skipAuth) {
+          console.warn('Token expired or invalid, clearing auth state');
+          this.clearToken();
+          // Don't auto-redirect, let the page handle it
+        }
         throw new Error(data.message || 'Request failed');
       }
 
