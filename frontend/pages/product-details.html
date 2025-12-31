@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Details - MJE E-Commerce</title>
+  <title>Product Details - MJ Electricals</title>
   <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/mobile-fixes-phase2.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Product Details Modern Redesign */
@@ -860,14 +861,24 @@
       // Update buttons
       document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(tabName.toLowerCase())) {
+          btn.classList.add('active');
+        }
       });
-      event.target.classList.add('active');
 
       // Update content
       document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
       });
-      document.getElementById(`${tabName}-tab`).classList.add('active');
+      const targetTab = document.getElementById(`${tabName}-tab`);
+      if (targetTab) {
+        targetTab.classList.add('active');
+      }
+      
+      // Load reviews when switching to reviews tab
+      if (tabName === 'reviews') {
+        loadReviews();
+      }
     }
 
     function changeMainImage(imgSrc, element) {
