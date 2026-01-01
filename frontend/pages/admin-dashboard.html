@@ -492,7 +492,7 @@
       }
     });
 
-    function showSection(section, event) {
+    window.showSection = function(section, event) {
       // Save current section to localStorage
       localStorage.setItem('adminCurrentSection', section);
       
@@ -683,7 +683,7 @@
     }
 
     // Financial Analytics
-    async function loadFinancialAnalytics(date) {
+    window.loadFinancialAnalytics = async function(date) {
       try {
         const response = await api.getFinancialAnalytics(date);
         const analytics = response.analytics;
@@ -745,7 +745,7 @@
       }
     }
 
-    function displayProducts(products, page = 1) {
+    window.displayProducts = function(products, page = 1) {
       const container = document.getElementById('products-list');
       currentProductsPage = page;
 
@@ -815,7 +815,7 @@
         `;
     }
 
-    function searchProducts(query) {
+    window.searchProducts = function(query) {
       if (!query.trim()) {
         displayProducts(allProducts, 1);
         return;
@@ -830,12 +830,12 @@
       displayProducts(filtered, 1);
     }
 
-    function showProductForm() {
+    window.showProductForm = function() {
       document.getElementById('product-form').style.display = 'block';
       loadCategoriesForSelect();
     }
 
-    function hideProductForm() {
+    window.hideProductForm = function() {
       document.getElementById('product-form').style.display = 'none';
       document.getElementById('product-form-element').reset();
       document.getElementById('product-id').value = '';
@@ -856,7 +856,7 @@
       }
     }
 
-    function editProduct(product) {
+    window.editProduct = function(product) {
       showProductForm();
       document.getElementById('product-id').value = product._id;
       document.getElementById('product-name').value = product.name;
@@ -883,7 +883,7 @@
     }
 
     // Calculate discount percentage automatically
-    function calculateDiscount() {
+    window.calculateDiscount = function() {
       const oldPrice = parseFloat(document.getElementById('product-old-price').value) || 0;
       const newPrice = parseFloat(document.getElementById('product-price').value) || 0;
       
@@ -937,7 +937,7 @@
       }
     });
 
-    async function deleteProduct(id) {
+    window.deleteProduct = async function(id) {
       Modal.confirm('Are you sure you want to delete this product?', async () => {
         try {
           const product = await api.getProduct(id);
@@ -964,7 +964,7 @@
       }
     }
 
-    function displayOrders(orders, page = 1) {
+    window.displayOrders = function(orders, page = 1) {
       const container = document.getElementById('orders-list');
       currentOrdersPage = page;
 
@@ -1042,7 +1042,7 @@
       `;
     }
 
-    function searchOrders(query) {
+    window.searchOrders = function(query) {
       if (!query.trim()) {
         displayOrders(allOrders, 1);
         return;
@@ -1057,7 +1057,7 @@
       displayOrders(filtered, 1);
     }
 
-    async function updateOrderStatus(orderId, status) {
+    window.updateOrderStatus = async function(orderId, status) {
       if (!status) return;
       try {
         await api.updateOrderStatus(orderId, status);
@@ -1069,7 +1069,7 @@
       }
     }
 
-    async function processOrderRefund(orderId) {
+    window.processOrderRefund = async function(orderId) {
       Modal.confirm(
         'Are you sure you want to process the refund for this order? This action cannot be undone.',
         async () => {
@@ -1085,7 +1085,10 @@
       );
     }
 
-    async function loadFeedback() {
+    // Alias for modal usage
+    window.processRefund = window.processOrderRefund;
+
+    window.loadFeedback = async function() {
       const container = document.getElementById('feedback-list');
       try {
         container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading feedback...</p></div>';
@@ -1133,7 +1136,7 @@
       }
     }
 
-    async function respondToFeedback(event, feedbackId) {
+    window.respondToFeedback = async function(event, feedbackId) {
       event.preventDefault();
       const response = document.getElementById(`response-${feedbackId}`).value;
       try {
@@ -1196,7 +1199,7 @@
       }
     });
 
-    function handleCategoryImageSelect(event) {
+    window.handleCategoryImageSelect = function(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
@@ -1251,18 +1254,18 @@
       }
     }
 
-    function showBannerForm() {
+    window.showBannerForm = function() {
       document.getElementById('banner-form').style.display = 'block';
     }
 
-    function hideBannerForm() {
+    window.hideBannerForm = function() {
       document.getElementById('banner-form').style.display = 'none';
       document.getElementById('banner-form-element').reset();
       document.getElementById('banner-id').value = '';
       document.getElementById('banner-image-preview').innerHTML = '';
     }
 
-    function handleBannerImageSelect(event) {
+    window.handleBannerImageSelect = function(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
@@ -1275,7 +1278,7 @@
       }
     }
 
-    function editBanner(banner) {
+    window.editBanner = function(banner) {
       showBannerForm();
       document.getElementById('banner-id').value = banner._id;
       document.getElementById('banner-title').value = banner.title;
@@ -1319,7 +1322,7 @@
       }
     });
 
-    async function deleteBanner(id) {
+    window.deleteBanner = async function(id) {
       Modal.confirm('Are you sure you want to delete this banner?', async () => {
         try {
           await api.deleteBanner(id);
@@ -1331,7 +1334,7 @@
       });
     }
 
-    function handleImageSelect(event) {
+    window.handleImageSelect = function(event) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
@@ -1388,7 +1391,7 @@
       return `${addr.street || ''}, ${addr.city || ''}, ${addr.state || ''} ${addr.zipCode || ''}, ${addr.country || ''}`.replace(/,\s*,/g, ',').trim();
     }
 
-    function viewAdminOrderDetails(order) {
+    window.viewAdminOrderDetails = function(order) {
       const itemsList = order.items.map((item, index) => `
         <tr>
           <td data-label="Product">${item.name}</td>
@@ -1494,14 +1497,13 @@
       document.body.style.overflow = 'hidden';
     }
 
-    function closeOrderModal(event) {
+    window.closeOrderModal = function(event) {
       if (event && event.target !== event.currentTarget) return;
       const modal = document.getElementById('orderDetailsModal');
       if (modal) {
         modal.remove();
         document.body.style.overflow = 'auto';
       }
-    }
     }
 
     // Delivery Charges Management
@@ -1560,17 +1562,17 @@
       }
     }
 
-    function showDeliveryForm() {
+    window.showDeliveryForm = function() {
       document.getElementById('delivery-form').style.display = 'block';
     }
 
-    function hideDeliveryForm() {
+    window.hideDeliveryForm = function() {
       document.getElementById('delivery-form').style.display = 'none';
       document.getElementById('delivery-form-element').reset();
       document.getElementById('delivery-id').value = '';
     }
 
-    function editDeliveryCharge(charge) {
+    window.editDeliveryCharge = function(charge) {
       showDeliveryForm();
       document.getElementById('delivery-id').value = charge._id;
       document.getElementById('delivery-city').value = charge.city;
@@ -1605,7 +1607,7 @@
       }
     });
 
-    async function deleteDeliveryCharge(id) {
+    window.deleteDeliveryCharge = async function(id) {
       Modal.confirm('Are you sure you want to delete this delivery charge?', async () => {
         try {
           await api.deleteDeliveryCharge(id);
@@ -1635,7 +1637,7 @@
       }
     }
 
-    async function filterReviews(status) {
+    window.filterReviews = async function(status) {
       currentReviewFilter = status;
       
       // Update button states
@@ -1711,7 +1713,7 @@
       `).join('');
     }
 
-    async function updateReviewStatus(reviewId, status) {
+    window.updateReviewStatus = async function(reviewId, status) {
       try {
         await api.updateReviewStatus(reviewId, status);
         toast.success(`Review ${status} successfully`);
