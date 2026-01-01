@@ -121,9 +121,9 @@ exports.createOrder = async (req, res) => {
       paymentExpiry: paymentExpiry
     });
 
-    // Clear user cart
+    // Don't clear cart yet - wait for payment confirmation
+    // Just add order to user's orders list
     const user = await User.findById(req.user.id);
-    user.cart = [];
     user.orders.push(order._id);
     await user.save();
 

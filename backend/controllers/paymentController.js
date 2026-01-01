@@ -117,6 +117,14 @@ exports.verifyPayment = async (req, res) => {
         order.status = 'processing'; // Move to processing after payment
         await order.save();
 
+        // Clear user's cart after successful payment
+        const User = require('../models/User');
+        const user = await User.findById(order.user);
+        if (user) {
+          user.cart = [];
+          await user.save();
+        }
+
         // Emit socket event
         if (req.io) {
           req.io.to(`user:${order.user}`).emit('payment:success', {
