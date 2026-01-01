@@ -172,14 +172,8 @@ exports.getDashboardStats = async (req, res) => {
         ]
       }),
       Order.countDocuments({ 
-        status: 'pending',
-        $or: [
-          { paymentStatus: 'paid' },
-          { 
-            paymentStatus: 'pending',
-            paymentExpiry: { $gt: new Date() }
-          }
-        ]
+        status: 'processing',
+        paymentStatus: 'paid'
       }),
       Feedback.countDocuments({ status: 'pending' }),
       Order.aggregate([

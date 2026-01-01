@@ -541,13 +541,13 @@
       const alertContainer = document.getElementById('alert-container');
       const notifications = [];
 
-      // Check for pending orders
+      // Check for processing orders (paid but not yet shipped)
       if (stats.pendingOrders > 0) {
         notifications.push({
           type: 'info',
           icon: '🔔',
-          title: `${stats.pendingOrders} New Order${stats.pendingOrders > 1 ? 's' : ''}`,
-          message: `You have ${stats.pendingOrders} pending order${stats.pendingOrders > 1 ? 's' : ''} waiting for processing.`,
+          title: `${stats.pendingOrders} Order${stats.pendingOrders > 1 ? 's' : ''} Processing`,
+          message: `You have ${stats.pendingOrders} paid order${stats.pendingOrders > 1 ? 's' : ''} ready to be shipped.`,
           action: () => showSection('orders')
         });
       }
