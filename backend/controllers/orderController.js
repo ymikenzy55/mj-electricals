@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
 const Product = require('../models/Product');
+const generateOrderId = require('../utils/generateOrderId');
 
 // Create order
 exports.createOrder = async (req, res) => {
@@ -105,6 +106,7 @@ exports.createOrder = async (req, res) => {
     paymentExpiry.setMinutes(paymentExpiry.getMinutes() + 30);
 
     const order = await Order.create({
+      orderId: generateOrderId(),
       user: req.user.id,
       items: orderItems,
       subtotal: finalSubtotal,

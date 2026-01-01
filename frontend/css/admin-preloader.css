@@ -1,0 +1,140 @@
+/* Admin Preloader - Professional Style */
+.admin-preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.admin-preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.admin-preloader-content {
+  text-align: center;
+  color: white;
+}
+
+.admin-preloader-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 2rem;
+  animation: adminPulse 2s ease-in-out infinite;
+}
+
+.admin-preloader-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+}
+
+.admin-preloader-subtitle {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin-bottom: 3rem;
+  font-weight: 300;
+}
+
+.admin-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: adminSpin 1s linear infinite;
+  margin: 0 auto 2rem;
+}
+
+.admin-loading-text {
+  font-size: 0.875rem;
+  opacity: 0.7;
+  animation: adminFade 1.5s ease-in-out infinite;
+}
+
+.admin-progress-bar {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin: 2rem auto 1rem;
+  overflow: hidden;
+}
+
+.admin-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+  border-radius: 2px;
+  animation: adminProgress 3s ease-in-out infinite;
+}
+
+@keyframes adminSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes adminPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes adminFade {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes adminProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .admin-preloader-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.5rem;
+  }
+
+  .admin-preloader-title {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+
+  .admin-preloader-subtitle {
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+  }
+
+  .admin-spinner {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1.5rem;
+  }
+
+  .admin-progress-bar {
+    width: 150px;
+  }
+}
