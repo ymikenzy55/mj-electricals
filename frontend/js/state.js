@@ -50,13 +50,27 @@ class StateManager {
       await this.loadCart();
     } catch (error) {
       console.error('Failed to load user:', error);
-      // Don't logout immediately - token might still be valid
-      // Only clear if it's a 401 error
-      if (error.message && error.message.includes('401')) {
+      // Don't logout on temporary errors - only on explicit auth failures
+      // Check for 401 Unauthorized or 403 Forbidden
+      if (error.status === 401 || error.status === 403 || 
+          (error.message && (error.message.includes('401') || error.message.includes('Unauthorized')))) {
+        console.warn('Authentication failed, logging out');
         this.logout();
       } else {
-        // Keep user logged in but log the error
-        console.warn('Temporary error loading user, keeping session');
+        // Keep user logged in for network errors or other temporary issues
+        console.warn('Temporary error loading user, keeping session active');
+        // Try to use cached user data if available
+        const cachedUser = localStorage.getItem('cachedUser');
+        if (cachedUser) {
+          try {
+            this.setState({
+              user: JSON.parse(cachedUser),
+              isAuthenticated: true
+            });
+          } catch (e) {
+            console.error('Failed to parse cached user');
+          }
+        }
       }
     }
   }
@@ -189,6 +203,8 @@ class StateManager {
   login(token, user) {
     // Store token in localStorage for persistence
     localStorage.setItem('token', token);
+    // Cache user data for offline resilience
+    localStorage.setItem('cachedUser', JSON.stringify(user));
     api.setToken(token);
     this.setState({
       user,
@@ -220,6 +236,8 @@ class StateManager {
 
   logout() {
     api.clearToken();
+    localStorage.removeItem('token');
+    localStorage.removeItem('cachedUser');
     localStorage.removeItem('guestCart');
     this.setState({
       user: null,

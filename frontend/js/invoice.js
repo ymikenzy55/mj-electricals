@@ -95,14 +95,18 @@ class InvoiceGenerator {
       margin-bottom: 40px;
       padding-bottom: 20px;
       border-bottom: 3px solid #ff6600;
+      flex-wrap: wrap;
+      gap: 20px;
     }
     .company-info {
       flex: 1;
+      min-width: 200px;
     }
     .company-logo {
       width: 120px;
       height: auto;
       margin-bottom: 15px;
+      max-width: 100%;
     }
     .company-name {
       font-size: 28px;
@@ -116,6 +120,7 @@ class InvoiceGenerator {
     }
     .invoice-title {
       text-align: right;
+      min-width: 200px;
     }
     .invoice-title h1 {
       font-size: 36px;
@@ -143,10 +148,14 @@ class InvoiceGenerator {
     .meta-section strong {
       color: #000;
     }
+    .invoice-table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 30px;
+    }
     .invoice-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
+      min-width: 500px;
     }
     .invoice-table thead {
       background: #f8f8f8;
@@ -174,7 +183,8 @@ class InvoiceGenerator {
     }
     .invoice-summary {
       margin-left: auto;
-      width: 300px;
+      width: 100%;
+      max-width: 300px;
       margin-top: 20px;
     }
     .summary-row {
@@ -226,6 +236,73 @@ class InvoiceGenerator {
       color: #ff6600;
       font-weight: bold;
     }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      .invoice-container {
+        padding: 20px;
+      }
+      .invoice-header {
+        flex-direction: column;
+      }
+      .invoice-title {
+        text-align: left;
+        width: 100%;
+      }
+      .invoice-title h1 {
+        font-size: 28px;
+      }
+      .company-name {
+        font-size: 22px;
+      }
+      .invoice-meta {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 8px;
+        font-size: 14px;
+      }
+      .invoice-table th:nth-child(3),
+      .invoice-table td:nth-child(3) {
+        display: none;
+      }
+      .summary-row {
+        font-size: 14px;
+      }
+      .summary-row.total {
+        font-size: 16px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .invoice-container {
+        padding: 15px;
+      }
+      .company-logo {
+        width: 80px;
+      }
+      .invoice-title h1 {
+        font-size: 24px;
+      }
+      .invoice-table {
+        min-width: 100%;
+      }
+      .invoice-table th,
+      .invoice-table td {
+        padding: 6px;
+        font-size: 12px;
+      }
+      .invoice-table th:nth-child(2),
+      .invoice-table td:nth-child(2) {
+        text-align: left;
+      }
+    }
+    
     @media print {
       body {
         background: white;
@@ -281,29 +358,31 @@ class InvoiceGenerator {
     </div>
 
     <!-- Items Table -->
-    <table class="invoice-table">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th class="text-center">Quantity</th>
-          <th class="text-right">Unit Price</th>
-          <th class="text-right">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${order.items.map(item => `
+    <div class="invoice-table-wrapper">
+      <table class="invoice-table">
+        <thead>
           <tr>
-            <td>
-              <strong>${item.name}</strong><br>
-              <small style="color: #999;">ID: ${item.productId}</small>
-            </td>
-            <td class="text-center">${item.quantity}</td>
-            <td class="text-right">GH₵ ${item.price.toFixed(2)}</td>
-            <td class="text-right">GH₵ ${(item.price * item.quantity).toFixed(2)}</td>
+            <th>Item</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-right">Unit Price</th>
+            <th class="text-right">Total</th>
           </tr>
-        `).join('')}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          ${order.items.map(item => `
+            <tr>
+              <td>
+                <strong>${item.name}</strong><br>
+                <small style="color: #999;">ID: ${item.productId}</small>
+              </td>
+              <td class="text-center">${item.quantity}</td>
+              <td class="text-right">GH₵ ${item.price.toFixed(2)}</td>
+              <td class="text-right">GH₵ ${(item.price * item.quantity).toFixed(2)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
 
     <!-- Summary -->
     <div class="invoice-summary">
