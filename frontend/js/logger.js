@@ -37,5 +37,17 @@ class Logger {
   }
 }
 
+// Create global logger instance
 const logger = new Logger();
 window.logger = logger;
+
+// Fallback: If logger is not loaded, create a simple console wrapper
+if (typeof window.logger === 'undefined') {
+  window.logger = {
+    log: console.log.bind(console),
+    info: console.info.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
+    debug: console.debug.bind(console)
+  };
+}

@@ -199,7 +199,8 @@ class StateManager {
     this.migrateGuestCart();
     
     // Log for debugging
-    logger.info('User logged in successfully:', user.email);
+    const log = typeof logger !== 'undefined' ? logger : console;
+    log.info('User logged in successfully:', user.email);
   }
 
   async migrateGuestCart() {

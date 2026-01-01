@@ -12,7 +12,9 @@ const getApiUrl = () => {
 };
 
 const API_URL = getApiUrl();
-logger.info('API URL:', API_URL);
+// Use logger if available, otherwise fallback to console
+const log = typeof logger !== 'undefined' ? logger : console;
+log.info('API URL:', API_URL);
 
 class API {
   constructor() {
@@ -52,7 +54,8 @@ class API {
       if (!response.ok) {
         // Handle 401 Unauthorized - token might be expired
         if (response.status === 401 && !skipAuth) {
-          logger.warn('Token expired or invalid, clearing auth state');
+          const log = typeof logger !== 'undefined' ? logger : console;
+          log.warn('Token expired or invalid, clearing auth state');
           this.clearToken();
           // Don't auto-redirect, let the page handle it
         }
