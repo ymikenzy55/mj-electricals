@@ -1,0 +1,118 @@
+/* Admin Dashboard Notifications */
+#alert-container {
+  margin-bottom: 1.5rem;
+}
+
+.admin-notification {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  animation: slideInDown 0.4s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.admin-notification.info {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-left: 4px solid #2196f3;
+}
+
+.admin-notification.warning {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  border-left: 4px solid #ff9800;
+}
+
+.admin-notification.error {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  border-left: 4px solid #f44336;
+}
+
+.notification-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: #1a1a1a;
+}
+
+.notification-message {
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.notification-action {
+  padding: 0.5rem 1rem;
+  background: rgba(0,0,0,0.1);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.notification-action:hover {
+  background: rgba(0,0,0,0.2);
+  transform: translateY(-1px);
+}
+
+.notification-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 1.2rem;
+  padding: 0.25rem;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.notification-close:hover {
+  opacity: 1;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .admin-notification {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .notification-icon {
+    font-size: 1.5rem;
+  }
+
+  .notification-action {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
   <link rel="stylesheet" href="../css/admin-dashboard-enhanced.css">
+  <link rel="stylesheet" href="../css/admin-notifications.css">
   <script src="../js/admin-mobile-toggle.js" defer></script>
 </head>
 <body>
@@ -432,7 +433,7 @@
   <script src="../js/utils.js"></script>
   <script src="../js/toast.js"></script>
   <script src="../js/modal.js"></script>
-  <script src="../js/api.js"></script>
+  <script src="../js/logger.js"></script>`n  <script src="../js/api.js"></script>
   <script src="../js/state.js"></script>
   <script src="../js/socket.js"></script>
   <script src="../js/auth.js"></script>
@@ -525,10 +526,89 @@
         // Check for pending reviews
         await updatePendingReviewsBadge();
 
+        // Show notifications for new orders and out-of-stock products
+        await showAdminNotifications(response.stats);
+
         // Load financial analytics for today
         loadFinancialAnalytics();
       } catch (error) {
         console.error('Failed to load stats:', error);
+      }
+    }
+
+    // Show admin notifications on page load
+    async function showAdminNotifications(stats) {
+      const alertContainer = document.getElementById('alert-container');
+      const notifications = [];
+
+      // Check for pending orders
+      if (stats.pendingOrders > 0) {
+        notifications.push({
+          type: 'info',
+          icon: '🔔',
+          title: `${stats.pendingOrders} New Order${stats.pendingOrders > 1 ? 's' : ''}`,
+          message: `You have ${stats.pendingOrders} pending order${stats.pendingOrders > 1 ? 's' : ''} waiting for processing.`,
+          action: () => showSection('orders')
+        });
+      }
+
+      // Check for out-of-stock products
+      try {
+        const response = await api.getProducts({ limit: 1000 });
+        const outOfStockProducts = response.products.filter(p => p.stock === 0);
+        const lowStockProducts = response.products.filter(p => p.stock > 0 && p.stock <= 5);
+
+        if (outOfStockProducts.length > 0) {
+          notifications.push({
+            type: 'error',
+            icon: '🚨',
+            title: `${outOfStockProducts.length} Product${outOfStockProducts.length > 1 ? 's' : ''} Out of Stock`,
+            message: `${outOfStockProducts.map(p => p.name).slice(0, 3).join(', ')}${outOfStockProducts.length > 3 ? ` and ${outOfStockProducts.length - 3} more` : ''}`,
+            action: () => showSection('products')
+          });
+        }
+
+        if (lowStockProducts.length > 0) {
+          notifications.push({
+            type: 'warning',
+            icon: '⚠️',
+            title: `${lowStockProducts.length} Product${lowStockProducts.length > 1 ? 's' : ''} Low on Stock`,
+            message: `${lowStockProducts.map(p => `${p.name} (${p.stock} left)`).slice(0, 2).join(', ')}${lowStockProducts.length > 2 ? ` and ${lowStockProducts.length - 2} more` : ''}`,
+            action: () => showSection('products')
+          });
+        }
+      } catch (error) {
+        console.error('Failed to check stock:', error);
+      }
+
+      // Check for pending feedback
+      if (stats.pendingFeedbacks > 0) {
+        notifications.push({
+          type: 'info',
+          icon: '💬',
+          title: `${stats.pendingFeedbacks} New Feedback`,
+          message: `You have ${stats.pendingFeedbacks} customer feedback${stats.pendingFeedbacks > 1 ? 's' : ''} waiting for response.`,
+          action: () => showSection('feedback')
+        });
+      }
+
+      // Display notifications
+      if (notifications.length > 0) {
+        alertContainer.innerHTML = notifications.map((notif, index) => `
+          <div class="admin-notification ${notif.type}" style="animation-delay: ${index * 0.1}s">
+            <div class="notification-icon">${notif.icon}</div>
+            <div class="notification-content">
+              <div class="notification-title">${notif.title}</div>
+              <div class="notification-message">${notif.message}</div>
+            </div>
+            <button class="notification-action" onclick="event.stopPropagation(); ${notif.action.toString().match(/showSection\('([^']+)'\)/)?.[0] || ''}">
+              View
+            </button>
+            <button class="notification-close" onclick="this.parentElement.remove()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `).join('');
       }
     }
 
@@ -1557,3 +1637,4 @@
   </script>
 </body>
 </html>
+
