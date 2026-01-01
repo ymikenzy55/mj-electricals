@@ -1,0 +1,49 @@
+/* Breadcrumbs Styling */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.breadcrumbs a {
+  color: var(--primary-orange, #ff6b35);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+  color: var(--primary-orange-dark, #e55a25);
+  text-decoration: underline;
+}
+
+.breadcrumbs .separator {
+  color: #999;
+  margin: 0 0.25rem;
+}
+
+.breadcrumbs .current {
+  color: #333;
+  font-weight: 500;
+}
+
+.breadcrumbs i {
+  font-size: 0.85rem;
+  margin-right: 0.25rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .breadcrumbs {
+    font-size: 0.85rem;
+    padding: 0.75rem 0;
+  }
+  
+  .breadcrumbs i {
+    font-size: 0.75rem;
+  }
+}
