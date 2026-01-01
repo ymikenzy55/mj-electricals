@@ -226,6 +226,19 @@
   <script src="../js/auth.js"></script>
   <script src="../js/invoice.js"></script>
   <script>
+    // Wait for auth to load before showing UI
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load user data first
+      await stateManager.loadUser();
+      
+      // Update UI based on auth state
+      const state = stateManager.getState();
+      if (state.isAuthenticated && state.user) {
+        // User is logged in, update UI
+        updateMobileMenuAuth();
+      }
+    });
+    
     // Mobile Menu Functions
     function toggleMobileMenu() {
       const sidebar = document.getElementById('mobile-menu-sidebar');

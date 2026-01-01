@@ -126,7 +126,7 @@ class CompareManager {
     };
     
     const icon = document.createElement('i');
-    icon.className = this.isInCompare(productId) ? 'fas fa-balance-scale' : 'far fa-balance-scale';
+    icon.className = this.isInCompare(productId) ? 'fas fa-exchange-alt' : 'far fa-exchange-alt';
     button.appendChild(icon);
     
     button.title = this.isInCompare(productId) ? 'Remove from comparison' : 'Add to comparison';
