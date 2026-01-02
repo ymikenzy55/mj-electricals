@@ -110,8 +110,22 @@ app.use((req, res) => {
       message: 'Route not found'
     });
   } else {
-    // For frontend routes, serve index.html (SPA fallback)
-    res.sendFile(path.join(__dirname, '../frontend/pages/index.html'));
+    // For frontend routes, try to serve the HTML file or fallback to 404.html
+    const requestedFile = req.path.endsWith('.html') ? req.path : `${req.path}.html`;
+    const filePath = path.join(__dirname, '../frontend', requestedFile);
+    const fs = require('fs');
+    
+    if (fs.existsSync(filePath)) {
+      res.sendFile(filePath);
+    } else {
+      // Send 404 page if it exists, otherwise send index
+      const notFoundPath = path.join(__dirname, '../frontend/404.html');
+      if (fs.existsSync(notFoundPath)) {
+        res.status(404).sendFile(notFoundPath);
+      } else {
+        res.status(404).sendFile(path.join(__dirname, '../frontend/index.html'));
+      }
+    }
   }
 });
 
