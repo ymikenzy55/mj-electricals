@@ -57,6 +57,9 @@
   </style>
 </head>
 <body>
+  <!-- Company Contact Top Bar -->
+  <div id="company-topbar-container"></div>
+  
   <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -218,24 +221,33 @@
     </div>
   </div>
 
+  <script src="../js/company-topbar-loader.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/toast.js"></script>
   <script src="../js/modal.js"></script>
-  <script src="../js/logger.js"></script>`n  <script src="../js/api.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
   <script src="../js/state.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/invoice.js"></script>
   <script>
-    // Wait for auth to load before showing UI
+    // Prevent logout on payment success page
+    // Ensure user session is maintained
     document.addEventListener('DOMContentLoaded', async () => {
-      // Load user data first
-      await stateManager.loadUser();
-      
-      // Update UI based on auth state
-      const state = stateManager.getState();
-      if (state.isAuthenticated && state.user) {
-        // User is logged in, update UI
-        updateMobileMenuAuth();
+      try {
+        // Force reload user data to maintain session
+        await stateManager.loadUser();
+        
+        const state = stateManager.getState();
+        if (state.isAuthenticated && state.user) {
+          logger.info('User authenticated on payment success page:', state.user.name);
+          // Update UI based on auth state
+          updateMobileMenuAuth();
+        } else {
+          logger.warn('User not authenticated on payment success page');
+        }
+      } catch (error) {
+        logger.error('Error loading user on payment success:', error);
       }
     });
     

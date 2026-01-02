@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../css/add-to-cart-responsive.css">
   <link rel="stylesheet" href="../css/breadcrumbs.css">
   <link rel="stylesheet" href="../css/mobile-fixes-phase2.css">
+  <link rel="stylesheet" href="../css/product-details-responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Product Details Modern Redesign */
@@ -424,6 +425,9 @@
   </style>
 </head>
 <body>
+  <!-- Company Contact Top Bar -->
+  <div id="company-topbar-container"></div>
+  
   <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -575,19 +579,22 @@
   </nav>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/company-topbar-loader.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/toast.js"></script>
   <script src="../js/discount.js"></script>
   <script src="../js/modal.js"></script>
-  <script src="../js/logger.js"></script>`n  <script src="../js/api.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
   <script src="../js/state.js"></script>
   <script src="../js/socket.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/breadcrumbs.js"></script>
   <script>
     // Initialize breadcrumbs with product name
-    const urlParams = new URLSearchParams(window.location.search);
-    const productName = urlParams.get('name') || 'Product Details';
+    // Note: urlParams is declared later in the main script
+    const breadcrumbUrlParams = new URLSearchParams(window.location.search);
+    const productName = breadcrumbUrlParams.get('name') || 'Product Details';
     breadcrumbManager.insertCustom([
       { name: 'Products', url: 'products.html', icon: 'fas fa-box' },
       { name: productName, url: null, icon: 'fas fa-info-circle' }
@@ -682,6 +689,7 @@
       }
     }
 
+    // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
     let currentProduct = null;

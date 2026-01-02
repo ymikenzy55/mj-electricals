@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,7 +21,7 @@
 
 .admin-preloader-content {
   text-align: center;
-  color: white;
+  color: #1f2937;
 }
 
 .admin-preloader-logo {
@@ -48,8 +48,8 @@
 .admin-spinner {
   width: 60px;
   height: 60px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid white;
+  border: 4px solid rgba(31, 41, 55, 0.1);
+  border-top: 4px solid #ff6b35;
   border-radius: 50%;
   animation: adminSpin 1s linear infinite;
   margin: 0 auto 2rem;
@@ -64,7 +64,7 @@
 .admin-progress-bar {
   width: 200px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(31, 41, 55, 0.1);
   border-radius: 2px;
   margin: 2rem auto 1rem;
   overflow: hidden;
@@ -72,7 +72,7 @@
 
 .admin-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+  background: linear-gradient(90deg, #ff6b35, #f7931e, #ff8c42);
   border-radius: 2px;
   animation: adminProgress 3s ease-in-out infinite;
 }

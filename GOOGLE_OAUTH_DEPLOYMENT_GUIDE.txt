@@ -1,0 +1,107 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    GOOGLE OAUTH DEPLOYMENT CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════════
+
+ISSUE: Google OAuth doesn't work in production (Vercel + Render)
+REASON: Callback URL is set to localhost instead of production URLs
+
+═══════════════════════════════════════════════════════════════════════════════
+                        STEP-BY-STEP FIX INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: UPDATE GOOGLE CLOUD CONSOLE
+────────────────────────────────────────────────────────────────────────────────
+
+1. Go to: https://console.cloud.google.com/
+2. Select your project
+3. Navigate to: APIs & Services > Credentials
+4. Click on your OAuth 2.0 Client ID
+5. Under "Authorized redirect URIs", ADD these URLs:
+
+   ✅ https://mj-electricals.onrender.com/api/auth/google/callback
+   ✅ http://localhost:5000/api/auth/google/callback (keep for local testing)
+
+6. Click SAVE
+
+STEP 2: UPDATE RENDER ENVIRONMENT VARIABLES
+────────────────────────────────────────────────────────────────────────────────
+
+1. Go to: https://dashboard.render.com/
+2. Select your backend service (mj-electricals)
+3. Go to: Environment tab
+4. Update/Add these variables:
+
+   GOOGLE_CLIENT_ID=YOUR_ACTUAL_GOOGLE_CLIENT_ID
+   GOOGLE_CLIENT_SECRET=YOUR_ACTUAL_GOOGLE_CLIENT_SECRET
+   GOOGLE_CALLBACK_URL=https://mj-electricals.onrender.com/api/auth/google/callback
+   FRONTEND_URL=https://your-vercel-app.vercel.app
+
+   NOTE: Use your actual Google OAuth credentials from Google Cloud Console
+
+5. Click "Save Changes"
+6. Render will automatically redeploy
+
+STEP 3: UPDATE VERCEL ENVIRONMENT VARIABLES (if needed)
+────────────────────────────────────────────────────────────────────────────────
+
+1. Go to: https://vercel.com/dashboard
+2. Select your frontend project
+3. Go to: Settings > Environment Variables
+4. Ensure you have:
+
+   VITE_API_URL=https://mj-electricals.onrender.com/api
+   (or whatever environment variable name your frontend uses)
+
+5. Redeploy if needed
+
+STEP 4: TEST THE OAUTH FLOW
+────────────────────────────────────────────────────────────────────────────────
+
+1. Go to your production site: https://your-vercel-app.vercel.app
+2. Click "Login"
+3. Click "Sign in with Google"
+4. You should be redirected to Google login
+5. After authentication, you should be redirected back to your site with a token
+6. You should be logged in automatically
+
+═══════════════════════════════════════════════════════════════════════════════
+                            TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+ERROR: "redirect_uri_mismatch"
+SOLUTION: The callback URL in Google Console doesn't match the one in your .env
+         Make sure they are EXACTLY the same (including https/http)
+
+ERROR: "invalid_client"
+SOLUTION: Check that GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are correct
+
+ERROR: "User not logged in after OAuth"
+SOLUTION: Check that FRONTEND_URL is set correctly in Render environment
+
+ERROR: "CORS error"
+SOLUTION: Make sure your backend CORS configuration allows your frontend URL
+
+═══════════════════════════════════════════════════════════════════════════════
+                        CURRENT CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════════
+
+Backend (Render): https://mj-electricals.onrender.com
+Frontend (Vercel): [YOUR_VERCEL_URL]
+
+Google OAuth Callback: https://mj-electricals.onrender.com/api/auth/google/callback
+
+After OAuth success, user is redirected to:
+[YOUR_VERCEL_URL]/pages/login.html?token=[JWT_TOKEN]&name=[USER_NAME]
+
+═══════════════════════════════════════════════════════════════════════════════
+                            QUICK CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Google Console has production callback URL
+□ Render has GOOGLE_CALLBACK_URL set to production URL
+□ Render has FRONTEND_URL set to Vercel URL
+□ Render has GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
+□ Backend redeployed after environment variable changes
+□ Tested OAuth flow in production
+
+═══════════════════════════════════════════════════════════════════════════════

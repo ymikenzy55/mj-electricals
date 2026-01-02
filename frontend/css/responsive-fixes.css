@@ -558,8 +558,13 @@
     padding: 1rem;
   }
   
-  .filters-sidebar.open {
+  .filters-sidebar.active {
     left: 0;
+  }
+  
+  /* Close button visible on mobile */
+  .sidebar-close {
+    display: block !important;
   }
   
   /* Filter overlay */
@@ -2450,3 +2455,32 @@
 
 .stat-label {
   font-size: 0.95rem !im
+
+/*
+ ========================================
+   CART PAGE - QUANTITY BUTTON FIXES
+   ======================================== */
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--gray-100);
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--gray-300);
+}
+
+.quantity-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--primary-orange);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: c
