@@ -94,6 +94,29 @@ class API {
     });
   }
 
+  async updateProfile(profileData) {
+    return this.request('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(profileData)
+    });
+  }
+
+  async forgotPassword(email) {
+    return this.request('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+      skipAuth: true
+    });
+  }
+
+  async resetPassword(resetData) {
+    return this.request('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(resetData),
+      skipAuth: true
+    });
+  }
+
   // Products
   async getProducts(params = {}) {
     const query = new URLSearchParams(params).toString();

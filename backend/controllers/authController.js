@@ -162,6 +162,123 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
+// Request password reset (generates a temporary reset token)
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No user found with this email'
+      });
+    }
+
+    // Generate reset token (6-digit code)
+    const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
+    await user.save();
+
+    // In production, send email with reset token
+    // For now, return it in response (remove this in production)
+    res.json({
+      success: true,
+      message: 'Password reset code sent to your email',
+      resetToken // Remove this in production - only for testing
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// Reset password with token
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, resetToken, newPassword } = req.body;
+
+    const user = await User.findOne({
+      email,
+      resetPasswordToken: resetToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token'
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 8 characters long'
+      });
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// Update profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    const user = await User.findById(req.user.id);
+
+    if (email && email !== user.email) {
+      const emailExists = await User.findOne({ email });
+      if (emailExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email already in use'
+        });
+      }
+      user.email = email;
+    }
+
+    if (name) user.name = name;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 // Google OAuth callback
 exports.googleCallback = async (req, res) => {
   try {
