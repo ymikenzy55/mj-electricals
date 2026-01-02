@@ -459,16 +459,15 @@
   <script>
     // Wait for user to load before checking role
     document.addEventListener('DOMContentLoaded', async () => {
-      // Hide preloader after minimum time
-      setTimeout(() => {
-        const preloader = document.getElementById('adminPreloader');
+      const preloader = document.getElementById('adminPreloader');
+      
+      // Check auth first
+      if (!requireAuth()) {
+        // Hide preloader immediately if not authenticated
         if (preloader) {
           preloader.classList.add('hidden');
           setTimeout(() => preloader.remove(), 500);
         }
-      }, 2000);
-
-      if (!requireAuth()) {
         return;
       }
       
@@ -478,12 +477,25 @@
       
       // Check if user is admin or super admin
       if (!state.user || !['admin', 'superadmin'].includes(state.user.role)) {
+        // Hide preloader before redirect
+        if (preloader) {
+          preloader.classList.add('hidden');
+          setTimeout(() => preloader.remove(), 500);
+        }
         window.location.href = 'index.html';
         return;
       }
       
       // User is authenticated and has admin access, load the page
       loadStats();
+      
+      // Hide preloader after content loads
+      setTimeout(() => {
+        if (preloader) {
+          preloader.classList.add('hidden');
+          setTimeout(() => preloader.remove(), 500);
+        }
+      }, 1000);
       
       // Restore last viewed section
       const lastSection = localStorage.getItem('adminCurrentSection');
