@@ -12,7 +12,7 @@ function requireAuth(redirectMessage = 'Please sign in to continue') {
     
     // Redirect to login after a short delay
     setTimeout(() => {
-      window.location.href = '/pages/login.html';
+      window.location.href = 'login.html';
     }, 1000);
     return false;
   }
@@ -22,7 +22,7 @@ function requireAuth(redirectMessage = 'Please sign in to continue') {
 function requireRole(allowedRoles) {
   const state = stateManager.getState();
   if (!state.user || !allowedRoles.includes(state.user.role)) {
-    window.location.href = '/pages/index.html';
+    window.location.href = 'index.html';
     return false;
   }
   return true;

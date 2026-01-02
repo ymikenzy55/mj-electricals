@@ -3,7 +3,7 @@
   // Create preloader HTML
   const preloaderHTML = `
     <div class="preloader" id="preloader">
-      <img src="../mj-images/mj-logo.gif" alt="Loading..." class="preloader-logo">
+      <img src="mj-images/mj-logo.gif" alt="Loading..." class="preloader-logo">
       <div class="preloader-spinner"></div>
       <p class="preloader-text">Loading...</p>
     </div>
