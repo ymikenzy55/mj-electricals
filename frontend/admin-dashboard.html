@@ -15,20 +15,6 @@
   <script src="js/admin-mobile-toggle.js" defer></script>
 </head>
 <body>
-  <!-- Admin Preloader -->
-  <div class="admin-preloader" id="adminPreloader">
-    <div class="admin-preloader-content">
-      <img src="mj-images/mj-logo.gif" alt="MJ Electricals" class="admin-preloader-logo">
-      <h1 class="admin-preloader-title">MJ ELECTRICALS</h1>
-      <p class="admin-preloader-subtitle">Admin Dashboard</p>
-      <div class="admin-spinner"></div>
-      <div class="admin-progress-bar">
-        <div class="admin-progress-fill"></div>
-      </div>
-      <p class="admin-loading-text">Loading dashboard...</p>
-    </div>
-  </div>
-
   <nav class="navbar" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff8c42 100%); box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);">
     <div class="nav-container">
       <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
@@ -455,82 +441,9 @@
   <script src="js/socket.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/mobile-table-helper.js"></script>
-  <script src="js/admin-reviews.js?v=2"></script>
   <script>
     // Wait for user to load before checking role
     document.addEventListener('DOMContentLoaded', async () => {
-      const preloader = document.getElementById('adminPreloader');
-      
-      // Failsafe: Always hide preloader after 5 seconds max
-      const failsafeTimeout = setTimeout(() => {
-        console.warn('Preloader failsafe triggered - hiding after 5s');
-        if (preloader) {
-          preloader.classList.add('hidden');
-          setTimeout(() => preloader.remove(), 500);
-        }
-      }, 5000);
-      
-      try {
-        // Check auth first
-        if (!requireAuth()) {
-          clearTimeout(failsafeTimeout);
-          // Hide preloader immediately if not authenticated
-          if (preloader) {
-            preloader.classList.add('hidden');
-            setTimeout(() => preloader.remove(), 500);
-          }
-          return;
-        }
-        
-        // Wait for user data to load with timeout
-        await Promise.race([
-          stateManager.loadUser(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
-        ]);
-        
-        const state = stateManager.getState();
-        
-        // Check if user is admin or super admin
-        if (!state.user || !['admin', 'superadmin'].includes(state.user.role)) {
-          clearTimeout(failsafeTimeout);
-          // Hide preloader before redirect
-          if (preloader) {
-            preloader.classList.add('hidden');
-            setTimeout(() => preloader.remove(), 500);
-          }
-          console.log('User role:', state.user?.role, '- Redirecting to home');
-          window.location.href = 'index.html';
-          return;
-        }
-        
-        // User is authenticated and has admin access, load the page
-        console.log('Admin authenticated, loading dashboard...');
-        loadStats();
-        
-        // Hide preloader after content loads
-        clearTimeout(failsafeTimeout);
-        setTimeout(() => {
-          if (preloader) {
-            preloader.classList.add('hidden');
-            setTimeout(() => preloader.remove(), 500);
-          }
-        }, 1000);
-        
-      } catch (error) {
-        console.error('Admin dashboard load error:', error);
-        clearTimeout(failsafeTimeout);
-        // Hide preloader on error
-        if (preloader) {
-          preloader.classList.add('hidden');
-          setTimeout(() => preloader.remove(), 500);
-        }
-        // Redirect to login on error
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 1000);
-      }
-      
-      // Restore last viewed section
       const lastSection = localStorage.getItem('adminCurrentSection');
       if (lastSection && lastSection !== 'overview') {
         setTimeout(() => {
