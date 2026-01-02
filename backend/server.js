@@ -52,8 +52,24 @@ io.on('connection', (socket) => {
   });
 });
 
-// Health check route
-app.get('/', (req, res) => {
+// API Routes (must be before static files)
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/products', require('./routes/productRoutes'));
+app.use('/api/cart', require('./routes/cartRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
+app.use('/api/feedback', require('./routes/feedbackRoutes'));
+app.use('/api/contact', require('./routes/contactRoutes'));
+app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/newsletter', require('./routes/newsletterRoutes'));
+app.use('/api/banners', require('./routes/bannerRoutes'));
+app.use('/api/wishlist', require('./routes/wishlistRoutes'));
+app.use('/api/reviews', require('./routes/reviewRoutes'));
+app.use('/api/delivery-charges', require('./routes/deliveryChargeRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
+
+// Health check route for API
+app.get('/api', (req, res) => {
   res.json({
     success: true,
     message: 'MJ Electricals API is running',
@@ -75,22 +91,6 @@ app.get('/', (req, res) => {
     }
   });
 });
-
-// Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/products', require('./routes/productRoutes'));
-app.use('/api/cart', require('./routes/cartRoutes'));
-app.use('/api/orders', require('./routes/orderRoutes'));
-app.use('/api/feedback', require('./routes/feedbackRoutes'));
-app.use('/api/contact', require('./routes/contactRoutes'));
-app.use('/api/categories', require('./routes/categoryRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-app.use('/api/newsletter', require('./routes/newsletterRoutes'));
-app.use('/api/banners', require('./routes/bannerRoutes'));
-app.use('/api/wishlist', require('./routes/wishlistRoutes'));
-app.use('/api/reviews', require('./routes/reviewRoutes'));
-app.use('/api/delivery-charges', require('./routes/deliveryChargeRoutes'));
-app.use('/api/payments', require('./routes/paymentRoutes'));
 
 // Error handler
 app.use((err, req, res, next) => {
