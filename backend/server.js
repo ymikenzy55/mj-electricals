@@ -30,6 +30,24 @@ app.use(passport.initialize());
 
 // Serve static files from frontend directory
 const path = require('path');
+const fs = require('fs');
+
+// Custom middleware to handle clean URLs (without .html extension)
+app.use((req, res, next) => {
+  // Skip if it's an API route or already has an extension
+  if (req.path.startsWith('/api') || req.path.includes('.')) {
+    return next();
+  }
+  
+  // Try to find HTML file
+  const htmlPath = path.join(__dirname, '../frontend', `${req.path}.html`);
+  if (fs.existsSync(htmlPath)) {
+    return res.sendFile(htmlPath);
+  }
+  
+  next();
+});
+
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Make io accessible in routes
@@ -105,28 +123,19 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   // If it's an API route, return JSON
   if (req.path.startsWith('/api')) {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       message: 'Route not found'
     });
-  } else {
-    // For frontend routes, try to serve the HTML file or fallback to 404.html
-    const requestedFile = req.path.endsWith('.html') ? req.path : `${req.path}.html`;
-    const filePath = path.join(__dirname, '../frontend', requestedFile);
-    const fs = require('fs');
-    
-    if (fs.existsSync(filePath)) {
-      res.sendFile(filePath);
-    } else {
-      // Send 404 page if it exists, otherwise send index
-      const notFoundPath = path.join(__dirname, '../frontend/404.html');
-      if (fs.existsSync(notFoundPath)) {
-        res.status(404).sendFile(notFoundPath);
-      } else {
-        res.status(404).sendFile(path.join(__dirname, '../frontend/index.html'));
-      }
-    }
   }
+  
+  // For frontend routes, send 404 page
+  const notFoundPath = path.join(__dirname, '../frontend/404.html');
+  if (fs.existsSync(notFoundPath)) {
+    return res.status(404).sendFile(notFoundPath);
+  }
+  
+  res.status(404).send('Page not found');
 });
 
 const PORT = process.env.PORT || 5000;
