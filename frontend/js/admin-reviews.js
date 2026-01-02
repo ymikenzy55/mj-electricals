@@ -49,7 +49,14 @@ async function filterReviews(status) {
     container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading reviews...</p></div>';
     
     const params = status === 'all' ? {} : { status };
+    logger.info('Fetching reviews with params:', params);
     const response = await api.getAllReviews(params);
+    logger.info('Reviews response:', response);
+    
+    if (!response || !response.reviews) {
+      throw new Error('Invalid response format from server');
+    }
+    
     window.allReviews = response.reviews || [];
     displayReviews(window.allReviews);
   } catch (error) {
