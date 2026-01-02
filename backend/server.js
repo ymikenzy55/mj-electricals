@@ -92,6 +92,20 @@ app.get('/api', (req, res) => {
   });
 });
 
+// Explicit routes for HTML pages (for Vercel serverless compatibility)
+const pages = [
+  'products', 'cart', 'checkout', 'login', 'register', 'about', 'contact',
+  'categories', 'wishlist', 'compare', 'faq', 'user-dashboard',
+  'admin-dashboard', 'super-admin-dashboard', 'product-details',
+  'payment-success', 'payment-failed'
+];
+
+pages.forEach(page => {
+  app.get(`/${page}`, (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', `${page}.html`));
+  });
+});
+
 // Serve static files (CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname, '../frontend')));
 
