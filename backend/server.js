@@ -28,6 +28,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
+// Serve static files from frontend directory
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 // Make io accessible in routes
 app.use((req, res, next) => {
   req.io = io;
@@ -99,10 +103,16 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
-  });
+  // If it's an API route, return JSON
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({
+      success: false,
+      message: 'Route not found'
+    });
+  } else {
+    // For frontend routes, serve index.html (SPA fallback)
+    res.sendFile(path.join(__dirname, '../frontend/pages/index.html'));
+  }
 });
 
 const PORT = process.env.PORT || 5000;
