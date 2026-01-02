@@ -381,9 +381,14 @@
     </div>
     
     <div class="footer-bottom">
-      <p>&copy; 2024 MJE E-Commerce. All rights reserved.</p>
+      <p>&copy; <span id="current-year">2025</span> MJ Electricals. All rights reserved.</p>
     </div>
   </footer>
+
+  <script>
+    // Set dynamic copyright year
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="../js/utils.js"></script>

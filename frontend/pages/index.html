@@ -201,9 +201,14 @@
     </div>
     
     <div class="footer-bottom">
-      <p>&copy; 2024 MJE E-Commerce. All rights reserved.</p>
+      <p>&copy; <span id="current-year">2025</span> MJ Electricals. All rights reserved.</p>
     </div>
   </footer>
+
+  <script>
+    // Set dynamic copyright year
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
 
   <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
     <i class="fas fa-arrow-up"></i>
