@@ -1,9 +1,9 @@
 // Admin Reviews Management Functions
 // This file contains all review management functions for the admin dashboard
 
-// Global variables
-let allReviews = [];
-let currentReviewFilter = 'pending';
+// Global variables (using window to avoid conflicts)
+window.allReviews = [];
+window.currentReviewFilter = 'pending';
 
 // Load reviews with filter
 async function loadReviews() {
@@ -29,7 +29,7 @@ async function loadReviews() {
 
 // Filter reviews by status
 async function filterReviews(status) {
-  currentReviewFilter = status;
+  window.currentReviewFilter = status;
   
   // Update button states
   document.querySelectorAll('[id^="filter-"][id$="-reviews"]').forEach(btn => {
@@ -50,8 +50,8 @@ async function filterReviews(status) {
     
     const params = status === 'all' ? {} : { status };
     const response = await api.getAllReviews(params);
-    allReviews = response.reviews || [];
-    displayReviews(allReviews);
+    window.allReviews = response.reviews || [];
+    displayReviews(window.allReviews);
   } catch (error) {
     logger.error('Failed to filter reviews:', error);
     container.innerHTML = `
@@ -72,7 +72,7 @@ function displayReviews(reviews) {
   if (!container) return;
 
   if (reviews.length === 0) {
-    container.innerHTML = `<p style="text-align: center; padding: 2rem; color: var(--gray-600);">No ${currentReviewFilter === 'all' ? '' : currentReviewFilter} reviews found.</p>`;
+    container.innerHTML = `<p style="text-align: center; padding: 2rem; color: var(--gray-600);">No ${window.currentReviewFilter === 'all' ? '' : window.currentReviewFilter} reviews found.</p>`;
     return;
   }
 
@@ -144,7 +144,7 @@ async function updateReviewStatus(reviewId, status) {
     toast.success(`Review ${status} successfully`);
     
     // Reload current filter
-    await filterReviews(currentReviewFilter);
+    await filterReviews(window.currentReviewFilter);
     await updatePendingReviewsBadge();
   } catch (error) {
     logger.error('Failed to update review status:', error);
@@ -160,7 +160,7 @@ async function deleteAdminReview(reviewId) {
       toast.success('Review deleted successfully');
       
       // Reload current filter
-      await filterReviews(currentReviewFilter);
+      await filterReviews(window.currentReviewFilter);
       await updatePendingReviewsBadge();
     } catch (error) {
       logger.error('Failed to delete review:', error);
