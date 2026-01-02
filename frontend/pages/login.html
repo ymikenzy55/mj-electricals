@@ -102,8 +102,16 @@
 
     // Google Sign-In function
     function signInWithGoogle() {
-      // Get API URL
-      const apiUrl = api.constructor.name ? API_URL : (typeof API_URL !== 'undefined' ? API_URL : 'https://mj-electricals.onrender.com/api');
+      // Detect environment and get correct API URL
+      const hostname = window.location.hostname;
+      let apiUrl;
+      
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        apiUrl = 'http://localhost:5000/api';
+      } else {
+        // Production - use Render backend
+        apiUrl = 'https://mj-electricals.onrender.com/api';
+      }
       
       // Redirect to Google OAuth
       window.location.href = `${apiUrl}/auth/google`;

@@ -11,6 +11,8 @@
 - **NEVER** include real API keys, passwords, or credentials in any file
 - Always use placeholders like `YOUR_API_KEY_HERE` or `<your-password>`
 - Double-check before committing anything
+- **NEVER** push .env file to GitHub (it's in .gitignore)
+- Only push .env.example with placeholder values
 
 ### 3. GIT PUSH POLICY
 - **ALWAYS ASK** before pushing to GitHub
@@ -30,12 +32,20 @@
 - Show, don't tell
 - Get straight to the point
 
+### 6. DON'T BREAK EXISTING FUNCTIONALITY
+- Before making changes, understand existing code
+- Test changes don't break other features
+- Only modify what's necessary
+- Keep backward compatibility
+
 ## What TO Do
 ✅ Fix bugs in code
 ✅ Add features to backend/frontend
 ✅ Test and verify changes work
 ✅ Ask before major changes
 ✅ Keep responses short
+✅ Use placeholders for secrets
+✅ Check .gitignore before pushing
 
 ## What NOT To Do
 ❌ Create MD files
@@ -43,3 +53,5 @@
 ❌ Auto-push without asking
 ❌ Write long explanations
 ❌ Create documentation files
+❌ Break existing functionality
+❌ Push .env file
