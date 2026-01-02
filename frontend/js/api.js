@@ -7,12 +7,7 @@ const getApiUrl = () => {
     return 'http://localhost:5000/api';
   }
   
-  // Vercel deployment - API is on same domain
-  if (hostname.includes('vercel.app')) {
-    return `${window.location.origin}/api`;
-  }
-  
-  // Production - Render backend (fallback)
+  // Production - Always use Render backend for Vercel deployments
   return 'https://mj-electricals.onrender.com/api';
 };
 
