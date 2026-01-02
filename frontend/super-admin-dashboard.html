@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Admin Dashboard - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="../css/responsive-fixes.css">
-  <link rel="stylesheet" href="../css/admin-dashboard-enhanced.css">
-  <script src="../js/admin-mobile-toggle.js" defer></script>
+  <link rel="stylesheet" href="css/responsive-fixes.css">
+  <link rel="stylesheet" href="css/admin-dashboard-enhanced.css">
+  <script src="js/admin-mobile-toggle.js" defer></script>
 </head>
 <body>
   <nav class="navbar" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff8c42 100%); box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);">
     <div class="nav-container">
       <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
-        <img src="../mj-images/mj-logo.gif" alt="MJE Super Admin" style="height: 45px; vertical-align: middle; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+        <img src="mj-images/mj-logo.gif" alt="MJE Super Admin" style="height: 45px; vertical-align: middle; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
         <div style="display: flex; flex-direction: column; line-height: 1.2;">
           <span style="font-weight: 700; font-size: 1.1rem; color: white;">MJ Electricals Ghana Limited</span>
           <span style="font-size: 0.75rem; color: rgba(255,255,255,0.9); font-weight: 500;">Super Admin Dashboard</span>
@@ -278,13 +278,13 @@
   </div>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/toast.js"></script>
-  <script src="../js/modal.js"></script>
-  <script src="../js/api.js"></script>
-  <script src="../js/state.js"></script>
-  <script src="../js/socket.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logger.js"></script>`n  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/socket.js"></script>
+  <script src="js/auth.js"></script>
   <script>
     // Wait for user to load before checking role
     document.addEventListener('DOMContentLoaded', async () => {
@@ -733,7 +733,7 @@
         // Update notification badge
         updateNotificationBadges();
       } catch (error) {
-        document.getElementById('orders-list').innerHTML = '<p>Failed to load orders</p>';
+        document.getElementById('orders-list').innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders available yet</p>';
       }
     }
 
@@ -825,4 +825,5 @@
   </script>
 </body>
 </html>
+
 

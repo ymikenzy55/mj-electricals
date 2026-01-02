@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive-fixes.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/company-topbar-loader.js"></script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
     .checkout-progress {
@@ -117,6 +118,9 @@
   </style>
 </head>
 <body>
+  <!-- Company Contact Top Bar -->
+  <div id="company-topbar-container"></div>
+  
   <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -126,7 +130,7 @@
       </button>
       
       <a href="index.html" class="logo">
-        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
       <div class="nav-icons">
@@ -185,7 +189,7 @@
   <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
   <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
     <div class="mobile-menu-header">
-      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
       <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
         <i class="fas fa-times"></i>
       </button>
@@ -381,18 +385,23 @@
     </div>
     
     <div class="footer-bottom">
-      <p>&copy; 2024 MJE E-Commerce. All rights reserved.</p>
+      <p>&copy; <span id="current-year">2025</span> MJ Electricals. All rights reserved.</p>
     </div>
   </footer>
 
+  <script>
+    // Set dynamic copyright year
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
+
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/toast.js"></script>
-  <script src="../js/modal.js"></script>
-  <script src="../js/api.js"></script>
-  <script src="../js/state.js"></script>
-  <script src="../js/socket.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logger.js"></script>`n  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/socket.js"></script>
+  <script src="js/auth.js"></script>
   <script>
     // Mobile Menu Functions
     function toggleMobileMenu() {
@@ -903,3 +912,4 @@
   </script>
 </body>
 </html>
+

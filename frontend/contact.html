@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive-fixes.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <!-- Company Contact Top Bar -->
+  <div id="company-topbar-container"></div>
+  
   <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -19,7 +22,7 @@
       </button>
       
       <a href="index.html" class="logo">
-        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
       <div class="nav-icons">
@@ -78,7 +81,7 @@
   <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
   <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
     <div class="mobile-menu-header">
-      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px; width: auto; object-fit: contain; max-width: 150px;">
+      <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px; width: auto; object-fit: contain; max-width: 150px;">
       <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
         <i class="fas fa-times"></i>
       </button>
@@ -195,6 +198,10 @@
         <div class="auth-link" style="display:none;">
           <form id="contact-form">
             <div class="form-group">
+              <label>Subject</label>
+              <input type="text" id="subject" required placeholder="What is this about?">
+            </div>
+            <div class="form-group">
               <label>Your Message</label>
               <textarea id="message" rows="6" required 
                         placeholder="Tell us how we can help you..."></textarea>
@@ -233,15 +240,16 @@
     </ul>
   </nav>
 
+    <script src="js/company-topbar-loader.js"></script>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="../js/preloader.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/toast.js"></script>
-  <script src="../js/modal.js"></script>
-  <script src="../js/api.js"></script>
-  <script src="../js/state.js"></script>
-  <script src="../js/socket.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="js/preloader.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logger.js"></script>`n  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/socket.js"></script>
+  <script src="js/auth.js"></script>
   <script>
     // Mobile Menu Functions
     function toggleMobileMenu() {
@@ -323,18 +331,38 @@
     document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      // Get user data from state
+      const state = stateManager.getState();
+      if (!state.isAuthenticated || !state.user) {
+        toast.error('Please login to send a message');
+        return;
+      }
+      
+      const subject = document.getElementById('subject').value;
       const message = document.getElementById('message').value;
+
+      if (!subject || !message) {
+        toast.error('Please fill in all fields');
+        return;
+      }
 
       try {
         const loadingToast = toast.loading('Sending your message...');
-        await api.createFeedback(message);
+        await api.submitContactMessage({ 
+          name: state.user.name,
+          email: state.user.email,
+          subject: subject.trim(),
+          message: message.trim()
+        });
         loadingToast.remove();
         toast.success('Message sent successfully! We\'ll get back to you soon.');
         document.getElementById('contact-form').reset();
       } catch (error) {
+        console.error('Contact error:', error);
         toast.error(error.message || 'Failed to send message. Please try again.');
       }
     });
   </script>
 </body>
 </html>
+

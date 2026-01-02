@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Successful - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive-fixes.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .success-container {
@@ -57,6 +57,9 @@
   </style>
 </head>
 <body>
+  <!-- Company Contact Top Bar -->
+  <div id="company-topbar-container"></div>
+  
   <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -66,7 +69,7 @@
       </button>
       
       <a href="index.html" class="logo">
-        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
       <div class="nav-icons">
@@ -125,7 +128,7 @@
   <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
   <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
     <div class="mobile-menu-header">
-      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
       <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
         <i class="fas fa-times"></i>
       </button>
@@ -218,13 +221,36 @@
     </div>
   </div>
 
-  <script src="../js/utils.js"></script>
-  <script src="../js/modal.js"></script>
-  <script src="../js/api.js"></script>
-  <script src="../js/state.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/invoice.js"></script>
+  <script src="js/company-topbar-loader.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logger.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/invoice.js"></script>
   <script>
+    // Prevent logout on payment success page
+    // Ensure user session is maintained
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Force reload user data to maintain session
+        await stateManager.loadUser();
+        
+        const state = stateManager.getState();
+        if (state.isAuthenticated && state.user) {
+          logger.info('User authenticated on payment success page:', state.user.name);
+          // Update UI based on auth state
+          updateMobileMenuAuth();
+        } else {
+          logger.warn('User not authenticated on payment success page');
+        }
+      } catch (error) {
+        logger.error('Error loading user on payment success:', error);
+      }
+    });
+    
     // Mobile Menu Functions
     function toggleMobileMenu() {
       const sidebar = document.getElementById('mobile-menu-sidebar');
@@ -355,3 +381,4 @@
   </script>
 </body>
 </html>
+

@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Product Details - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <title>Product Details - MJ Electricals</title>
+  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive-fixes.css">
+  <link rel="stylesheet" href="css/add-to-cart-responsive.css">
+  <link rel="stylesheet" href="css/breadcrumbs.css">
+  <link rel="stylesheet" href="css/mobile-fixes-phase2.css">
+  <link rel="stylesheet" href="css/product-details-responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Product Details Modern Redesign */
@@ -421,6 +425,9 @@
   </style>
 </head>
 <body>
+  <!-- Company Contact Top Bar -->
+  <div id="company-topbar-container"></div>
+  
   <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
@@ -430,7 +437,7 @@
       </button>
       
       <a href="index.html" class="logo">
-        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
       <div class="nav-icons">
@@ -489,7 +496,7 @@
   <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
   <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
     <div class="mobile-menu-header">
-      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
       <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
         <i class="fas fa-times"></i>
       </button>
@@ -535,6 +542,8 @@
   <div class="product-detail-container">
     <div id="alert-container"></div>
     
+    <div id="breadcrumb-container"></div>
+    
     <div id="product-content">
       <div class="loading">
         <div class="spinner"></div>
@@ -570,15 +579,27 @@
   </nav>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/toast.js"></script>
-  <script src="../js/discount.js"></script>
-  <script src="../js/modal.js"></script>
-  <script src="../js/api.js"></script>
-  <script src="../js/state.js"></script>
-  <script src="../js/socket.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="js/company-topbar-loader.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/discount.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/logger.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/socket.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/breadcrumbs.js"></script>
   <script>
+    // Initialize breadcrumbs with product name
+    // Note: urlParams is declared later in the main script
+    const breadcrumbUrlParams = new URLSearchParams(window.location.search);
+    const productName = breadcrumbUrlParams.get('name') || 'Product Details';
+    breadcrumbManager.insertCustom([
+      { name: 'Products', url: 'products.html', icon: 'fas fa-box' },
+      { name: productName, url: null, icon: 'fas fa-info-circle' }
+    ]);
+    
     // Mobile Menu Functions
     function toggleMobileMenu() {
       const sidebar = document.getElementById('mobile-menu-sidebar');
@@ -668,6 +689,7 @@
       }
     }
 
+    // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
     let currentProduct = null;
@@ -860,14 +882,24 @@
       // Update buttons
       document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(tabName.toLowerCase())) {
+          btn.classList.add('active');
+        }
       });
-      event.target.classList.add('active');
 
       // Update content
       document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
       });
-      document.getElementById(`${tabName}-tab`).classList.add('active');
+      const targetTab = document.getElementById(`${tabName}-tab`);
+      if (targetTab) {
+        targetTab.classList.add('active');
+      }
+      
+      // Load reviews when switching to reviews tab
+      if (tabName === 'reviews') {
+        loadReviews();
+      }
     }
 
     function changeMainImage(imgSrc, element) {
@@ -1379,3 +1411,4 @@
   </script>
 </body>
 </html>
+
