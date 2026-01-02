@@ -1154,7 +1154,14 @@
 
         container.innerHTML = response.feedbacks.map(fb => `
           <div style="background: var(--gray-light); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
-            <p><strong>${fb.user?.name || 'Unknown User'}</strong> (${fb.user?.email || 'No email'})</p>
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+              <div style="flex: 1;">
+                <p><strong>${fb.user?.name || 'Unknown User'}</strong> (${fb.user?.email || 'No email'})</p>
+              </div>
+              <button onclick="deleteFeedback('${fb._id}')" class="btn" style="background: var(--error-color); padding: 0.5rem 1rem; font-size: 0.9rem;" title="Delete feedback">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
             <p>${fb.message || 'No message'}</p>
             <p><small>${new Date(fb.createdAt).toLocaleString()}</small></p>
             ${fb.status === 'pending' ? `
@@ -1194,6 +1201,20 @@
       } catch (error) {
         showAlert(error.message || 'Failed to send response', 'error');
       }
+    }
+
+    window.deleteFeedback = async function(feedbackId) {
+      Modal.confirm('Are you sure you want to delete this feedback? This action cannot be undone.', async () => {
+        try {
+          await api.deleteFeedback(feedbackId);
+          toast.success('Feedback deleted successfully');
+          loadFeedback();
+          loadStats();
+        } catch (error) {
+          console.error('Delete feedback error:', error);
+          toast.error(error.message || 'Failed to delete feedback');
+        }
+      });
     }
 
     async function loadCategories() {
