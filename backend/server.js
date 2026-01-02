@@ -28,10 +28,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
-// Serve static files from frontend directory
-const path = require('path');
-const fs = require('fs');
-
 // Make io accessible in routes
 app.use((req, res, next) => {
   req.io = io;
@@ -52,24 +48,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// API Routes (MUST be first - before any static file serving)
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/products', require('./routes/productRoutes'));
-app.use('/api/cart', require('./routes/cartRoutes'));
-app.use('/api/orders', require('./routes/orderRoutes'));
-app.use('/api/feedback', require('./routes/feedbackRoutes'));
-app.use('/api/contact', require('./routes/contactRoutes'));
-app.use('/api/categories', require('./routes/categoryRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-app.use('/api/newsletter', require('./routes/newsletterRoutes'));
-app.use('/api/banners', require('./routes/bannerRoutes'));
-app.use('/api/wishlist', require('./routes/wishlistRoutes'));
-app.use('/api/reviews', require('./routes/reviewRoutes'));
-app.use('/api/delivery-charges', require('./routes/deliveryChargeRoutes'));
-app.use('/api/payments', require('./routes/paymentRoutes'));
-
-// Health check route for API
-app.get('/api', (req, res) => {
+// Health check route
+app.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'MJ Electricals API is running',
@@ -92,41 +72,21 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Explicit routes for HTML pages (for Vercel serverless compatibility)
-const pages = [
-  'products', 'cart', 'checkout', 'login', 'register', 'about', 'contact',
-  'categories', 'wishlist', 'compare', 'faq', 'user-dashboard',
-  'admin-dashboard', 'super-admin-dashboard', 'product-details',
-  'payment-success', 'payment-failed'
-];
-
-pages.forEach(page => {
-  app.get(`/${page}`, (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', `${page}.html`));
-  });
-});
-
-// Serve static files (CSS, JS, images, etc.)
-app.use(express.static(path.join(__dirname, '../frontend')));
-
-// Custom middleware to handle clean URLs (without .html extension)
-// This MUST come after static files so .html files are served first
-app.use((req, res, next) => {
-  // Skip if it's an API route
-  if (req.path.startsWith('/api')) {
-    return next();
-  }
-  
-  // If path doesn't have extension, try to find HTML file
-  if (!req.path.includes('.')) {
-    const htmlPath = path.join(__dirname, '../frontend', `${req.path}.html`);
-    if (fs.existsSync(htmlPath)) {
-      return res.sendFile(htmlPath);
-    }
-  }
-  
-  next();
-});
+// Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/products', require('./routes/productRoutes'));
+app.use('/api/cart', require('./routes/cartRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
+app.use('/api/feedback', require('./routes/feedbackRoutes'));
+app.use('/api/contact', require('./routes/contactRoutes'));
+app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/newsletter', require('./routes/newsletterRoutes'));
+app.use('/api/banners', require('./routes/bannerRoutes'));
+app.use('/api/wishlist', require('./routes/wishlistRoutes'));
+app.use('/api/reviews', require('./routes/reviewRoutes'));
+app.use('/api/delivery-charges', require('./routes/deliveryChargeRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -139,21 +99,10 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use((req, res) => {
-  // If it's an API route, return JSON
-  if (req.path.startsWith('/api')) {
-    return res.status(404).json({
-      success: false,
-      message: 'Route not found'
-    });
-  }
-  
-  // For frontend routes, send 404 page
-  const notFoundPath = path.join(__dirname, '../frontend/404.html');
-  if (fs.existsSync(notFoundPath)) {
-    return res.status(404).sendFile(notFoundPath);
-  }
-  
-  res.status(404).send('Page not found');
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
+  });
 });
 
 const PORT = process.env.PORT || 5000;
