@@ -32,24 +32,6 @@ app.use(passport.initialize());
 const path = require('path');
 const fs = require('fs');
 
-// Custom middleware to handle clean URLs (without .html extension)
-app.use((req, res, next) => {
-  // Skip if it's an API route or already has an extension
-  if (req.path.startsWith('/api') || req.path.includes('.')) {
-    return next();
-  }
-  
-  // Try to find HTML file
-  const htmlPath = path.join(__dirname, '../frontend', `${req.path}.html`);
-  if (fs.existsSync(htmlPath)) {
-    return res.sendFile(htmlPath);
-  }
-  
-  next();
-});
-
-app.use(express.static(path.join(__dirname, '../frontend')));
-
 // Make io accessible in routes
 app.use((req, res, next) => {
   req.io = io;
@@ -70,7 +52,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// API Routes (must be before static files)
+// API Routes (MUST be first - before any static file serving)
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/cart', require('./routes/cartRoutes'));
@@ -108,6 +90,28 @@ app.get('/api', (req, res) => {
       payments: '/api/payments'
     }
   });
+});
+
+// Serve static files (CSS, JS, images, etc.)
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Custom middleware to handle clean URLs (without .html extension)
+// This MUST come after static files so .html files are served first
+app.use((req, res, next) => {
+  // Skip if it's an API route
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  
+  // If path doesn't have extension, try to find HTML file
+  if (!req.path.includes('.')) {
+    const htmlPath = path.join(__dirname, '../frontend', `${req.path}.html`);
+    if (fs.existsSync(htmlPath)) {
+      return res.sendFile(htmlPath);
+    }
+  }
+  
+  next();
 });
 
 // Error handler
