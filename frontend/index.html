@@ -13,69 +13,7 @@
   <!-- Company Contact Top Bar -->
   <div id="company-topbar-container"></div>
   
-  <nav class="navbar">
-    <div class="nav-container">
-      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
-      <a href="index.html" class="logo">
-        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
-      </a>
-
-      <div class="nav-icons">
-        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
-          <i class="fas fa-search"></i>
-          <span>Search</span>
-        </button>
-        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
-          <i class="fas fa-shopping-cart"></i>
-          <span>Cart</span>
-          <span class="cart-badge">0</span>
-        </a>
-        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
-          <i class="fas fa-user"></i>
-          <span>Account</span>
-        </a>
-        <a href="login.html" class="nav-icon guest-link" title="Login">
-          <i class="fas fa-user"></i>
-          <span>Login</span>
-        </a>
-      </div>
-      
-      <!-- Search Dropdown -->
-      <div class="nav-search-dropdown" id="nav-search-dropdown">
-        <div class="search-dropdown-content">
-          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
-          <button onclick="performNavSearch()" class="search-btn">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="nav-bottom">
-      <div class="nav-container">
-        <ul class="nav-links">
-          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
-          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
-          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-        </ul>
-        <div class="support-contact">
-          <i class="fas fa-phone-alt"></i>
-          <div>
-            <strong>+233 XX XXX XXXX</strong>
-            <small>24/7 Support Center</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <!-- Navbar will be loaded by navbar-loader.js -->
 
   <section class="hero-section">
     <div id="hero-banners" class="hero-banners">
@@ -227,6 +165,7 @@
   <script src="js/discount.js"></script>
   <script src="js/api.js"></script>
   <script src="js/state.js"></script>
+  <script src="js/navbar-loader.js"></script>
   <script src="js/socket.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/wishlist.js"></script>
