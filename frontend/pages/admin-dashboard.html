@@ -1676,9 +1676,9 @@
         <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-bottom: 1.5rem;">
           <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
             <div>
-              <h4 style="margin: 0;">${review.title}</h4>
+              <h4 style="margin: 0;">${review.title || 'No title'}</h4>
               <p style="margin: 0.5rem 0; color: var(--gray-600);">
-                <strong>${review.user.name}</strong> (${review.user.email})
+                <strong>${review.user ? review.user.name : 'Deleted User'}</strong> (${review.user ? review.user.email : 'N/A'})
               </p>
               <div style="color: #ffa500; margin: 0.5rem 0;">
                 ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
@@ -1688,12 +1688,12 @@
           </div>
           
           <div style="margin-bottom: 1rem;">
-            <p style="margin: 0; line-height: 1.6;">${review.comment}</p>
+            <p style="margin: 0; line-height: 1.6;">${review.comment || 'No comment'}</p>
           </div>
           
           <div style="border-top: 1px solid var(--gray-200); padding-top: 1rem; margin-top: 1rem;">
             <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">
-              <strong>Product:</strong> ${review.product.name} (${review.product.productId})
+              <strong>Product:</strong> ${review.product ? review.product.name : 'Deleted Product'} (${review.product ? review.product.productId : 'N/A'})
             </p>
             <p style="margin: 0.5rem 0 0 0; color: var(--gray-600); font-size: 0.9rem;">
               <strong>Submitted:</strong> ${new Date(review.createdAt).toLocaleString()}
