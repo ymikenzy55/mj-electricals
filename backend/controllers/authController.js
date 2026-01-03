@@ -182,17 +182,25 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
     await user.save();
 
+    // Debug: Check if email env vars are set
+    console.log('📧 Email config check:', {
+      hasEmailUser: !!process.env.EMAIL_USER,
+      hasEmailPassword: !!process.env.EMAIL_PASSWORD,
+      emailUser: process.env.EMAIL_USER ? process.env.EMAIL_USER.substring(0, 5) + '***' : 'NOT SET'
+    });
+
     // Send email with reset token
     try {
       const { sendPasswordResetEmail } = require('../config/email');
       await sendPasswordResetEmail(email, resetToken, user.name);
       
+      console.log(`✅ Password reset email sent successfully to ${email}`);
       res.json({
         success: true,
         message: 'Password reset code sent to your email'
       });
     } catch (emailError) {
-      console.error('Email sending failed:', emailError);
+      console.error('❌ Email sending failed:', emailError.message);
       // If email fails, still return success but with the token for testing
       res.json({
         success: true,
@@ -201,6 +209,7 @@ exports.forgotPassword = async (req, res) => {
       });
     }
   } catch (error) {
+    console.error('Forgot password error:', error);
     res.status(500).json({
       success: false,
       message: error.message
