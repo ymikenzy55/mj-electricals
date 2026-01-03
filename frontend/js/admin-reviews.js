@@ -89,7 +89,7 @@ function displayReviews(reviews) {
         <div style="flex: 1; min-width: 200px;">
           <h4 style="margin: 0;">${review.title || 'No title'}</h4>
           <p style="margin: 0.5rem 0; color: var(--gray-600);">
-            <strong>${review.user?.name || 'Deleted User'}</strong> (${review.user?.email || 'N/A'})
+            <strong>${review.user ? review.user.name : 'Deleted User'}</strong> (${review.user ? review.user.email : 'N/A'})
           </p>
           <div style="color: #ffa500; margin: 0.5rem 0;">
             ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
@@ -104,7 +104,7 @@ function displayReviews(reviews) {
       
       <div style="border-top: 1px solid var(--gray-200); padding-top: 1rem; margin-top: 1rem;">
         <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">
-          <strong>Product:</strong> ${review.product?.name || 'Deleted Product'} (${review.product?.productId || 'N/A'})
+          <strong>Product:</strong> ${review.product ? review.product.name : 'Deleted Product'} (${review.product ? review.product.productId : 'N/A'})
         </p>
         <p style="margin: 0.5rem 0 0 0; color: var(--gray-600); font-size: 0.9rem;">
           <strong>Submitted:</strong> ${new Date(review.createdAt).toLocaleString()}

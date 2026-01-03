@@ -7,8 +7,8 @@ const {
 } = require('../controllers/contactController');
 const { protect, authorize } = require('../middleware/auth');
 
-// Public route - no auth required
-router.post('/', createContactMessage);
+// Public route - auth required to send messages
+router.post('/', protect, createContactMessage);
 
 // Admin routes
 router.get('/all', protect, authorize('admin', 'superadmin'), getAllContactMessages);

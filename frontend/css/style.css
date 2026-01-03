@@ -6070,14 +6070,6 @@ tr:hover {
   transform: rotate(-45deg) translate(8px, -8px);
 }
 
-.hamburger-menu i {
-  transition: var(--transition);
-}
-
-.hamburger-menu.active i::before {
-  content: "\f00d"; /* Font Awesome times/close icon */
-}
-
 /* Mobile Menu Overlay */
 .mobile-menu-overlay {
   position: fixed;

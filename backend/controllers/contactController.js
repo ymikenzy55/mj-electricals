@@ -1,6 +1,6 @@
 const Contact = require('../models/Contact');
 
-// Create contact message (Public - no auth required)
+// Create contact message (Requires authentication)
 const createContactMessage = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
@@ -16,7 +16,8 @@ const createContactMessage = async (req, res) => {
       name,
       email,
       subject,
-      message
+      message,
+      user: req.user.id // Link to authenticated user
     });
 
     // Emit real-time event to admins
