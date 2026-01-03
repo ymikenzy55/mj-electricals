@@ -1,26 +1,37 @@
 // Email configuration for sending password reset codes
-// TODO: Configure email service before production deployment
-
 const nodemailer = require('nodemailer');
 
-// Create transporter (configure with your email service)
+// Create transporter
 const createTransporter = () => {
-  // Example configuration for Gmail
-  // You'll need to enable "Less secure app access" or use App Password
-  return nodemailer.createTransporter({
-    service: 'gmail', // or 'smtp.gmail.com'
-    auth: {
-      user: process.env.EMAIL_USER, // Add to .env: your-email@gmail.com
-      pass: process.env.EMAIL_PASSWORD // Add to .env: your-app-password
-    }
-  });
+  // Check if email credentials are configured
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+    console.warn('⚠️ Email credentials not configured. Set EMAIL_USER and EMAIL_PASSWORD in environment variables.');
+    return null;
+  }
+
+  try {
+    return nodemailer.createTransporter({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+  } catch (error) {
+    console.error('Failed to create email transporter:', error);
+    return null;
+  }
 };
 
 // Send password reset email
 const sendPasswordResetEmail = async (email, resetToken, userName) => {
+  const transporter = createTransporter();
+  
+  if (!transporter) {
+    throw new Error('Email service not configured');
+  }
+
   try {
-    const transporter = createTransporter();
-    
     const mailOptions = {
       from: `"MJ Electricals" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -46,9 +57,10 @@ const sendPasswordResetEmail = async (email, resetToken, userName) => {
     };
 
     await transporter.sendMail(mailOptions);
+    console.log(`✅ Password reset email sent to ${email}`);
     return true;
   } catch (error) {
-    console.error('Email sending failed:', error);
+    console.error('❌ Email sending failed:', error.message);
     throw new Error('Failed to send reset email');
   }
 };
