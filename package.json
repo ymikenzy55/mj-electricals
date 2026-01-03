@@ -21,7 +21,8 @@
     "express-validator": "^7.0.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "axios": "^1.6.2"
+    "axios": "^1.6.2",
+    "nodemailer": "^6.9.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
