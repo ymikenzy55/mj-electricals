@@ -1,8 +1,20 @@
 // Email configuration for sending password reset codes
-const nodemailer = require('nodemailer');
+let nodemailer;
+try {
+  nodemailer = require('nodemailer');
+} catch (error) {
+  console.error('⚠️ nodemailer not installed:', error.message);
+  nodemailer = null;
+}
 
 // Create transporter
 const createTransporter = () => {
+  // Check if nodemailer is available
+  if (!nodemailer) {
+    console.warn('⚠️ nodemailer package not available');
+    return null;
+  }
+
   // Check if email credentials are configured
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
     console.warn('⚠️ Email credentials not configured. Set EMAIL_USER and EMAIL_PASSWORD in environment variables.');
