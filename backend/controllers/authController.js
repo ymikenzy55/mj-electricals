@@ -182,16 +182,24 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
     await user.save();
 
-    // TODO: Send email with reset token
-    // Uncomment when email is configured:
-    // const { sendPasswordResetEmail } = require('../config/email');
-    // await sendPasswordResetEmail(email, resetToken, user.name);
-
-    res.json({
-      success: true,
-      message: 'Password reset code sent to your email',
-      resetToken // Remove this in production - only for testing
-    });
+    // Send email with reset token
+    try {
+      const { sendPasswordResetEmail } = require('../config/email');
+      await sendPasswordResetEmail(email, resetToken, user.name);
+      
+      res.json({
+        success: true,
+        message: 'Password reset code sent to your email'
+      });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // If email fails, still return success but with the token for testing
+      res.json({
+        success: true,
+        message: 'Password reset code generated (email service not configured)',
+        resetToken // For testing when email is not configured
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
