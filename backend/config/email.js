@@ -15,25 +15,49 @@ const createTransporter = () => {
     return null;
   }
 
-  // Check if email credentials are configured
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
-    console.warn('⚠️ Email credentials not configured. Set EMAIL_USER and EMAIL_PASSWORD in environment variables.');
+  // Check if SMTP credentials are configured
+  const smtpHost = process.env.SMTP_HOST || process.env.EMAIL_HOST;
+  const smtpPort = process.env.SMTP_PORT || process.env.EMAIL_PORT;
+  const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER;
+  const smtpPass = process.env.SMTP_PASS || process.env.EMAIL_PASSWORD;
+
+  if (!smtpUser || !smtpPass) {
+    console.warn('⚠️ Email credentials not configured');
     return null;
   }
 
   try {
-    return nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      },
-      tls: {
-        rejectUnauthorized: false
-      },
-      connectionTimeout: 10000, // 10 seconds
-      greetingTimeout: 10000
-    });
+    // Use SMTP2GO or custom SMTP if configured, otherwise fall back to Gmail
+    if (smtpHost && smtpPort) {
+      console.log(`📧 Using SMTP: ${smtpHost}:${smtpPort}`);
+      return nodemailer.createTransport({
+        host: smtpHost,
+        port: parseInt(smtpPort),
+        secure: false, // Use TLS
+        auth: {
+          user: smtpUser,
+          pass: smtpPass
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+    } else {
+      // Fallback to Gmail
+      console.log('📧 Using Gmail SMTP');
+      return nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: smtpUser,
+          pass: smtpPass
+        },
+        tls: {
+          rejectUnauthorized: false
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000
+      });
+    }
   } catch (error) {
     console.error('Failed to create email transporter:', error);
     return null;
@@ -49,8 +73,9 @@ const sendPasswordResetEmail = async (email, resetToken, userName) => {
   }
 
   try {
+    const fromEmail = process.env.SMTP_USER || process.env.EMAIL_USER;
     const mailOptions = {
-      from: `"MJ Electricals" <${process.env.EMAIL_USER}>`,
+      from: `"MJ Electricals" <${fromEmail}>`,
       to: email,
       subject: 'Password Reset Code - MJ Electricals',
       html: `

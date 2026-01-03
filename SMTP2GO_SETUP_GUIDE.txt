@@ -1,0 +1,109 @@
+═══════════════════════════════════════════════════════════════
+  📧 SMTP2GO SETUP - Guaranteed to Work! (5 Minutes)
+═══════════════════════════════════════════════════════════════
+
+🎯 SMTP2GO is 100% FREE and works perfectly with Render!
+   - 1,000 emails/month free
+   - No credit card required
+   - Works immediately
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1: Sign Up for SMTP2GO (2 Minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to: https://www.smtp2go.com/pricing/
+2. Click "Start Free" under the Free plan
+3. Fill in:
+   - Your name
+   - Email: ymikenzy55@gmail.com (or any email)
+   - Password: (create one)
+4. Click "Sign Up"
+5. Verify your email (check inbox)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2: Get SMTP Credentials (1 Minute)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. After login, go to: Settings → SMTP Users
+2. Click "Add SMTP User"
+3. Enter a name: "MJ Electricals"
+4. Click "Create"
+5. COPY these credentials:
+   - SMTP Server: mail.smtp2go.com
+   - Port: 2525 (or 587, 8025, 8587)
+   - Username: (shown on screen)
+   - Password: (shown on screen)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3: Add to Render Environment Variables (2 Minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to Render Dashboard
+2. Click your backend service
+3. Click "Environment" tab
+4. Add these 4 variables:
+
+Variable 1:
+-----------
+Key:   SMTP_HOST
+Value: mail.smtp2go.com
+
+Variable 2:
+-----------
+Key:   SMTP_PORT
+Value: 2525
+
+Variable 3:
+-----------
+Key:   SMTP_USER
+Value: (paste your SMTP2GO username)
+
+Variable 4:
+-----------
+Key:   SMTP_PASS
+Value: (paste your SMTP2GO password)
+
+5. Click "Save Changes"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4: Wait for Render to Deploy (3 Minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Render will automatically redeploy with the new SMTP settings.
+Wait for "Live" status.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5: Test Password Reset! 🎉
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to your forgot password page
+2. Enter your email
+3. Check your inbox - you'll get the 6-digit code!
+4. Reset your password
+
+✅ DONE! Password reset emails now work perfectly!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ SMTP2GO is 100% free for 1,000 emails/month
+✓ No credit card required
+✓ Works perfectly with Render (unlike Gmail)
+✓ Professional and reliable
+✓ You can keep your Gmail credentials as backup
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❓ TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: Still not working
+Solution: Check Render logs for error messages
+
+Problem: Can't find SMTP credentials
+Solution: Go to Settings → SMTP Users in SMTP2GO dashboard
+
+Problem: Email goes to spam
+Solution: In SMTP2GO, verify your sending domain (optional)
+
+═══════════════════════════════════════════════════════════════
