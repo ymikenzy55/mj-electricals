@@ -48,12 +48,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Health check route
+// Health check route - Email enabled
 app.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'MJ Electricals API is running',
-    version: '1.0.0',
+    version: '1.0.1',
     endpoints: {
       auth: '/api/auth',
       products: '/api/products',
