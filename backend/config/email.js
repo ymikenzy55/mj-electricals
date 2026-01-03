@@ -27,7 +27,12 @@ const createTransporter = () => {
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD
-      }
+      },
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 10000, // 10 seconds
+      greetingTimeout: 10000
     });
   } catch (error) {
     console.error('Failed to create email transporter:', error);
