@@ -1,0 +1,74 @@
+═══════════════════════════════════════════════════════════════
+  📧 ADD EMAIL TO RENDER - Password Reset Setup
+═══════════════════════════════════════════════════════════════
+
+🎯 QUICK STEPS (2 Minutes)
+
+Your Gmail App Password: xhoj wjqh bvoo ohwq
+Your Gmail Address: ymikenzy55@gmail.com
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1: Go to Your Render Dashboard
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to: https://dashboard.render.com/
+2. Click on your backend service (mj-electricals-backend or similar)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2: Add Environment Variables
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Click "Environment" in the left sidebar
+2. Scroll down to "Environment Variables"
+3. Click "Add Environment Variable" button
+
+Add these TWO variables:
+
+Variable 1:
+-----------
+Key:   EMAIL_USER
+Value: ymikenzy55@gmail.com
+
+Variable 2:
+-----------
+Key:   EMAIL_PASSWORD
+Value: xhoj wjqh bvoo ohwq
+
+4. Click "Save Changes"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3: Render Will Auto-Redeploy
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Render will automatically redeploy your backend with the new variables.
+Wait 2-3 minutes for the deployment to complete.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4: Test Password Reset
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to your live site forgot password page
+2. Enter your email: ymikenzy55@gmail.com
+3. Click "Send Reset Code"
+4. Check your Gmail inbox for the 6-digit code
+5. Enter the code and reset your password
+
+✅ DONE! Password reset emails are now working on production!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📸 VISUAL GUIDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In Render Dashboard:
+1. Select your service
+2. Click "Environment" tab
+3. Scroll to "Environment Variables"
+4. Click "+ Add Environment Variable"
+5. Add EMAIL_USER = ymikenzy55@gmail.com
+6. Click "+ Add Environment Variable" again
+7. Add EMAIL_PASSWORD = xhoj wjqh bvoo ohwq
+8. Click "Save Changes" at the bottom
+
+Render will show "Deploying..." - wait for it to finish!
+
+═══════════════════════════════════════════════════════════════
