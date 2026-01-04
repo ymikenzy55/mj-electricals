@@ -12,7 +12,11 @@
     </a>
 
     <div class="nav-icons">
-      <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+      <button class="nav-icon search-icon" onclick="toggleSearch()" title="Search Products" aria-label="Search">
+        <i class="fas fa-search"></i>
+        <span>Search</span>
+      </button>
+      <a href="cart.html" class="nav-icon" title="Cart">
         <i class="fas fa-shopping-cart"></i>
         <span>Cart</span>
         <span class="cart-badge">0</span>
@@ -26,6 +30,18 @@
         <span>Login</span>
       </a>
     </div>
+  </div>
+  
+  <!-- Search Overlay -->
+  <div class="search-overlay" id="search-overlay" onclick="closeSearch()"></div>
+  <div class="search-dropdown" id="search-dropdown">
+    <div class="search-header">
+      <input type="text" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+      <button onclick="closeSearch()" class="search-close-btn" aria-label="Close search">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="search-results" id="navbar-search-results"></div>
   </div>
 
   <div class="nav-bottom">
@@ -70,14 +86,12 @@
       <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
       <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
       <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+      <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a></li>
       <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
       <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
       <li><a href="about.html#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
     </ul>
     <ul class="mobile-menu-links mobile-menu-auth">
-      <li class="auth-link" style="display:none;">
-        <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a>
-      </li>
       <li class="auth-link" style="display:none;">
         <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
       </li>
@@ -129,6 +143,100 @@
     }
   }
   
+  // Search Functions
+  let searchTimeout;
+  function toggleSearch() {
+    const dropdown = document.getElementById('search-dropdown');
+    const overlay = document.getElementById('search-overlay');
+    const input = document.getElementById('navbar-search-input');
+    
+    if (dropdown && overlay) {
+      const isActive = dropdown.classList.contains('active');
+      
+      if (isActive) {
+        closeSearch();
+      } else {
+        dropdown.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => input && input.focus(), 100);
+      }
+    }
+  }
+  
+  function closeSearch() {
+    const dropdown = document.getElementById('search-dropdown');
+    const overlay = document.getElementById('search-overlay');
+    const input = document.getElementById('navbar-search-input');
+    
+    if (dropdown && overlay) {
+      dropdown.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+      if (input) input.value = '';
+      document.getElementById('navbar-search-results').innerHTML = '';
+    }
+  }
+  
+  async function performNavbarSearch(query) {
+    const resultsContainer = document.getElementById('navbar-search-results');
+    
+    if (!query || query.length < 2) {
+      resultsContainer.innerHTML = '<div class="search-empty">Type at least 2 characters to search...</div>';
+      return;
+    }
+    
+    resultsContainer.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/products?search=${encodeURIComponent(query)}&limit=5`);
+      const data = await response.json();
+      
+      if (data.success && data.products.length > 0) {
+        resultsContainer.innerHTML = data.products.map(product => `
+          <a href="product-details.html?id=${product._id}" class="search-result-item" onclick="closeSearch()">
+            <img src="${product.images[0] || '../mj-images/placeholder.jpg'}" alt="${product.name}">
+            <div class="search-result-info">
+              <h4>${product.name}</h4>
+              <p class="search-result-price">₵${product.price.toLocaleString()}</p>
+              <p class="search-result-stock">${product.stock > 0 ? 'In Stock' : 'Out of Stock'}</p>
+            </div>
+          </a>
+        `).join('') + `
+          <a href="products.html?search=${encodeURIComponent(query)}" class="search-view-all" onclick="closeSearch()">
+            View all results for "${query}" <i class="fas fa-arrow-right"></i>
+          </a>
+        `;
+      } else {
+        resultsContainer.innerHTML = `<div class="search-empty">No products found for "${query}"</div>`;
+      }
+    } catch (error) {
+      resultsContainer.innerHTML = '<div class="search-error">Search failed. Please try again.</div>';
+    }
+  }
+  
+  // Search input listener
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('navbar-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          performNavbarSearch(e.target.value.trim());
+        }, 300);
+      });
+      
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const query = e.target.value.trim();
+          if (query) {
+            window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+          }
+        }
+      });
+    }
+  });
+  
   function updateMobileMenuAuth() {
     const state = stateManager?.getState();
     const username = document.getElementById('mobile-menu-username');
@@ -169,3 +277,183 @@
     }
   });
 </script>
+
+<style>
+  /* Search Icon Styling */
+  .search-icon {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+  }
+  
+  /* Search Overlay */
+  .search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .search-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Search Dropdown */
+  .search-dropdown {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    width: 90%;
+    max-width: 600px;
+    background: white;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .search-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .search-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 2px solid var(--gray-light);
+    gap: 0.5rem;
+  }
+  
+  .search-header input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--gray-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  
+  .search-header input:focus {
+    border-color: var(--primary-orange);
+  }
+  
+  .search-close-btn {
+    background: var(--gray-light);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  
+  .search-close-btn:hover {
+    background: var(--primary-orange);
+    color: white;
+  }
+  
+  .search-results {
+    overflow-y: auto;
+    max-height: calc(80vh - 80px);
+  }
+  
+  .search-result-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-light);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.3s;
+  }
+  
+  .search-result-item:hover {
+    background: var(--gray-light);
+  }
+  
+  .search-result-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .search-result-info {
+    flex: 1;
+  }
+  
+  .search-result-info h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+  }
+  
+  .search-result-price {
+    margin: 0;
+    color: var(--primary-orange);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .search-result-stock {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+  
+  .search-view-all {
+    display: block;
+    padding: 1rem;
+    text-align: center;
+    background: var(--primary-orange);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s;
+  }
+  
+  .search-view-all:hover {
+    background: var(--primary-orange-dark);
+  }
+  
+  .search-empty,
+  .search-loading,
+  .search-error {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-light);
+  }
+  
+  .search-loading i {
+    font-size: 1.5rem;
+    color: var(--primary-orange);
+  }
+  
+  @media (max-width: 768px) {
+    .search-dropdown {
+      width: 95%;
+      max-height: 90vh;
+    }
+  }
+</style>
