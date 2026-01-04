@@ -9,12 +9,17 @@ const {
   getRelatedProducts
 } = require('../controllers/productController');
 const { protect, authorize } = require('../middleware/auth');
+const {
+  createProductValidation,
+  updateProductValidation,
+  mongoIdValidation
+} = require('../middleware/validator');
 
 router.get('/', getProducts);
-router.get('/:id', getProduct);
-router.get('/:id/related', getRelatedProducts);
-router.post('/', protect, authorize('admin', 'superadmin'), createProduct);
-router.put('/:id', protect, authorize('admin', 'superadmin'), updateProduct);
-router.delete('/:id', protect, authorize('admin', 'superadmin'), deleteProduct);
+router.get('/:id', mongoIdValidation, getProduct);
+router.get('/:id/related', mongoIdValidation, getRelatedProducts);
+router.post('/', protect, authorize('admin', 'superadmin'), createProductValidation, createProduct);
+router.put('/:id', protect, authorize('admin', 'superadmin'), updateProductValidation, updateProduct);
+router.delete('/:id', protect, authorize('admin', 'superadmin'), mongoIdValidation, deleteProduct);
 
 module.exports = router;

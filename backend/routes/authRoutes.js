@@ -3,6 +3,12 @@ const router = express.Router();
 const passport = require('../config/passport');
 const { authLimiter, passwordResetLimiter } = require('../middleware/rateLimiter');
 const { 
+  registerValidation,
+  loginValidation,
+  forgotPasswordValidation,
+  resetPasswordValidation
+} = require('../middleware/validator');
+const { 
   register, 
   login, 
   getMe, 
@@ -14,11 +20,11 @@ const {
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
-// Apply strict rate limiting to auth routes
-router.post('/register', authLimiter, register);
-router.post('/login', authLimiter, login);
-router.post('/forgot-password', passwordResetLimiter, forgotPassword);
-router.post('/reset-password', passwordResetLimiter, resetPassword);
+// Apply strict rate limiting and validation to auth routes
+router.post('/register', authLimiter, registerValidation, register);
+router.post('/login', authLimiter, loginValidation, login);
+router.post('/forgot-password', passwordResetLimiter, forgotPasswordValidation, forgotPassword);
+router.post('/reset-password', passwordResetLimiter, resetPasswordValidation, resetPassword);
 
 // Protected routes (no extra rate limiting needed)
 router.get('/me', protect, getMe);

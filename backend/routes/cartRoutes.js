@@ -8,12 +8,13 @@ const {
   clearCart
 } = require('../controllers/cartController');
 const { protect } = require('../middleware/auth');
+const { addToCartValidation, mongoIdValidation } = require('../middleware/validator');
 
 router.use(protect);
 
 router.get('/', getCart);
-router.post('/', addToCart);
-router.put('/', updateCartItem);
+router.post('/', addToCartValidation, addToCart);
+router.put('/', addToCartValidation, updateCartItem);
 router.delete('/:productId', removeFromCart);
 router.delete('/', clearCart);
 
