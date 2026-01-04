@@ -57,29 +57,45 @@ exports.createOrder = async (req, res) => {
         });
       }
 
-      // Deduct stock
+      // Deduct stock atomically to prevent race conditions
       const previousStock = product.stock;
-      product.stock -= item.quantity;
-      await product.save();
+      const updatedProduct = await Product.findOneAndUpdate(
+        { 
+          _id: item.product,
+          stock: { $gte: item.quantity } // Only update if stock is sufficient
+        },
+        { 
+          $inc: { stock: -item.quantity } // Atomic decrement
+        },
+        { new: true }
+      );
+
+      // Double-check if stock deduction was successful
+      if (!updatedProduct) {
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient stock for ${product.name}. Another customer may have just purchased it.`
+        });
+      }
 
       // Check for low stock or out of stock and notify admins
       const LOW_STOCK_THRESHOLD = 5;
-      if (product.stock === 0) {
+      if (updatedProduct.stock === 0) {
         // Out of stock notification
         req.io.emit('product:outOfStock', {
-          productId: product._id,
-          productName: product.name,
-          productCode: product.productId,
-          message: `${product.name} (${product.productId}) is now OUT OF STOCK`
+          productId: updatedProduct._id,
+          productName: updatedProduct.name,
+          productCode: updatedProduct.productId,
+          message: `${updatedProduct.name} (${updatedProduct.productId}) is now OUT OF STOCK`
         });
-      } else if (product.stock <= LOW_STOCK_THRESHOLD && previousStock > LOW_STOCK_THRESHOLD) {
+      } else if (updatedProduct.stock <= LOW_STOCK_THRESHOLD && previousStock > LOW_STOCK_THRESHOLD) {
         // Low stock notification (only when crossing threshold)
         req.io.emit('product:lowStock', {
-          productId: product._id,
-          productName: product.name,
-          productCode: product.productId,
-          stock: product.stock,
-          message: `${product.name} (${product.productId}) is running low - Only ${product.stock} left!`
+          productId: updatedProduct._id,
+          productName: updatedProduct.name,
+          productCode: updatedProduct.productId,
+          stock: updatedProduct.stock,
+          message: `${updatedProduct.name} (${updatedProduct.productId}) is running low - Only ${updatedProduct.stock} left!`
         });
       }
 
@@ -333,13 +349,13 @@ exports.cancelOrder = async (req, res) => {
       });
     }
 
-    // Restore product stock
+    // Restore product stock atomically
     for (const item of order.items) {
-      const product = await Product.findById(item.product);
-      if (product) {
-        product.stock += item.quantity;
-        await product.save();
-      }
+      await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: item.quantity } }, // Atomic increment
+        { new: true }
+      );
     }
 
     // Update order status
@@ -439,14 +455,14 @@ exports.cleanupExpiredOrders = async (req, res) => {
 
     let cleanedCount = 0;
     
-    // Restore stock for each expired order
+    // Restore stock for each expired order atomically
     for (const order of expiredOrders) {
       for (const item of order.items) {
-        const product = await Product.findById(item.product);
-        if (product) {
-          product.stock += item.quantity;
-          await product.save();
-        }
+        await Product.findByIdAndUpdate(
+          item.product,
+          { $inc: { stock: item.quantity } }, // Atomic increment
+          { new: true }
+        );
       }
       
       // Mark as cancelled

@@ -38,20 +38,39 @@ exports.addToCart = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.id);
-    const cartItemIndex = user.cart.findIndex(
-      item => item.product.toString() === productId
+    // Use atomic operation to prevent race conditions
+    const user = await User.findOneAndUpdate(
+      { 
+        _id: req.user.id,
+        'cart.product': { $ne: productId } // Item not in cart
+      },
+      {
+        $push: { cart: { product: productId, quantity } } // Add new item
+      },
+      { new: true }
     );
 
-    if (cartItemIndex > -1) {
-      // Update quantity
-      user.cart[cartItemIndex].quantity += quantity;
-    } else {
-      // Add new item
-      user.cart.push({ product: productId, quantity });
+    // If item already exists in cart, increment quantity
+    if (!user) {
+      const updatedUser = await User.findOneAndUpdate(
+        {
+          _id: req.user.id,
+          'cart.product': productId // Item exists in cart
+        },
+        {
+          $inc: { 'cart.$.quantity': quantity } // Atomic increment
+        },
+        { new: true }
+      );
+      
+      await updatedUser.populate('cart.product');
+      
+      return res.json({
+        success: true,
+        cart: updatedUser.cart
+      });
     }
 
-    await user.save();
     await user.populate('cart.product');
 
     res.json({
@@ -86,20 +105,25 @@ exports.updateCartItem = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.id);
-    const cartItem = user.cart.find(
-      item => item.product.toString() === productId
+    // Use atomic operation to update cart item quantity
+    const user = await User.findOneAndUpdate(
+      {
+        _id: req.user.id,
+        'cart.product': productId
+      },
+      {
+        $set: { 'cart.$.quantity': quantity } // Atomic update
+      },
+      { new: true }
     );
 
-    if (!cartItem) {
+    if (!user) {
       return res.status(404).json({
         success: false,
         message: 'Item not in cart'
       });
     }
 
-    cartItem.quantity = quantity;
-    await user.save();
     await user.populate('cart.product');
 
     res.json({
@@ -119,12 +143,15 @@ exports.removeFromCart = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    const user = await User.findById(req.user.id);
-    user.cart = user.cart.filter(
-      item => item.product.toString() !== productId
+    // Use atomic operation to remove cart item
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $pull: { cart: { product: productId } } // Atomic removal
+      },
+      { new: true }
     );
 
-    await user.save();
     await user.populate('cart.product');
 
     res.json({
@@ -142,9 +169,14 @@ exports.removeFromCart = async (req, res) => {
 // Clear cart
 exports.clearCart = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    user.cart = [];
-    await user.save();
+    // Use atomic operation to clear cart
+    await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $set: { cart: [] } // Atomic clear
+      },
+      { new: true }
+    );
 
     res.json({
       success: true,
