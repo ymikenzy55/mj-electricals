@@ -887,7 +887,7 @@ html {
   align-items: center;
   text-decoration: none;
   transition: var(--transition);
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: var(--radius-lg);
   background: transparent;
   border: none;
@@ -903,14 +903,14 @@ html {
   height: 140px;
   border-radius: 50%;
   overflow: hidden;
-  margin-bottom: 1.25rem;
-  border: 5px solid var(--gray-200);
+  margin-bottom: 1rem;
+  border: none;
   transition: var(--transition);
-  background: var(--primary-white);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
 }
 
@@ -919,9 +919,8 @@ html {
 }
 
 .category-card:hover .category-icon {
-  transform: scale(1.08);
-  box-shadow: 0 8px 24px rgba(255, 107, 61, 0.3);
-  border-color: var(--primary-orange);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 107, 61, 0.25);
 }
 
 .category-icon img {

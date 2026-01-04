@@ -20,19 +20,47 @@
     link.href = '../css/preloader-redesign.css';
     document.head.appendChild(link);
     
-    // Hide preloader after page loads
+    // Track when page is fully loaded
+    let pageLoaded = false;
+    let minTimeElapsed = false;
+    
+    // Set minimum display time (1 second) and maximum (3 seconds)
+    const minDisplayTime = 1000;
+    const maxDisplayTime = 3000;
+    
+    // Start minimum time counter
+    setTimeout(() => {
+      minTimeElapsed = true;
+      hidePreloaderIfReady();
+    }, minDisplayTime);
+    
+    // Force hide after maximum time
+    setTimeout(() => {
+      hidePreloader();
+    }, maxDisplayTime);
+    
+    // Hide preloader after page loads (if within max time)
     window.addEventListener('load', function() {
-      setTimeout(function() {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-          preloader.classList.add('hidden');
-          // Remove from DOM after animation
-          setTimeout(function() {
-            preloader.remove();
-          }, 500);
-        }
-      }, 300); // Small delay for smooth experience
+      pageLoaded = true;
+      hidePreloaderIfReady();
     });
+    
+    function hidePreloaderIfReady() {
+      if (pageLoaded && minTimeElapsed) {
+        hidePreloader();
+      }
+    }
+    
+    function hidePreloader() {
+      const preloader = document.getElementById('preloader');
+      if (preloader && !preloader.classList.contains('hidden')) {
+        preloader.classList.add('hidden');
+        // Remove from DOM after animation
+        setTimeout(function() {
+          preloader.remove();
+        }, 500);
+      }
+    }
   });
 
   // Show preloader on page navigation
@@ -43,3 +71,4 @@
     }
   });
 })();
+

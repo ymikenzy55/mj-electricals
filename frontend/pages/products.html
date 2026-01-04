@@ -478,14 +478,7 @@
     });
 
     async function addToCartFromList(productId, event) {
-      const state = stateManager.getState();
-      if (!state.isAuthenticated) {
-        Modal.confirm('Please login to add items to cart. Go to login page?', () => {
-          window.location.href = 'login.html';
-        });
-        return;
-      }
-
+      // Allow both guests and authenticated users to add to cart
       const button = event.target.closest('button');
       const originalText = button.innerHTML;
       

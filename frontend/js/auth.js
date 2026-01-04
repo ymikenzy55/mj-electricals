@@ -29,14 +29,27 @@ function requireRole(allowedRoles) {
 }
 
 function redirectBasedOnRole(user) {
+  // Check if there's a redirect URL saved (for protected pages)
+  const redirectUrl = localStorage.getItem('redirectAfterLogin');
+  
   // Redirect based on user role
   if (user.role === 'superadmin') {
+    // Super admins always go to their dashboard
+    localStorage.removeItem('redirectAfterLogin');
     window.location.href = '/pages/super-admin-dashboard.html';
   } else if (user.role === 'admin') {
+    // Admins always go to their dashboard
+    localStorage.removeItem('redirectAfterLogin');
     window.location.href = '/pages/admin-dashboard.html';
   } else {
-    // Regular users go to homepage
-    window.location.href = '/pages/index.html';
+    // Regular users: redirect to saved page or homepage
+    if (redirectUrl && redirectUrl !== '/pages/login.html' && redirectUrl !== '/pages/register.html') {
+      localStorage.removeItem('redirectAfterLogin');
+      window.location.href = redirectUrl;
+    } else {
+      localStorage.removeItem('redirectAfterLogin');
+      window.location.href = '/pages/index.html';
+    }
   }
 }
 
@@ -46,18 +59,7 @@ async function handleLogin(email, password) {
     stateManager.login(response.token, response.user);
     socketManager.connect();
     
-    // Check if there's a redirect URL saved (for protected pages)
-    const redirectUrl = localStorage.getItem('redirectAfterLogin');
-    if (redirectUrl && redirectUrl !== '/pages/login.html' && redirectUrl !== '/pages/register.html') {
-      localStorage.removeItem('redirectAfterLogin');
-      window.location.href = redirectUrl;
-      return;
-    }
-    
-    // Clear any saved redirect
-    localStorage.removeItem('redirectAfterLogin');
-    
-    // Redirect based on user role
+    // Redirect based on user role (handles saved redirect internally)
     redirectBasedOnRole(response.user);
   } catch (error) {
     throw error;
