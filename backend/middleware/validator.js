@@ -266,7 +266,7 @@ const createOrderValidation = [
 
 // Review validation rules
 const createReviewValidation = [
-  body('product')
+  body('productId')
     .notEmpty().withMessage('Product ID is required')
     .isMongoId().withMessage('Invalid product ID'),
   
@@ -274,6 +274,12 @@ const createReviewValidation = [
     .notEmpty().withMessage('Rating is required')
     .isInt({ min: 1, max: 5 }).withMessage('Rating must be 1-5')
     .toInt(),
+  
+  body('title')
+    .trim()
+    .notEmpty().withMessage('Title is required')
+    .isLength({ min: 3, max: 100 }).withMessage('Title must be 3-100 characters')
+    .escape(),
   
   body('comment')
     .trim()
@@ -336,7 +342,16 @@ const initializePaymentValidation = [
 // MongoDB ID validation
 const mongoIdValidation = [
   param('id')
+    .optional()
     .isMongoId().withMessage('Invalid ID format'),
+  
+  param('productId')
+    .optional()
+    .isMongoId().withMessage('Invalid product ID format'),
+  
+  param('reviewId')
+    .optional()
+    .isMongoId().withMessage('Invalid review ID format'),
   
   handleValidationErrors
 ];
