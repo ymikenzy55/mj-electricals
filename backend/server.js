@@ -6,6 +6,7 @@ const socketIO = require('socket.io');
 const passport = require('./config/passport');
 const connectDB = require('./config/db');
 const initSuperAdmin = require('./utils/initSuperAdmin');
+const { generalLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 const server = http.createServer(app);
@@ -27,6 +28,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
+
+// Apply general rate limiting to all routes
+app.use(generalLimiter);
 
 // Make io accessible in routes
 app.use((req, res, next) => {

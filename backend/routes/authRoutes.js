@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('../config/passport');
+const { authLimiter, passwordResetLimiter } = require('../middleware/rateLimiter');
 const { 
   register, 
   login, 
@@ -13,13 +14,16 @@ const {
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
-router.post('/register', register);
-router.post('/login', login);
+// Apply strict rate limiting to auth routes
+router.post('/register', authLimiter, register);
+router.post('/login', authLimiter, login);
+router.post('/forgot-password', passwordResetLimiter, forgotPassword);
+router.post('/reset-password', passwordResetLimiter, resetPassword);
+
+// Protected routes (no extra rate limiting needed)
 router.get('/me', protect, getMe);
 router.put('/password', protect, updatePassword);
 router.put('/profile', protect, updateProfile);
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
 
 // Google OAuth routes
 router.get('/google', passport.authenticate('google', { 

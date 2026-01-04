@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { paymentLimiter } = require('../middleware/rateLimiter');
 const {
   initializePayment,
   verifyPayment,
@@ -8,9 +9,9 @@ const {
 } = require('../controllers/paymentController');
 const { protect } = require('../middleware/auth');
 
-router.post('/initialize', protect, initializePayment);
+router.post('/initialize', protect, paymentLimiter, initializePayment);
 router.get('/verify/:reference', protect, verifyPayment);
-router.post('/webhook/paystack', paystackWebhook);
+router.post('/webhook/paystack', paystackWebhook); // No rate limit for webhooks
 router.get('/history', protect, getPaymentHistory);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { messageLimiter } = require('../middleware/rateLimiter');
 const {
   createContactMessage,
   getAllContactMessages,
@@ -7,8 +8,8 @@ const {
 } = require('../controllers/contactController');
 const { protect, authorize } = require('../middleware/auth');
 
-// Public route - auth required to send messages
-router.post('/', protect, createContactMessage);
+// Protected route - auth required with rate limiting
+router.post('/', protect, messageLimiter, createContactMessage);
 
 // Admin routes
 router.get('/all', protect, authorize('admin', 'superadmin'), getAllContactMessages);
