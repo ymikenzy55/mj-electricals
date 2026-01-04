@@ -875,10 +875,11 @@ html {
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1.5rem;
+  max-width: 100%;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .category-card {
@@ -958,9 +959,11 @@ html {
 /* Modern Product Grid */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
   margin-top: 2rem;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Modern Product Card */
@@ -1864,7 +1867,7 @@ tr:hover {
   }
 
   .categories-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 1rem;
   }
 
@@ -2774,7 +2777,8 @@ tr:hover {
   }
   
   .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
   }
 }
 
