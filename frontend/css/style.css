@@ -298,30 +298,11 @@ html {
   gap: 0.75rem;
   color: var(--gray-dark);
   margin-left: auto;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.support-contact:hover {
-  background: var(--primary-orange);
-  color: white;
-  transform: translateY(-2px);
-}
-
-.support-contact:hover i {
-  color: white;
-}
-
-.support-contact:hover strong,
-.support-contact:hover small {
-  color: white;
 }
 
 .support-contact i {
   font-size: 1.5rem;
   color: var(--primary-orange);
-  transition: color 0.3s ease;
 }
 
 .support-contact div {
@@ -332,13 +313,11 @@ html {
 
 .support-contact strong {
   font-size: 0.95rem;
-  transition: color 0.3s ease;
 }
 
 .support-contact small {
   font-size: 0.75rem;
   color: var(--text-gray);
-  transition: color 0.3s ease;
 }
 
 .cart-icon {

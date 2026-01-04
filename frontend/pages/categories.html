@@ -7,7 +7,6 @@
   <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
-  <link rel="stylesheet" href="../css/categories-simple.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -127,15 +126,11 @@
   </nav>
 
   <div class="container">
-    <div class="categories-header">
-      <h1>Product Categories</h1>
-      <p>Browse our wide range of electrical products by category</p>
-    </div>
+    <h1 class="mb-3">Product Categories</h1>
     
-    <div id="categories-container" class="categories-simple-grid">
-      <div class="categories-loading">
+    <div id="categories-container" class="products-grid">
+      <div class="loading">
         <div class="spinner"></div>
-        <p>Loading categories...</p>
       </div>
     </div>
   </div>
@@ -247,46 +242,33 @@
         const container = document.getElementById('categories-container');
 
         if (response.categories.length === 0) {
-          container.innerHTML = `
-            <div class="categories-empty">
-              <i class="fas fa-box-open"></i>
-              <h3>No Categories Available</h3>
-              <p>Check back soon for new product categories</p>
-            </div>
-          `;
+          container.innerHTML = '<p class="text-center">No categories available</p>';
           return;
         }
 
         container.innerHTML = response.categories.map(category => `
-          <div class="category-simple-card" onclick="window.location.href='products.html?category=40{encodeURIComponent(category.name)}'">
-            <img 
-              src="40{category.image || 'https://via.placeholder.com/400x200?text=' + encodeURIComponent(category.name)}" 
-              alt="40{category.name}"
-              class="category-simple-image"
-              onerror="this.src='https://via.placeholder.com/400x200?text=40{encodeURIComponent(category.name)}'"
-            >
-            <div class="category-simple-content">
-              <h3 class="category-simple-name">40{category.name}</h3>
-              <p class="category-simple-description">40{category.description || 'Browse products in this category'}</p>
-              <div class="category-simple-count">
-                <i class="fas fa-box"></i>
-                <span>40{category.productCount || 0} Products</span>
-              </div>
-              <button class="category-simple-btn" onclick="event.stopPropagation(); window.location.href='products.html?category=40{encodeURIComponent(category.name)}'">
-                View Products <i class="fas fa-arrow-right"></i>
-              </button>
+          <div class="product-card" style="cursor: pointer;" 
+               onclick="window.location.href='products.html?category=${encodeURIComponent(category.name)}'">
+            <img src="${category.image || 'https://via.placeholder.com/400x200?text=' + encodeURIComponent(category.name)}" 
+                 alt="${category.name}" 
+                 class="product-image"
+                 style="width: 100%; height: 200px; object-fit: cover;">
+            <div class="product-info">
+              <h3 class="product-name">${category.name}</h3>
+              <p>${category.description || 'Browse products in this category'}</p>
+              <p style="color: var(--gray-600); font-size: 0.9rem; margin-top: 0.5rem;">
+                <i class="fas fa-box"></i> ${category.productCount || 0} Products
+              </p>
+              <a href="products.html?category=${encodeURIComponent(category.name)}" class="btn">
+                View Products
+              </a>
             </div>
           </div>
         `).join('');
       } catch (error) {
         console.error('Failed to load categories:', error);
-        document.getElementById('categories-container').innerHTML = `
-          <div class="categories-empty">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Failed to Load Categories</h3>
-            <p>Please try refreshing the page</p>
-          </div>
-        `;
+        document.getElementById('categories-container').innerHTML = 
+          '<p class="text-center">Failed to load categories</p>';
       }
     }
 
@@ -294,5 +276,4 @@
   </script>
 </body>
 </html>
-
 

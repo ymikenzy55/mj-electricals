@@ -1,18 +1,11 @@
-// Preloader functionality - Admin Style
+// Preloader functionality
 (function() {
-  // Create preloader HTML with admin design
+  // Create preloader HTML
   const preloaderHTML = `
-    <div class="admin-preloader" id="preloader">
-      <div class="admin-preloader-content">
-        <img src="mj-images/mj-logo.gif" alt="MJ Electricals" class="admin-preloader-logo" onerror="this.style.display='none'">
-        <h1 class="admin-preloader-title">MJ ELECTRICALS</h1>
-        <p class="admin-preloader-subtitle">Quality Electrical Solutions</p>
-        <div class="admin-spinner"></div>
-        <div class="admin-progress-bar">
-          <div class="admin-progress-fill"></div>
-        </div>
-        <p class="admin-loading-text">Loading your experience...</p>
-      </div>
+    <div class="preloader" id="preloader">
+      <img src="mj-images/mj-logo.gif" alt="Loading..." class="preloader-logo" onerror="this.style.display='none'">
+      <div class="preloader-spinner"></div>
+      <p class="preloader-text">Loading...</p>
     </div>
   `;
 
@@ -21,10 +14,10 @@
     // Insert preloader at the beginning of body
     document.body.insertAdjacentHTML('afterbegin', preloaderHTML);
     
-    // Add admin preloader CSS
+    // Add preloader CSS
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '../css/admin-preloader.css';
+    link.href = '../css/preloader-redesign.css';
     document.head.appendChild(link);
     
     // Hide preloader after page loads
