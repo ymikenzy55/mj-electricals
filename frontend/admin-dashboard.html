@@ -507,8 +507,21 @@
   <script src="js/mobile-table-helper.js"></script>
   <script src="js/admin-reviews.js"></script>
   <script>
+    // Ensure api is available before proceeding
+    function waitForApi() {
+      return new Promise((resolve) => {
+        if (typeof api !== 'undefined' && api) {
+          resolve();
+        } else {
+          setTimeout(() => waitForApi().then(resolve), 50);
+        }
+      });
+    }
+
     // Wait for user to load before checking role
     document.addEventListener('DOMContentLoaded', async () => {
+      // Wait for api to be available
+      await waitForApi();
       const lastSection = localStorage.getItem('adminCurrentSection');
       if (lastSection && lastSection !== 'overview') {
         setTimeout(() => {

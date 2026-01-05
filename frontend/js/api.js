@@ -489,7 +489,13 @@ class API {
   }
 }
 
+// Create and export the API instance
 const api = new API();
+
+// Make api globally available
+if (typeof window !== 'undefined') {
+  window.api = api;
+}
 
 // Paystack configuration (moved to checkout.html)
 // const PAYSTACK_PUBLIC_KEY is now defined in checkout.html
