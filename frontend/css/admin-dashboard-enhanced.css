@@ -21,19 +21,21 @@
   min-height: 100vh;
   position: fixed;
   left: 0;
-  top: 0;
+  top: 80px;
   background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%) !important;
   border-right: 1px solid #e5e7eb !important;
   overflow-y: auto;
   z-index: 100;
+  height: calc(100vh - 80px);
 }
 
 .dashboard-content {
   flex: 1;
   margin-left: 280px;
+  margin-top: 80px;
   padding: 2rem;
   background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
-  min-height: 100vh;
+  min-height: calc(100vh - 80px);
   width: calc(100% - 280px);
 }
 
