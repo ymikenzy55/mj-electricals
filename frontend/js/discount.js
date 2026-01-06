@@ -37,7 +37,7 @@ function getDiscountBadge(discountPercent) {
   if (!discountPercent || discountPercent <= 0) {
     return '';
   }
-  return `<span class="discount-badge">${discountPercent}% OFF</span>`;
+  return `<span class="discount-badge">-${discountPercent}%</span>`;
 }
 
 /**
