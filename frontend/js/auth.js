@@ -59,7 +59,9 @@ async function handleLogin(email, password) {
     
     // AWAIT login to ensure cart migration completes
     await stateManager.login(response.token, response.user);
-    socketManager.connect();
+    if (typeof socketManager !== 'undefined') {
+      socketManager.connect();
+    }
     
     // Show success message with cart info
     const cartCount = stateManager.getCartCount();
@@ -80,7 +82,9 @@ async function handleRegister(name, email, password) {
     
     // AWAIT login to ensure cart migration completes
     await stateManager.login(response.token, response.user);
-    socketManager.connect();
+    if (typeof socketManager !== 'undefined') {
+      socketManager.connect();
+    }
     
     // Show success message with cart info
     const cartCount = stateManager.getCartCount();
@@ -102,7 +106,9 @@ function handleLogout(event) {
   if (event) {
     event.preventDefault();
   }
-  socketManager.disconnect();
+  if (typeof socketManager !== 'undefined') {
+    socketManager.disconnect();
+  }
   stateManager.logout();
   return false;
 }
@@ -116,7 +122,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   const state = stateManager.getState();
   if (state.isAuthenticated) {
-    socketManager.connect();
+    if (typeof socketManager !== 'undefined') {
+      socketManager.connect();
+    }
     updateUIForAuth(state.user);
   }
   
