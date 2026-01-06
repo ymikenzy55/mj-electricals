@@ -7,6 +7,7 @@
   <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/cart-button-states.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -229,6 +230,7 @@
   <script src="../js/state.js"></script>
   <script src="../js/socket.js"></script>
   <script src="../js/auth.js"></script>
+  <script src="../js/cart-button-state.js"></script>
   <script src="../js/wishlist.js"></script>
   <script src="../js/compare.js"></script>
   <script src="../js/search-suggestions.js"></script>
@@ -276,7 +278,7 @@
               <p style="color: ${product.stock > 10 ? '#28a745' : product.stock > 0 ? '#ffc107' : '#dc3545'}; font-weight: 600; font-size: 0.875rem;">
                 ${product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left!` : 'Out of Stock'}
               </p>
-              <button class="btn add-to-cart-btn" onclick="addToCartFromHome('${product._id}', event)" ${product.stock === 0 ? 'disabled' : ''}>
+              <button class="btn add-to-cart-btn" data-product-id="${product._id}" onclick="addToCartFromHome('${product._id}', event)" ${product.stock === 0 ? 'disabled' : ''}>
                 <i class="fas fa-shopping-cart"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
               </button>
             </div>
@@ -474,34 +476,30 @@
     }
 
     async function addToCartFromHome(productId, event) {
-      // Allow both guests and authenticated users to add to cart
       const button = event.target.closest('button');
-      const originalText = button.innerHTML;
       
-      try {
-        button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+      // Use the cart button state manager for consistent behavior
+      if (typeof cartButtonState !== 'undefined') {
+        await cartButtonState.handleAddToCart(productId, 1, button);
+      } else {
+        // Fallback to old behavior
+        const originalText = button.innerHTML;
         
-        await stateManager.addToCart(productId, 1);
-        
-        button.innerHTML = '<i class="fas fa-check"></i> Added!';
-        button.style.background = '#28a745';
-        
-        // Update cart badge
-        updateCartBadge();
-        
-        // Reset button after 2 seconds
-        setTimeout(() => {
+        try {
+          button.disabled = true;
+          button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+          
+          await stateManager.addToCart(productId, 1);
+          
+          button.innerHTML = '<i class="fas fa-check"></i> Added!';
+          button.classList.add('added');
+          
+          toast.success('Product added to cart!');
+        } catch (error) {
           button.innerHTML = originalText;
-          button.style.background = '';
           button.disabled = false;
-        }, 2000);
-        
-        toast.success('Product added to cart!');
-      } catch (error) {
-        button.innerHTML = originalText;
-        button.disabled = false;
-        toast.error('Failed to add to cart: ' + error.message);
+          toast.error('Failed to add to cart: ' + error.message);
+        }
       }
     }
 

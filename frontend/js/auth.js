@@ -56,8 +56,16 @@ function redirectBasedOnRole(user) {
 async function handleLogin(email, password) {
   try {
     const response = await api.login({ email, password });
-    stateManager.login(response.token, response.user);
+    
+    // AWAIT login to ensure cart migration completes
+    await stateManager.login(response.token, response.user);
     socketManager.connect();
+    
+    // Show success message with cart info
+    const cartCount = stateManager.getCartCount();
+    if (cartCount > 0) {
+      toast.success(`Welcome back! You have ${cartCount} item(s) in your cart.`);
+    }
     
     // Redirect based on user role (handles saved redirect internally)
     redirectBasedOnRole(response.user);
@@ -69,8 +77,16 @@ async function handleLogin(email, password) {
 async function handleRegister(name, email, password) {
   try {
     const response = await api.register({ name, email, password });
-    stateManager.login(response.token, response.user);
+    
+    // AWAIT login to ensure cart migration completes
+    await stateManager.login(response.token, response.user);
     socketManager.connect();
+    
+    // Show success message with cart info
+    const cartCount = stateManager.getCartCount();
+    if (cartCount > 0) {
+      toast.success(`Welcome! Your ${cartCount} item(s) have been saved to your cart.`);
+    }
     
     // Clear any saved redirect for new users
     localStorage.removeItem('redirectAfterLogin');

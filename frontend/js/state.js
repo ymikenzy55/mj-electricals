@@ -81,12 +81,18 @@ class StateManager {
         const response = await api.getCart();
         this.setState({ cart: response.cart });
       } else {
-        // Load guest cart from localStorage
+        // Load guest cart from localStorage - ALWAYS load on page load
         const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
         this.setState({ cart: guestCart });
+        console.log('Guest cart loaded:', guestCart.length, 'items');
       }
     } catch (error) {
       console.error('Failed to load cart:', error);
+      // Fallback to guest cart if API fails
+      if (!this.state.isAuthenticated) {
+        const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+        this.setState({ cart: guestCart });
+      }
     }
   }
 
@@ -200,7 +206,7 @@ class StateManager {
     });
   }
 
-  login(token, user) {
+  async login(token, user) {
     // Store token in localStorage for persistence
     localStorage.setItem('token', token);
     // Cache user data for offline resilience
@@ -211,8 +217,8 @@ class StateManager {
       isAuthenticated: true
     });
     
-    // Migrate guest cart if exists
-    this.migrateGuestCart();
+    // Migrate guest cart if exists - AWAIT this to ensure cart is migrated before redirect
+    await this.migrateGuestCart();
     
     // Log for debugging
     const log = typeof logger !== 'undefined' ? logger : console;
@@ -221,15 +227,31 @@ class StateManager {
 
   async migrateGuestCart() {
     const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
+    console.log('Migrating guest cart:', guestCart.length, 'items');
+    
     if (guestCart.length > 0) {
       try {
+        // Migrate each item to user's cart
         for (const item of guestCart) {
-          await api.addToCart(item.product._id, item.quantity);
+          try {
+            await api.addToCart(item.product._id, item.quantity);
+            console.log('Migrated item:', item.product.name);
+          } catch (itemError) {
+            console.error('Failed to migrate item:', item.product.name, itemError);
+            // Continue with other items even if one fails
+          }
         }
+        
+        // Clear guest cart after successful migration
         localStorage.removeItem('guestCart');
+        console.log('Guest cart cleared after migration');
+        
+        // Reload cart to get updated data from server
         await this.loadCart();
+        console.log('Cart reloaded after migration');
       } catch (error) {
         console.error('Failed to migrate guest cart:', error);
+        // Don't clear guest cart if migration failed
       }
     }
   }

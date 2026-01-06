@@ -1,0 +1,51 @@
+/* Cart Button States */
+
+/* Added state - green checkmark */
+.add-to-cart-btn.added {
+  background: #28a745 !important;
+  border-color: #28a745 !important;
+  color: white !important;
+}
+
+.add-to-cart-btn.added:hover {
+  background: #218838 !important;
+  border-color: #1e7e34 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.add-to-cart-btn.added i {
+  color: white !important;
+}
+
+/* Loading state */
+.add-to-cart-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Smooth transitions */
+.add-to-cart-btn {
+  transition: all 0.3s ease;
+}
+
+.add-to-cart-btn i {
+  transition: all 0.3s ease;
+}
+
+/* Pulse animation for added state */
+@keyframes addedPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.add-to-cart-btn.added {
+  animation: addedPulse 0.5s ease;
+}
