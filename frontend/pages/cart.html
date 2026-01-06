@@ -301,12 +301,16 @@
           return `
           <div class="cart-item">
             <div style="display: flex; gap: 1rem; align-items: flex-start;">
-              <img src="${item.product.images[0] || 'https://via.placeholder.com/100'}" 
-                   alt="${item.product.name}" class="cart-item-image">
+              <a href="product-details.html?id=${item.product._id}" style="flex-shrink: 0;">
+                <img src="${item.product.images[0] || 'https://via.placeholder.com/100'}" 
+                     alt="${item.product.name}" class="cart-item-image" style="cursor: pointer;">
+              </a>
               
               <div class="cart-item-details" style="flex: 1;">
                 ${hasDiscount ? `<div class="discount-badge">-${discountPercent}%</div>` : ''}
-                <h3 class="cart-item-title">${item.product.name}</h3>
+                <a href="product-details.html?id=${item.product._id}" style="text-decoration: none; color: inherit;">
+                  <h3 class="cart-item-title" style="cursor: pointer;">${item.product.name}</h3>
+                </a>
                 <p class="cart-item-meta">${item.product.category || 'Electrical Product'}${item.product.wattage ? ` | ${item.product.wattage}W` : ''}</p>
                 ${item.product.variation ? `<p class="cart-item-meta" style="margin-top: 0.25rem;">Variation: ${item.product.variation}</p>` : ''}
                 <p class="cart-item-price">

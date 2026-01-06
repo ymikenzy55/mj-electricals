@@ -205,8 +205,22 @@
     font-size: 0.85rem !important;
   }
 
-  .review-form button[type="submit"] {
+  .review-form button[type="submit"],
+  .review-form .btn {
     padding: 0.875rem !important;
     font-size: 0.95rem !important;
+    width: 100% !important;
+    min-height: 48px !important;
+  }
+  
+  /* Review form button container - stack on mobile */
+  .review-form form > div:last-child {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  .review-form form > div:last-child button {
+    width: 100% !important;
+    flex: none !important;
   }
 }
