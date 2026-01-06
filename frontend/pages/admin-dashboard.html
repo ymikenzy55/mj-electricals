@@ -526,6 +526,7 @@
   <script src="../js/auth.js"></script>
   <script src="../js/mobile-table-helper.js"></script>
   <script src="../js/admin-reviews.js"></script>
+  <script src="../js/search-suggestions.js"></script>
   <script>
     // Ensure api is available before proceeding
     function waitForApi() {
@@ -618,14 +619,50 @@
 
       // Load section data
       if (section === 'banners') loadBanners();
-      if (section === 'products') loadProducts();
-      if (section === 'orders') loadOrders();
+      if (section === 'products') {
+        loadProducts();
+        initProductSearch();
+      }
+      if (section === 'orders') {
+        loadOrders();
+        initOrderSearch();
+      }
       if (section === 'feedback') loadFeedback();
       if (section === 'categories') loadCategories();
       if (section === 'delivery') loadDeliveryCharges();
       if (section === 'newsletter') loadNewsletterSubscribers();
       if (section === 'reviews') loadReviews();
       if (section === 'profile') loadProfile();
+    }
+
+    // Initialize search suggestions
+    let productSearchSuggestions = null;
+    let orderSearchSuggestions = null;
+    
+    function initProductSearch() {
+      const productSearch = document.getElementById('product-search');
+      if (productSearch && !productSearchSuggestions) {
+        productSearchSuggestions = new SearchSuggestions(productSearch, {
+          searchType: 'products',
+          placeholder: 'Search products by name, ID, or category...',
+          onSelect: (product) => {
+            editProduct(product);
+          }
+        });
+      }
+    }
+    
+    function initOrderSearch() {
+      const orderSearch = document.getElementById('order-search');
+      if (orderSearch && !orderSearchSuggestions) {
+        orderSearchSuggestions = new SearchSuggestions(orderSearch, {
+          searchType: 'orders',
+          placeholder: 'Search orders by ID, customer name, or email...',
+          onSelect: (order) => {
+            viewAdminOrderDetails(order);
+          }
+        });
+      }
     }
 
     async function loadStats() {
