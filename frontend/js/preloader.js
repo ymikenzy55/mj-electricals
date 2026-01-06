@@ -1,5 +1,16 @@
 // Preloader functionality
 (function() {
+  // Check if this is the first page load in this session
+  const hasSeenPreloader = sessionStorage.getItem('preloaderShown');
+  
+  // Only show preloader on first visit
+  if (hasSeenPreloader) {
+    return; // Skip preloader on subsequent page navigations
+  }
+  
+  // Mark that preloader has been shown in this session
+  sessionStorage.setItem('preloaderShown', 'true');
+  
   // Create preloader HTML
   const preloaderHTML = `
     <div class="preloader" id="preloader">
@@ -60,14 +71,6 @@
           preloader.remove();
         }, 500);
       }
-    }
-  });
-
-  // Show preloader on page navigation
-  window.addEventListener('beforeunload', function() {
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-      preloader.classList.remove('hidden');
     }
   });
 })();
