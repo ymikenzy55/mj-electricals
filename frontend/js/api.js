@@ -53,7 +53,8 @@ class API {
 
       if (!response.ok) {
         // Handle 401 Unauthorized - token might be expired
-        if (response.status === 401 && !skipAuth) {
+        // BUT don't clear token during payment verification to prevent logout
+        if (response.status === 401 && !skipAuth && !endpoint.includes('/verify/')) {
           const log = typeof logger !== 'undefined' ? logger : console;
           log.warn('Token expired or invalid, clearing auth state');
           this.clearToken();

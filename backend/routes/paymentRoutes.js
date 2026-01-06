@@ -11,7 +11,7 @@ const {
 const { protect } = require('../middleware/auth');
 
 router.post('/initialize', protect, paymentLimiter, initializePaymentValidation, initializePayment);
-router.get('/verify/:reference', protect, verifyPayment);
+router.get('/verify/:reference', verifyPayment); // Remove protect - reference is the security token
 router.post('/webhook/paystack', paystackWebhook); // No rate limit for webhooks
 router.get('/history', protect, getPaymentHistory);
 
