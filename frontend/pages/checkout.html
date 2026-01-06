@@ -793,16 +793,22 @@
           email: state.user.email
         },
         shippingAddress: {
+          fullName: shippingData.fullName,
+          phone: shippingData.phone,
+          address: shippingData.city, // Use city as address for now
           city: shippingData.city,
+          state: shippingData.city, // Use city as state for now
           country: 'Ghana'
         },
         paymentMethod: paymentMethod
       };
 
+      let orderId = null; // Declare orderId in outer scope
+
       try {
         const loadingToast = toast.loading('Processing your order...');
         const response = await api.createOrder(orderData);
-        const orderId = response.order._id;
+        orderId = response.order._id;
         
         loadingToast.remove();
         
