@@ -1070,8 +1070,9 @@ html {
   letter-spacing: 0.3px;
   box-shadow: 0 2px 8px rgba(255, 107, 61, 0.3);
   z-index: 10;
-  min-width: 40px;
-  text-align: center;
+  display: inline-block;
+  white-space: nowrap;
+  max-width: fit-content;
 }
 
 @keyframes pulse {
