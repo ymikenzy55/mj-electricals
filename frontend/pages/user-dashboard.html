@@ -7,6 +7,7 @@
   <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/mobile-product-details-fix.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .dashboard-header {
@@ -42,24 +43,24 @@
     .mobile-menu-toggle {
       display: none;
       position: fixed;
-      top: 80px;
+      bottom: 20px; /* Changed from top to bottom */
       right: 1rem;
       z-index: 1001;
-      width: 50px;
-      height: 50px;
+      width: 56px; /* Slightly larger for better touch target */
+      height: 56px;
       background: var(--primary-orange);
       border: none;
       border-radius: 50%;
       color: white;
       font-size: 1.5rem;
       cursor: pointer;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
       transition: var(--transition);
     }
     
     .mobile-menu-toggle:hover {
       transform: scale(1.1);
-      box-shadow: var(--shadow-xl);
+      box-shadow: 0 6px 25px rgba(255, 107, 53, 0.5);
     }
     
     .mobile-menu-toggle.active {
