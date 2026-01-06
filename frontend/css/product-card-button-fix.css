@@ -1,0 +1,228 @@
+/* Product Card Button Fix - Prevents Duplicate Buttons */
+
+/* Ensure product card buttons don't duplicate */
+.product-card .add-to-cart-btn {
+  width: 100%;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--primary-orange, #FF6B3D);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  margin-top: 0.75rem;
+  overflow: visible !important;
+  position: relative;
+}
+
+.product-card .add-to-cart-btn:hover {
+  background: #ff8555;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 61, 0.3);
+}
+
+.product-card .add-to-cart-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.product-card .add-to-cart-btn i {
+  font-size: 1em;
+  margin-right: 0;
+}
+
+/* Remove any pseudo-elements that might duplicate content */
+.product-card .add-to-cart-btn::before,
+.product-card .add-to-cart-btn::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+}
+
+/* Override .btn class styles that might cause issues */
+.product-card button.btn.add-to-cart-btn {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  overflow: visible !important;
+}
+
+.product-card button.btn.add-to-cart-btn::before,
+.product-card button.btn.add-to-cart-btn::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Ensure product info doesn't have duplicate buttons */
+.product-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fix for any button containers */
+.product-card .cart-button-container {
+  width: 100%;
+  display: block;
+}
+
+.product-card .cart-button-container .add-to-cart-btn {
+  width: 100%;
+}
+
+/* Prevent button text duplication */
+.product-card .add-to-cart-btn span {
+  display: inline;
+}
+
+/* Fix button alignment */
+.product-card .product-info > button:last-child {
+  margin-top: auto;
+}
+
+/* Product Card Improvements */
+.product-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card .product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+/* Product Name - Better visibility */
+.product-card .product-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f0f0f;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+  min-height: 2.8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Product Category - Better spacing */
+.product-card .product-category {
+  font-size: 0.8rem;
+  color: #757575;
+  margin-bottom: 0.5rem;
+}
+
+/* Price Container - Better alignment */
+.product-card .price-container {
+  margin: 0.5rem 0;
+}
+
+.product-card .product-price,
+.product-card .product-price-discounted {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #FF6B3D;
+  margin: 0.25rem 0;
+}
+
+.product-card .product-price-original {
+  font-size: 0.9rem;
+  color: #9e9e9e;
+  text-decoration: line-through;
+  margin-bottom: 0.25rem;
+}
+
+.product-card .savings-text {
+  font-size: 0.75rem;
+  color: #28a745;
+  font-weight: 600;
+}
+
+/* Stock Status - Better visibility */
+.product-card p[style*="color"] {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+}
+
+/* Discount Badge - Better positioning */
+.product-card .discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(135deg, #ff6b3d 0%, #ff4757 100%);
+  color: white;
+  padding: 0.4rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(255, 107, 61, 0.4);
+  z-index: 10;
+}
+
+/* Wishlist and Compare buttons - Better positioning */
+.product-card .wishlist-btn,
+.product-card .compare-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.product-card .compare-btn {
+  top: 50px;
+}
+
+/* Product Grid - Better spacing */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .product-card .add-to-cart-btn {
+    padding: 0.65rem 0.875rem;
+    font-size: 0.8rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  
+  .product-card .product-name {
+    font-size: 0.9rem;
+    min-height: 2.5rem;
+  }
+  
+  .product-card .product-price,
+  .product-card .product-price-discounted {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+

@@ -73,20 +73,8 @@ class CartButtonStateManager {
     button.classList.add('added');
     button.disabled = false; // Keep clickable to add more
     
-    // Update button text/icon
-    const icon = button.querySelector('i');
-    if (icon) {
-      icon.className = 'fas fa-check';
-    }
-    
-    // Update text content
-    const textNodes = Array.from(button.childNodes).filter(node => node.nodeType === 3);
-    if (textNodes.length > 0) {
-      textNodes[0].textContent = ' Added';
-    } else {
-      // If no text node, add one
-      button.appendChild(document.createTextNode(' Added'));
-    }
+    // Clear and rebuild button content
+    button.innerHTML = '<i class="fas fa-check"></i> Added';
   }
 
   // Set button to default "Add to Cart" state
@@ -96,20 +84,8 @@ class CartButtonStateManager {
     button.classList.remove('added');
     button.disabled = false;
     
-    // Update button text/icon
-    const icon = button.querySelector('i');
-    if (icon) {
-      icon.className = 'fas fa-shopping-cart';
-    }
-    
-    // Update text content
-    const textNodes = Array.from(button.childNodes).filter(node => node.nodeType === 3);
-    if (textNodes.length > 0) {
-      textNodes[0].textContent = ' Add to Cart';
-    } else {
-      // If no text node, add one
-      button.appendChild(document.createTextNode(' Add to Cart'));
-    }
+    // Clear and rebuild button content
+    button.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
   }
 
   // Set button to loading state
@@ -117,15 +93,9 @@ class CartButtonStateManager {
     if (!button) return;
     
     button.disabled = true;
-    const icon = button.querySelector('i');
-    if (icon) {
-      icon.className = 'fas fa-spinner fa-spin';
-    }
     
-    const textNodes = Array.from(button.childNodes).filter(node => node.nodeType === 3);
-    if (textNodes.length > 0) {
-      textNodes[0].textContent = ' Adding...';
-    }
+    // Clear and rebuild button content
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
   }
 
   // Handle add to cart with button state management
