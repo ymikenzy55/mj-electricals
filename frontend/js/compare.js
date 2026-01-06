@@ -8,12 +8,12 @@ class CompareManager {
   // Add product to comparison
   addToCompare(productId) {
     if (this.compareList.includes(productId)) {
-      Modal.info('Product is already in comparison list');
+      toast.info('Product is already in comparison list');
       return false;
     }
 
     if (this.compareList.length >= this.maxItems) {
-      Modal.warning(`You can only compare up to ${this.maxItems} products at once`);
+      toast.warning(`You can only compare up to ${this.maxItems} products at once`);
       return false;
     }
 
@@ -21,7 +21,7 @@ class CompareManager {
     this.save();
     this.updateBadge();
     this.updateAllButtons();
-    Modal.success('Product added to comparison');
+    toast.success('Product added to comparison');
     return true;
   }
 
