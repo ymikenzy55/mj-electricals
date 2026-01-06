@@ -45,7 +45,14 @@ function redirectBasedOnRole(user) {
     // Regular users: redirect to saved page or homepage
     if (redirectUrl && redirectUrl !== '/pages/login.html' && redirectUrl !== '/pages/register.html') {
       localStorage.removeItem('redirectAfterLogin');
-      window.location.href = redirectUrl;
+      // Add small delay for checkout to ensure cart is loaded
+      if (redirectUrl.includes('checkout')) {
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 500);
+      } else {
+        window.location.href = redirectUrl;
+      }
     } else {
       localStorage.removeItem('redirectAfterLogin');
       window.location.href = '/pages/index.html';
