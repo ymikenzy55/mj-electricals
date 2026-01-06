@@ -1336,7 +1336,9 @@
                 <tr>
                   <th>Name</th>
                   <th>Description</th>
+                  <th>Products</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1344,7 +1346,14 @@
                   <tr>
                     <td>${cat.name}</td>
                     <td>${cat.description || '-'}</td>
+                    <td>${cat.productCount || 0}</td>
                     <td>${cat.isActive ? 'Active' : 'Inactive'}</td>
+                    <td>
+                      <button class="btn-danger btn-sm" onclick="deleteCategory('${cat._id}', '${cat.name}', ${cat.productCount || 0})" 
+                              style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                        <i class="fas fa-trash"></i> Delete
+                      </button>
+                    </td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -1355,6 +1364,28 @@
         document.getElementById('categories-list').innerHTML = '<p>Failed to load categories</p>';
       }
     }
+
+    window.deleteCategory = async function(categoryId, categoryName, productCount) {
+      if (productCount > 0) {
+        const confirmDelete = confirm(
+          `Warning: "${categoryName}" has ${productCount} product(s) associated with it.\n\n` +
+          `Deleting this category may affect those products. Are you sure you want to continue?`
+        );
+        if (!confirmDelete) return;
+      } else {
+        const confirmDelete = confirm(`Are you sure you want to delete the category "${categoryName}"?`);
+        if (!confirmDelete) return;
+      }
+
+      try {
+        await api.deleteCategory(categoryId);
+        showAlert(`Category "${categoryName}" deleted successfully`, 'success');
+        loadCategories();
+      } catch (error) {
+        showAlert(error.message || 'Failed to delete category', 'error');
+      }
+    }
+
 
     document.getElementById('category-form').addEventListener('submit', async (e) => {
       e.preventDefault();
