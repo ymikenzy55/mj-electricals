@@ -1366,24 +1366,19 @@
     }
 
     window.deleteCategory = async function(categoryId, categoryName, productCount) {
-      if (productCount > 0) {
-        const confirmDelete = confirm(
-          `Warning: "${categoryName}" has ${productCount} product(s) associated with it.\n\n` +
-          `Deleting this category may affect those products. Are you sure you want to continue?`
-        );
-        if (!confirmDelete) return;
-      } else {
-        const confirmDelete = confirm(`Are you sure you want to delete the category "${categoryName}"?`);
-        if (!confirmDelete) return;
-      }
+      const message = productCount > 0
+        ? `Warning: "${categoryName}" has ${productCount} product(s) associated with it.<br><br>Deleting this category may affect those products. Are you sure you want to continue?`
+        : `Are you sure you want to delete the category "${categoryName}"?`;
 
-      try {
-        await api.deleteCategory(categoryId);
-        showAlert(`Category "${categoryName}" deleted successfully`, 'success');
-        loadCategories();
-      } catch (error) {
-        showAlert(error.message || 'Failed to delete category', 'error');
-      }
+      Modal.confirm(message, async () => {
+        try {
+          await api.deleteCategory(categoryId);
+          showAlert(`Category "${categoryName}" deleted successfully`, 'success');
+          loadCategories();
+        } catch (error) {
+          showAlert(error.message || 'Failed to delete category', 'error');
+        }
+      });
     }
 
 
