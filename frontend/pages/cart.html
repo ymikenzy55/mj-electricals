@@ -109,9 +109,9 @@
           <span>Total Price:</span>
           <strong id="total-price" style="color: var(--primary-orange);">$0.00</strong>
         </div>
-        <a href="checkout.html" class="btn mt-2" style="width: 100%; text-align: center;">
+        <button onclick="proceedToCheckout()" class="btn mt-2" style="width: 100%; text-align: center;">
           Proceed to Checkout
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -239,16 +239,12 @@
     // Initialize breadcrumbs
     breadcrumbManager.insert();
     
-    // Wait for authentication before loading cart
+    // Load cart for both guest and authenticated users
     document.addEventListener('DOMContentLoaded', async () => {
-      if (!requireAuth()) {
-        return;
-      }
-      
-      // Wait for user to be loaded
+      // Load user state (works for both guest and authenticated)
       await stateManager.loadUser();
       
-      // Now load the cart
+      // Load the cart
       await loadCart();
     });
 
@@ -423,6 +419,27 @@
         toast.error(message);
       } else {
         toast.info(message);
+      }
+    }
+
+    function proceedToCheckout() {
+      const state = stateManager.getState();
+      
+      if (!state.isAuthenticated) {
+        // Guest user - prompt to login
+        Modal.confirm(
+          'Please sign in to continue with checkout. Your cart items will be saved.',
+          () => {
+            // Save current page to redirect back after login
+            localStorage.setItem('redirectAfterLogin', '/pages/checkout.html');
+            window.location.href = 'login.html';
+          },
+          'Sign In',
+          'Cancel'
+        );
+      } else {
+        // Authenticated user - proceed to checkout
+        window.location.href = 'checkout.html';
       }
     }
 

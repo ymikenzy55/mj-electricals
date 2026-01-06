@@ -36,6 +36,8 @@ class StateManager {
       const token = localStorage.getItem('token');
       if (!token) {
         this.setState({ user: null, isAuthenticated: false });
+        // Load guest cart even when not authenticated
+        await this.loadCart();
         return;
       }
 
@@ -260,7 +262,7 @@ class StateManager {
     api.clearToken();
     localStorage.removeItem('token');
     localStorage.removeItem('cachedUser');
-    localStorage.removeItem('guestCart');
+    // DON'T remove guestCart - let it persist for guest users
     this.setState({
       user: null,
       cart: [],
