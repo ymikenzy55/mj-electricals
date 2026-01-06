@@ -38,9 +38,10 @@ class WishlistManager {
   async toggleWishlist(productId, buttonElement) {
     const state = stateManager.getState();
     if (!state.isAuthenticated) {
-      Modal.confirm('Please login to use wishlist. Go to login page?', () => {
+      toast.info('Please login to use wishlist');
+      setTimeout(() => {
         window.location.href = 'login.html';
-      });
+      }, 1500);
       return;
     }
 
@@ -48,11 +49,11 @@ class WishlistManager {
       if (this.wishlistItems.has(productId)) {
         await api.removeFromWishlist(productId);
         this.wishlistItems.delete(productId);
-        Modal.success('Removed from wishlist');
+        toast.info('Removed from wishlist');
       } else {
         await api.addToWishlist(productId);
         this.wishlistItems.add(productId);
-        Modal.success('Added to wishlist');
+        toast.success('Added to wishlist');
       }
       
       this.updateBadge();
@@ -62,7 +63,7 @@ class WishlistManager {
         this.updateAllButtons();
       }
     } catch (error) {
-      Modal.error(error.message || 'Failed to update wishlist');
+      toast.error(error.message || 'Failed to update wishlist');
     }
   }
 
