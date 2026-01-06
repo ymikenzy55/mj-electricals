@@ -106,6 +106,12 @@
         <div class="spinner"></div>
       </div>
     </div>
+    <div id="load-more-container" style="text-align: center; margin-top: 2rem; display: none;">
+      <button id="load-more-btn" class="btn" style="padding: 0.875rem 2rem;">
+        <i class="fas fa-plus-circle"></i> Load More Products
+      </button>
+      <p id="products-count" style="margin-top: 1rem; color: var(--gray-600); font-size: 0.9rem;"></p>
+    </div>
   </section>
 
   <section class="container">
@@ -251,17 +257,34 @@
       }
     });
     
-    async function loadFeaturedProducts() {
+    let currentPage = 1;
+    const productsPerPage = 8;
+    let totalProducts = 0;
+    let allProducts = [];
+    
+    async function loadFeaturedProducts(append = false) {
       try {
-        const response = await api.getProducts({ limit: 8, status: 'active' });
+        if (!append) {
+          document.getElementById('featured-products').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        }
+        
+        const response = await api.getProducts({ page: currentPage, limit: productsPerPage, status: 'active' });
         const container = document.getElementById('featured-products');
         
-        if (response.products.length === 0) {
+        if (!append) {
+          allProducts = [];
+        }
+        
+        allProducts = [...allProducts, ...response.products];
+        totalProducts = response.total || response.products.length;
+        
+        if (allProducts.length === 0) {
           container.innerHTML = '<p class="text-center">No products available</p>';
+          document.getElementById('load-more-container').style.display = 'none';
           return;
         }
 
-        container.innerHTML = response.products.map(product => `
+        const productsHTML = allProducts.map(product => `
           <div class="product-card" data-product-id="${product._id}">
             ${getDiscountBadge(product.discount || 0)}
             <div class="wishlist-btn-placeholder" data-product-id="${product._id}"></div>
@@ -286,6 +309,29 @@
             </div>
           </div>
         `).join('');
+        
+        container.innerHTML = productsHTML;
+
+        // Update load more button visibility and count
+        const loadMoreContainer = document.getElementById('load-more-container');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const productsCount = document.getElementById('products-count');
+        
+        if (allProducts.length < totalProducts) {
+          loadMoreContainer.style.display = 'block';
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Load More Products';
+          productsCount.textContent = `Showing ${allProducts.length} of ${totalProducts} products`;
+        } else {
+          if (totalProducts > productsPerPage) {
+            loadMoreContainer.style.display = 'block';
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.innerHTML = '<i class="fas fa-check-circle"></i> All Products Loaded';
+            productsCount.textContent = `Showing all ${allProducts.length} products`;
+          } else {
+            loadMoreContainer.style.display = 'none';
+          }
+        }
 
         // Add wishlist and compare buttons after rendering
         setTimeout(() => {
@@ -305,8 +351,19 @@
         console.error('Failed to load products:', error);
         document.getElementById('featured-products').innerHTML = 
           '<p class="text-center">Failed to load products</p>';
+        document.getElementById('load-more-container').style.display = 'none';
       }
     }
+    
+    // Load more button handler
+    document.getElementById('load-more-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('load-more-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      
+      currentPage++;
+      await loadFeaturedProducts(true);
+    });
 
     async function loadBanners() {
       try {
