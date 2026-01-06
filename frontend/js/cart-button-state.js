@@ -38,8 +38,8 @@ class CartButtonStateManager {
     // Get all product IDs in cart
     const productIdsInCart = cart.map(item => item.product._id);
 
-    // Update all buttons with data-product-id attribute
-    document.querySelectorAll('[data-product-id]').forEach(button => {
+    // Only update BUTTON elements with add-to-cart-btn class
+    document.querySelectorAll('button.add-to-cart-btn[data-product-id]').forEach(button => {
       const productId = button.getAttribute('data-product-id');
       if (productIdsInCart.includes(productId)) {
         this.setButtonAdded(button);
@@ -49,7 +49,7 @@ class CartButtonStateManager {
     });
 
     // Also update buttons with onclick containing product ID (legacy support)
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    document.querySelectorAll('button.add-to-cart-btn[onclick]').forEach(button => {
       const onclick = button.getAttribute('onclick');
       if (onclick) {
         // Extract product ID from onclick

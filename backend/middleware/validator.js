@@ -229,9 +229,15 @@ const createOrderValidation = [
     .isLength({ min: 10, max: 20 }).withMessage('Phone must be 10-20 characters'),
   
   body('shippingAddress.address')
+    .optional()
     .trim()
-    .notEmpty().withMessage('Address is required')
     .isLength({ min: 5, max: 200 }).withMessage('Address must be 5-200 characters')
+    .escape(),
+  
+  body('shippingAddress.street')
+    .optional()
+    .trim()
+    .isLength({ min: 5, max: 200 }).withMessage('Street must be 5-200 characters')
     .escape(),
   
   body('shippingAddress.city')
@@ -241,9 +247,20 @@ const createOrderValidation = [
     .escape(),
   
   body('shippingAddress.state')
+    .optional()
     .trim()
-    .notEmpty().withMessage('State is required')
     .isLength({ min: 2, max: 50 }).withMessage('State must be 2-50 characters')
+    .escape(),
+  
+  body('shippingAddress.zipCode')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 20 }).withMessage('Zip code must be 2-20 characters'),
+  
+  body('shippingAddress.country')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 50 }).withMessage('Country must be 2-50 characters')
     .escape(),
   
   body('subtotal')
