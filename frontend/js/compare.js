@@ -31,13 +31,15 @@ class CompareManager {
     this.save();
     this.updateBadge();
     this.updateAllButtons();
+    toast.info('Removed from comparison');
     return true;
   }
 
   // Toggle product in comparison
   toggleCompare(productId) {
     if (this.isInCompare(productId)) {
-      return this.removeFromCompare(productId);
+      this.removeFromCompare(productId);
+      return true;
     } else {
       return this.addToCompare(productId);
     }
