@@ -570,6 +570,17 @@ currentFilter = 'all';
     document.addEventListener('DOMContentLoaded', async () => {
       if (!requireAuth()) return;
       
+      // Instantly show user name from localStorage
+      const cachedUser = localStorage.getItem('user');
+      if (cachedUser) {
+        try {
+          const user = JSON.parse(cachedUser);
+          document.getElementById('user-name').textContent = user.name || 'User';
+        } catch (e) {
+          console.error('Error parsing cached user:', e);
+        }
+      }
+      
       await stateManager.loadUser();
       const state = stateManager.getState();
       
