@@ -81,12 +81,35 @@ class StateManager {
     try {
       if (this.state.isAuthenticated) {
         const response = await api.getCart();
-        this.setState({ cart: response.cart });
+        // Filter out items with null products (deleted products)
+        const validCart = response.cart.filter(item => item.product);
+        
+        // If cart was cleaned up, update it on the server
+        if (validCart.length !== response.cart.length) {
+          console.log(`Cleaned up ${response.cart.length - validCart.length} deleted products from cart`);
+          // Update server cart to remove null products
+          for (const item of response.cart) {
+            if (!item.product) {
+              try {
+                await api.removeFromCart(item._id || item.product);
+              } catch (e) {
+                console.error('Failed to remove null product:', e);
+              }
+            }
+          }
+        }
+        
+        this.setState({ cart: validCart });
       } else {
         // Load guest cart from localStorage - ALWAYS load on page load
         const guestCart = JSON.parse(localStorage.getItem('guestCart') || '[]');
-        this.setState({ cart: guestCart });
-        console.log('Guest cart loaded:', guestCart.length, 'items');
+        // Filter out items with null products for guest cart too
+        const validGuestCart = guestCart.filter(item => item.product);
+        if (validGuestCart.length !== guestCart.length) {
+          localStorage.setItem('guestCart', JSON.stringify(validGuestCart));
+        }
+        this.setState({ cart: validGuestCart });
+        console.log('Guest cart loaded:', validGuestCart.length, 'items');
       }
     } catch (error) {
       console.error('Failed to load cart:', error);
@@ -183,13 +206,19 @@ class StateManager {
   }
 
   getCartCount() {
-    return this.state.cart.reduce((total, item) => total + item.quantity, 0);
+    // Only count items with valid products
+    return this.state.cart
+      .filter(item => item.product)
+      .reduce((total, item) => total + item.quantity, 0);
   }
 
   getCartTotal() {
-    return this.state.cart.reduce((total, item) => {
-      return total + (item.product.price * item.quantity);
-    }, 0);
+    // Only calculate total for items with valid products
+    return this.state.cart
+      .filter(item => item.product && item.product.price)
+      .reduce((total, item) => {
+        return total + (item.product.price * item.quantity);
+      }, 0);
   }
 
   // Update all cart badges (desktop and mobile)
