@@ -32,6 +32,21 @@ app.use(passport.initialize());
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
 
+// Add cache control headers for static files
+app.use((req, res, next) => {
+  // Disable caching for HTML files
+  if (req.url.endsWith('.html') || req.url === '/') {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+  // Short cache for CSS/JS (5 minutes)
+  else if (req.url.endsWith('.css') || req.url.endsWith('.js')) {
+    res.setHeader('Cache-Control', 'public, max-age=300');
+  }
+  next();
+});
+
 // Make io accessible in routes
 app.use((req, res, next) => {
   req.io = io;
