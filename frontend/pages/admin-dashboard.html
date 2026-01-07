@@ -1709,12 +1709,6 @@
                   <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
                   <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                 </select>
-                ${order.paymentStatus === 'paid' && order.status !== 'cancelled' ? `
-                  <button onclick="processRefund('${order._id}')" 
-                          style="padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                    Process Refund
-                  </button>
-                ` : ''}
               </div>
             </div>
           </div>

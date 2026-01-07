@@ -278,7 +278,7 @@
         }
 
         console.log('Rendering', state.cart.length, 'items');
-        container.innerHTML = state.cart.map(item => {
+        container.innerHTML = state.cart.filter(item => item.product).map(item => {
           console.log('Item:', item);
           
           // Calculate discount percentage if original price exists
