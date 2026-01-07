@@ -134,6 +134,8 @@
         <div class="spinner"></div>
       </div>
     </div>
+    
+    <div id="pagination" class="text-center mt-3"></div>
   </div>
 
   <nav class="mobile-nav">
@@ -237,40 +239,80 @@
       }
     }
 
-    async function loadCategories() {
+    let allCategories = [];
+    let currentPage = 1;
+    const categoriesPerPage = 12;
+
+    async function loadCategories(page = 1) {
       try {
         const response = await api.getCategories();
-        const container = document.getElementById('categories-container');
-
-        if (response.categories.length === 0) {
-          container.innerHTML = '<p class="text-center">No categories available</p>';
-          return;
-        }
-
-        container.innerHTML = response.categories.map(category => `
-          <div class="product-card" style="cursor: pointer;" 
-               onclick="window.location.href='products.html?category=${encodeURIComponent(category.name)}'">
-            <img src="${category.image || 'https://via.placeholder.com/400x200?text=' + encodeURIComponent(category.name)}" 
-                 alt="${category.name}" 
-                 class="product-image"
-                 style="width: 100%; height: 200px; object-fit: cover;">
-            <div class="product-info">
-              <h3 class="product-name">${category.name}</h3>
-              <p>${category.description || 'Browse products in this category'}</p>
-              <p style="color: var(--gray-600); font-size: 0.9rem; margin-top: 0.5rem;">
-                <i class="fas fa-box"></i> ${category.productCount || 0} Products
-              </p>
-              <a href="products.html?category=${encodeURIComponent(category.name)}" class="btn">
-                View Products
-              </a>
-            </div>
-          </div>
-        `).join('');
+        allCategories = response.categories;
+        currentPage = page;
+        displayCategories(page);
       } catch (error) {
         console.error('Failed to load categories:', error);
         document.getElementById('categories-container').innerHTML = 
           '<p class="text-center">Failed to load categories</p>';
       }
+    }
+
+    function displayCategories(page) {
+      const container = document.getElementById('categories-container');
+
+      if (allCategories.length === 0) {
+        container.innerHTML = '<p class="text-center">No categories available</p>';
+        return;
+      }
+
+      // Calculate pagination
+      const totalPages = Math.ceil(allCategories.length / categoriesPerPage);
+      const startIndex = (page - 1) * categoriesPerPage;
+      const endIndex = startIndex + categoriesPerPage;
+      const paginatedCategories = allCategories.slice(startIndex, endIndex);
+
+      container.innerHTML = paginatedCategories.map(category => `
+        <div class="product-card" style="cursor: pointer;" 
+             onclick="window.location.href='products.html?category=${encodeURIComponent(category.name)}'">
+          <img src="${category.image || 'https://via.placeholder.com/400x200?text=' + encodeURIComponent(category.name)}" 
+               alt="${category.name}" 
+               class="product-image"
+               style="width: 100%; height: 200px; object-fit: cover;">
+          <div class="product-info">
+            <h3 class="product-name">${category.name}</h3>
+            <p>${category.description || 'Browse products in this category'}</p>
+            <p style="color: var(--gray-600); font-size: 0.9rem; margin-top: 0.5rem;">
+              <i class="fas fa-box"></i> ${category.productCount || 0} Products
+            </p>
+            <a href="products.html?category=${encodeURIComponent(category.name)}" class="btn">
+              View Products
+            </a>
+          </div>
+        </div>
+      `).join('');
+
+      // Render pagination
+      renderPagination(totalPages, page);
+    }
+
+    function renderPagination(totalPages, currentPage) {
+      const container = document.getElementById('pagination');
+      
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let html = '';
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="btn ${i === currentPage ? '' : 'btn-secondary'}" 
+                        onclick="loadCategories(${i})" style="margin: 0 0.25rem;">
+                  ${i}
+                </button>`;
+      }
+      container.innerHTML = html;
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     loadCategories();

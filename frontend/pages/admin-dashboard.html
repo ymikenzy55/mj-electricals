@@ -1431,26 +1431,47 @@
     }
 
     let allCategories = [];
+    let currentCategoriesPage = 1;
+    const categoriesPerPage = 15;
 
     async function loadCategories() {
       try {
         const response = await api.getCategories();
         allCategories = response.categories || [];
-        displayCategories(allCategories);
+        displayCategories(allCategories, 1);
       } catch (error) {
         document.getElementById('categories-list').innerHTML = '<p>Failed to load categories</p>';
       }
     }
 
-    function displayCategories(categories) {
+    function displayCategories(categories, page = 1) {
       const container = document.getElementById('categories-list');
+      currentCategoriesPage = page;
 
       if (!categories || categories.length === 0) {
         container.innerHTML = '<p class="text-center">No categories found</p>';
         return;
       }
 
+      // Calculate pagination
+      const totalPages = Math.ceil(categories.length / categoriesPerPage);
+      const startIndex = (page - 1) * categoriesPerPage;
+      const endIndex = startIndex + categoriesPerPage;
+      const paginatedCategories = categories.slice(startIndex, endIndex);
+
       container.innerHTML = `
+        <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <p style="color: var(--gray-600);">Showing ${startIndex + 1}-${Math.min(endIndex, categories.length)} of ${categories.length} categories</p>
+          <div class="pagination">
+            <button class="btn btn-secondary" onclick="displayCategories(allCategories, ${page - 1})" ${page === 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span style="margin: 0 1rem;">Page ${page} of ${totalPages}</span>
+            <button class="btn btn-secondary" onclick="displayCategories(allCategories, ${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
         <div class="table-container">
           <table>
             <thead>
@@ -1464,7 +1485,7 @@
                 </tr>
               </thead>
               <tbody>
-                ${categories.map(cat => `
+                ${paginatedCategories.map(cat => `
                   <tr>
                     <td>
                       ${cat.image ? `<img src="${cat.image}" alt="${cat.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : '<span style="color: var(--gray-400);">No image</span>'}
@@ -1493,7 +1514,7 @@
 
     window.searchCategories = function(query) {
       if (!query.trim()) {
-        displayCategories(allCategories);
+        displayCategories(allCategories, 1);
         return;
       }
 
@@ -1502,7 +1523,7 @@
         (cat.description && cat.description.toLowerCase().includes(query.toLowerCase()))
       );
 
-      displayCategories(filtered);
+      displayCategories(filtered, 1);
     }
 
     window.deleteCategory = async function(categoryId, categoryName, productCount) {
