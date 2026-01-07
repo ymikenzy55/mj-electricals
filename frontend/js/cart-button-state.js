@@ -35,8 +35,10 @@ class CartButtonStateManager {
       cart = state.cart;
     }
 
-    // Get all product IDs in cart
-    const productIdsInCart = cart.map(item => item.product._id);
+    // Get all product IDs in cart (filter out null products)
+    const productIdsInCart = cart
+      .filter(item => item.product)
+      .map(item => item.product._id);
 
     // Only update BUTTON elements with add-to-cart-btn class
     document.querySelectorAll('button.add-to-cart-btn[data-product-id]').forEach(button => {
