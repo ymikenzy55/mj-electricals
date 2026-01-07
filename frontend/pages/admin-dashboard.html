@@ -187,10 +187,6 @@
                 <div class="stat-label">Paid Revenue</div>
                 <div class="stat-value" id="analytics-paid-revenue" style="color: #3b82f6;">GH₵ 0</div>
               </div>
-              <div class="stat-card" style="border-left: 4px solid #ef4444;">
-                <div class="stat-label">Refunded</div>
-                <div class="stat-value" id="analytics-refunded" style="color: #ef4444;">GH₵ 0</div>
-              </div>
               <div class="stat-card" style="border-left: 4px solid #f59e0b;">
                 <div class="stat-label">Pending</div>
                 <div class="stat-value" id="analytics-pending" style="color: #f59e0b;">GH₵ 0</div>
@@ -814,7 +810,6 @@
         // Update analytics cards
         document.getElementById('analytics-total-revenue').textContent = formatPrice(analytics.revenue.total);
         document.getElementById('analytics-paid-revenue').textContent = formatPrice(analytics.revenue.paid);
-        document.getElementById('analytics-refunded').textContent = formatPrice(analytics.revenue.refunded);
         document.getElementById('analytics-pending').textContent = formatPrice(analytics.revenue.pending);
         document.getElementById('analytics-net-revenue').textContent = formatPrice(analytics.revenue.net);
         document.getElementById('analytics-orders-count').textContent = analytics.orders.total;
@@ -834,7 +829,6 @@
               <div>
                 <strong>Order #${activity.id.slice(-8)}</strong>
                 <span class="status-badge ${activity.status}" style="margin-left: 0.5rem;">${activity.status}</span>
-                ${activity.refundStatus === 'processed' ? '<span style="color: #10b981; margin-left: 0.5rem;"><i class="fas fa-undo"></i> Refunded</span>' : ''}
               </div>
               <div style="text-align: right;">
                 <strong style="color: var(--primary-orange);">${formatPrice(activity.amount)}</strong>
@@ -1139,15 +1133,6 @@
                     <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; margin-right: 0.5rem;" onclick='viewAdminOrderDetails(${JSON.stringify(order).replace(/'/g, "&#39;")})'>
                       <i class="fas fa-eye"></i> View
                     </button>
-                    ${order.status === 'cancelled' && order.refundStatus !== 'processed' ? `
-                      <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; margin-right: 0.5rem; background: #10b981;" onclick="processOrderRefund('${order._id}')">
-                        <i class="fas fa-money-bill-wave"></i> Process Refund
-                      </button>
-                    ` : order.refundStatus === 'processed' ? `
-                      <span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">
-                        <i class="fas fa-check-circle"></i> Refunded
-                      </span>
-                    ` : ''}
                     <select onchange="updateOrderStatus('${order._id}', this.value)" style="padding: 0.5rem; font-size: 0.85rem;">
                       <option value="">Change Status</option>
                       <option value="pending">Pending</option>
@@ -1182,6 +1167,14 @@
 
     window.updateOrderStatus = async function(orderId, status) {
       if (!status) return;
+      
+      // Optimistically update UI
+      const orderElement = document.querySelector(`select[onchange*="${orderId}"]`);
+      if (orderElement) {
+        orderElement.value = status;
+        orderElement.disabled = true;
+      }
+      
       try {
         await api.updateOrderStatus(orderId, status);
         showAlert(`Order #${orderId.slice(-8)} status updated to "${status}"`, 'success');
@@ -1189,27 +1182,16 @@
         loadStats();
       } catch (error) {
         showAlert(error.message || 'Failed to update order status', 'error');
+        // Revert on error
+        if (orderElement) {
+          orderElement.disabled = false;
+        }
+        loadOrders();
       }
     }
 
-    window.processOrderRefund = async function(orderId) {
-      Modal.confirm(
-        'Are you sure you want to process the refund for this order? This action cannot be undone.',
-        async () => {
-          try {
-            await api.processRefund(orderId);
-            showAlert(`Refund processed successfully for order #${orderId.slice(-8)}`, 'success');
-            loadOrders();
-            loadStats();
-          } catch (error) {
-            showAlert(error.message || 'Failed to process refund', 'error');
-          }
-        }
-      );
-    }
 
-    // Alias for modal usage
-    window.processRefund = window.processOrderRefund;
+    // Alias for modal usage (removed refund functionality)
 
     let allFeedbacks = [];
     let currentFeedbackPage = 1;

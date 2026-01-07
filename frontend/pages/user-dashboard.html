@@ -772,15 +772,6 @@ currentFilter = 'all';
             <div>
               <p style="margin: 0; color: var(--gray-600);"><i class="fas fa-credit-card"></i> ${order.paymentMethod || 'N/A'}</p>
               <p style="margin: 0.25rem 0 0 0; color: var(--gray-600); font-size: 0.9rem;"><i class="fas fa-truck"></i> ${order.shippingAddress || 'N/A'}</p>
-              ${order.refundStatus === 'processed' ? `
-                <p style="margin: 0.5rem 0 0 0; color: #10b981; font-weight: 600; font-size: 0.95rem;">
-                  <i class="fas fa-check-circle"></i> Refund Processed on ${new Date(order.refundedAt).toLocaleDateString()}
-                </p>
-              ` : order.status === 'cancelled' && order.refundStatus !== 'processed' ? `
-                <p style="margin: 0.5rem 0 0 0; color: #f59e0b; font-weight: 600; font-size: 0.95rem;">
-                  <i class="fas fa-clock"></i> Refund Pending - Admin will process soon
-                </p>
-              ` : ''}
             </div>
             <div style="text-align: right;">
               <p style="margin: 0; color: var(--gray-600);">Total</p>
@@ -791,10 +782,10 @@ currentFilter = 'all';
           ${order.status === 'pending' ? `
             <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
               <button onclick="cancelUserOrder('${order._id}')" class="btn btn-secondary" style="width: 100%; background: #ef4444; color: white;">
-                <i class="fas fa-times-circle"></i> Cancel Order & Request Refund
+                <i class="fas fa-times-circle"></i> Cancel Order
               </button>
               <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: var(--gray-600); text-align: center;">
-                <i class="fas fa-info-circle"></i> Admin will be notified to process your refund
+                <i class="fas fa-info-circle"></i> Admin will be notified
               </p>
             </div>
           ` : ''}
@@ -914,11 +905,11 @@ currentFilter = 'all';
     // Cancel order function for users
     async function cancelUserOrder(orderId) {
       Modal.confirm(
-        'Are you sure you want to cancel this order? The admin will be notified to process your refund.',
+        'Are you sure you want to cancel this order? The admin will be notified.',
         async () => {
           try {
             await api.cancelOrder(orderId);
-            toast.success('Order cancelled successfully! Admin will process your refund shortly.');
+            toast.success('Order cancelled successfully!');
             loadOrders();
             loadDashboardStats();
             loadRecentOrders();

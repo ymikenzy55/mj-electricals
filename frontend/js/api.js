@@ -207,12 +207,6 @@ class API {
     });
   }
 
-  async processRefund(orderId) {
-    return this.request(`/orders/${orderId}/refund`, {
-      method: 'PUT'
-    });
-  }
-
   // Contact (Public - no auth required)
   async submitContactMessage(contactData) {
     return this.request('/contact', {
