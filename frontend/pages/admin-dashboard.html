@@ -875,6 +875,13 @@
       try {
         const response = await api.getProducts({ limit: 1000 });
         allProducts = response.products;
+        
+        // Store products in a global map for easy access
+        window.productsMap = {};
+        allProducts.forEach(p => {
+          window.productsMap[p._id] = p;
+        });
+        
         displayProducts(allProducts, 1);
         
         // Update out-of-stock badge
@@ -942,7 +949,7 @@
                     </td>
                     <td>${p.status}</td>
                     <td>
-                      <button class="btn btn-secondary" onclick='editProduct(${JSON.stringify(p)})'>Edit</button>
+                      <button class="btn btn-secondary" onclick="editProductById('${p._id}')">Edit</button>
                       <button class="btn btn-secondary" onclick="deleteProduct('${p._id}')">Delete</button>
                     </td>
                   </tr>
@@ -952,6 +959,13 @@
             </table>
           </div>
         `;
+    }
+
+    window.editProductById = function(productId) {
+      const product = window.productsMap[productId];
+      if (product) {
+        editProduct(product);
+      }
     }
 
     window.searchProducts = function(query) {
