@@ -134,6 +134,23 @@ class SocketManager {
         loadProducts();
       }
     });
+
+    // Product deleted - remove from cart
+    this.socket.on('product:deleted', async (data) => {
+      const state = stateManager.getState();
+      if (state.user) {
+        // Reload cart to reflect changes
+        await stateManager.loadCart();
+        
+        // Show notification to user
+        this.showNotification('A product in your cart was removed by admin', 'warning');
+        
+        // Update cart display if on cart page
+        if (typeof loadCart === 'function') {
+          loadCart();
+        }
+      }
+    });
   }
 
   updateOrderBadge() {

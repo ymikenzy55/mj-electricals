@@ -367,6 +367,13 @@
             </div>
             <button type="submit" class="btn">Add Category</button>
           </form>
+          
+          <div style="margin: 2rem 0;">
+            <input type="text" id="category-search" placeholder="Search categories by name..." 
+                   style="width: 100%; max-width: 400px; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;"
+                   oninput="searchCategories(this.value)">
+          </div>
+          
           <div id="categories-list" class="mt-3"></div>
         </section>
 
@@ -1306,26 +1313,41 @@
       }
     }
 
+    let allCategories = [];
+
     async function loadCategories() {
       try {
         const response = await api.getCategories();
-        const container = document.getElementById('categories-list');
+        allCategories = response.categories || [];
+        displayCategories(allCategories);
+      } catch (error) {
+        document.getElementById('categories-list').innerHTML = '<p>Failed to load categories</p>';
+      }
+    }
 
-        container.innerHTML = `
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Products</th>
-                  <th>Status</th>
+    function displayCategories(categories) {
+      const container = document.getElementById('categories-list');
+
+      if (!categories || categories.length === 0) {
+        container.innerHTML = '<p class="text-center">No categories found</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Products</th>
+                <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                ${response.categories.map(cat => `
+                ${categories.map(cat => `
                   <tr>
                     <td>
                       ${cat.image ? `<img src="${cat.image}" alt="${cat.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : '<span style="color: var(--gray-400);">No image</span>'}
@@ -1350,9 +1372,20 @@
             </table>
           </div>
         `;
-      } catch (error) {
-        document.getElementById('categories-list').innerHTML = '<p>Failed to load categories</p>';
+    }
+
+    window.searchCategories = function(query) {
+      if (!query.trim()) {
+        displayCategories(allCategories);
+        return;
       }
+
+      const filtered = allCategories.filter(cat => 
+        cat.name.toLowerCase().includes(query.toLowerCase()) ||
+        (cat.description && cat.description.toLowerCase().includes(query.toLowerCase()))
+      );
+
+      displayCategories(filtered);
     }
 
     window.deleteCategory = async function(categoryId, categoryName, productCount) {
