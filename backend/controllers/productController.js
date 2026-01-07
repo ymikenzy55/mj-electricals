@@ -161,6 +161,13 @@ exports.deleteProduct = async (req, res) => {
       });
     }
 
+    // Remove product from all user carts
+    const User = require('../models/User');
+    await User.updateMany(
+      { 'cart.product': req.params.id },
+      { $pull: { cart: { product: req.params.id } } }
+    );
+
     // Emit real-time event
     req.io.emit('product:deleted', { id: req.params.id });
 

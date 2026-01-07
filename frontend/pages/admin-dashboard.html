@@ -1335,6 +1335,10 @@
                     <td>${cat.productCount || 0}</td>
                     <td>${cat.isActive ? 'Active' : 'Inactive'}</td>
                     <td>
+                      <button class="btn btn-sm" onclick="editCategory('${cat._id}')" 
+                              style="padding: 0.4rem 0.8rem; font-size: 0.85rem; margin-right: 0.5rem; background: #3b82f6;">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
                       <button class="btn-danger btn-sm" onclick="deleteCategory('${cat._id}', '${cat.name}', ${cat.productCount || 0})" 
                               style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
                         <i class="fas fa-trash"></i> Delete
@@ -1368,21 +1372,65 @@
     }
 
 
+    let editingCategoryId = null;
+
+    window.editCategory = async function(categoryId) {
+      try {
+        const response = await api.getCategories();
+        const category = response.categories.find(c => c._id === categoryId);
+        
+        if (!category) {
+          showAlert('Category not found', 'error');
+          return;
+        }
+
+        editingCategoryId = categoryId;
+        document.getElementById('category-name').value = category.name;
+        document.getElementById('category-description').value = category.description || '';
+        document.getElementById('category-image').value = category.image || '';
+        
+        if (category.image) {
+          document.getElementById('category-image-preview').innerHTML = 
+            `<img src="${category.image}" style="max-width: 200px; border-radius: 5px;">`;
+        }
+        
+        const submitBtn = document.querySelector('#category-form button[type="submit"]');
+        submitBtn.textContent = 'Update Category';
+        submitBtn.style.background = '#3b82f6';
+        
+        document.getElementById('category-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (error) {
+        showAlert(error.message || 'Failed to load category', 'error');
+      }
+    }
+
     document.getElementById('category-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const categoryName = document.getElementById('category-name').value;
+      const categoryData = {
+        name: categoryName,
+        description: document.getElementById('category-description').value,
+        image: document.getElementById('category-image').value
+      };
+
       try {
-        await api.createCategory({
-          name: categoryName,
-          description: document.getElementById('category-description').value,
-          image: document.getElementById('category-image').value
-        });
-        showAlert(`Category "${categoryName}" created successfully`, 'success');
+        if (editingCategoryId) {
+          await api.updateCategory(editingCategoryId, categoryData);
+          showAlert(`Category "${categoryName}" updated successfully`, 'success');
+          editingCategoryId = null;
+          const submitBtn = document.querySelector('#category-form button[type="submit"]');
+          submitBtn.textContent = 'Add Category';
+          submitBtn.style.background = '';
+        } else {
+          await api.createCategory(categoryData);
+          showAlert(`Category "${categoryName}" created successfully`, 'success');
+        }
+        
         e.target.reset();
         document.getElementById('category-image-preview').innerHTML = '';
         loadCategories();
       } catch (error) {
-        showAlert(error.message || 'Failed to create category', 'error');
+        showAlert(error.message || 'Failed to save category', 'error');
       }
     });
 

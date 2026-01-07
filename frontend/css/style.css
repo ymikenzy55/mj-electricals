@@ -7911,3 +7911,28 @@ section.container {
     gap: 1.5rem;
   }
 }
+
+/* View More Category Card - Mobile Responsive */
+.view-more-card {
+  min-height: 150px !important;
+}
+
+@media (max-width: 768px) {
+  .view-more-card {
+    min-height: 120px !important;
+    padding: 1rem !important;
+  }
+  
+  .view-more-card i {
+    font-size: 2rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .view-more-card .category-name {
+    font-size: 0.9rem !important;
+  }
+  
+  .view-more-card .category-count {
+    font-size: 0.8rem !important;
+  }
+}
