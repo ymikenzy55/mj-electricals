@@ -268,6 +268,16 @@
 
         <section id="orders-section" style="display:none;">
           <h2>All Orders</h2>
+          <div style="margin: 1rem 0; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Filter by Date:</label>
+              <input type="date" id="orders-date-filter" onchange="filterOrdersByDate()" 
+                     style="padding: 0.5rem; border: 1px solid var(--gray-300); border-radius: 5px;">
+            </div>
+            <button class="btn btn-secondary" onclick="clearOrdersDateFilter()" style="margin-top: 1.7rem;">
+              <i class="fas fa-times"></i> Clear Filter
+            </button>
+          </div>
           <div id="orders-list" class="mt-2">
             <div class="loading"><div class="spinner"></div></div>
           </div>
@@ -763,57 +773,15 @@
     let currentOrderPage = 1;
     const ordersPerPage = 20;
     let allOrders = [];
+    let filteredOrders = [];
 
     async function loadOrders(page = 1) {
       try {
         const response = await api.getAllOrders();
         allOrders = response.orders;
+        filteredOrders = allOrders; // Initially show all
         currentOrderPage = page;
-        
-        const startIndex = (page - 1) * ordersPerPage;
-        const endIndex = startIndex + ordersPerPage;
-        const paginatedOrders = allOrders.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(allOrders.length / ordersPerPage);
-        
-        const container = document.getElementById('orders-list');
-
-        container.innerHTML = `
-          <div class="table-container" style="margin: 0; width: 100%;">
-            <table style="width: 100%;">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${paginatedOrders.map(order => `
-                  <tr>
-                    <td>#${order._id.slice(-8)}</td>
-                    <td>${order.user.name}</td>
-                    <td>${new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td style="font-weight: 600; color: var(--primary-orange);">GH₵ ${order.totalAmount.toFixed(2)}</td>
-                    <td><span class="status-badge ${order.status}">${order.status}</span></td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-          ${totalPages > 1 ? `
-            <div class="pagination" style="margin-top: 1.5rem;">
-              <button class="btn btn-secondary" onclick="loadOrders(${page - 1})" ${page === 1 ? 'disabled' : ''}>
-                <i class="fas fa-chevron-left"></i> Previous
-              </button>
-              <span style="padding: 0 1rem;">Page ${page} of ${totalPages}</span>
-              <button class="btn btn-secondary" onclick="loadOrders(${page + 1})" ${page === totalPages ? 'disabled' : ''}>
-                Next <i class="fas fa-chevron-right"></i>
-              </button>
-            </div>
-          ` : ''}
-        `;
+        displayOrders(page);
         
         // Update notification badge
         updateNotificationBadges();
@@ -822,10 +790,93 @@
       }
     }
 
+    function displayOrders(page = 1) {
+      const startIndex = (page - 1) * ordersPerPage;
+      const endIndex = startIndex + ordersPerPage;
+      const paginatedOrders = filteredOrders.slice(startIndex, endIndex);
+      const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+      
+      const container = document.getElementById('orders-list');
+
+      if (filteredOrders.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders found for selected date</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="table-container" style="margin: 0; width: 100%;">
+          <table style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${paginatedOrders.map(order => `
+                <tr>
+                  <td>#${order._id.slice(-8)}</td>
+                  <td>${order.user.name}</td>
+                  <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td style="font-weight: 600; color: var(--primary-orange);">GH₵ ${order.totalAmount.toFixed(2)}</td>
+                  <td><span class="status-badge ${order.status}">${order.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ${totalPages > 1 ? `
+          <div class="pagination" style="margin-top: 1.5rem;">
+            <button class="btn btn-secondary" onclick="displayOrders(${page - 1})" ${page === 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span style="padding: 0 1rem;">Page ${page} of ${totalPages}</span>
+            <button class="btn btn-secondary" onclick="displayOrders(${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    window.filterOrdersByDate = function() {
+      const dateInput = document.getElementById('orders-date-filter');
+      const selectedDate = dateInput.value;
+      
+      if (!selectedDate) {
+        filteredOrders = allOrders;
+      } else {
+        const filterDate = new Date(selectedDate);
+        filterDate.setHours(0, 0, 0, 0);
+        
+        filteredOrders = allOrders.filter(order => {
+          const orderDate = new Date(order.createdAt);
+          orderDate.setHours(0, 0, 0, 0);
+          return orderDate.getTime() === filterDate.getTime();
+        });
+      }
+      
+      displayOrders(1);
+    }
+
+    window.clearOrdersDateFilter = function() {
+      document.getElementById('orders-date-filter').value = '';
+      filteredOrders = allOrders;
+      displayOrders(1);
+    }
+
     async function loadFeedback() {
       try {
         const response = await api.getAllFeedbacks();
         const container = document.getElementById('feedback-list');
+
+        if (!response.feedbacks || response.feedbacks.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">💬 No feedback available yet</p>';
+          return;
+        }
 
         container.innerHTML = response.feedbacks.map(fb => `
           <div style="background: var(--gray-light); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">

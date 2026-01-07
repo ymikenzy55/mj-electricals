@@ -346,10 +346,20 @@
 
         <section id="orders-section" style="display:none;">
           <h2>Manage Orders</h2>
-          <div style="margin-top: 1rem;">
-            <input type="text" id="order-search" placeholder="Search orders by ID, customer name, or email..." 
-                   style="width: 100%; max-width: 500px; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;"
-                   oninput="searchOrders(this.value)">
+          <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+            <div style="flex: 1; min-width: 300px;">
+              <input type="text" id="order-search" placeholder="Search orders by ID, customer name, or email..." 
+                     style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;"
+                     oninput="searchOrders(this.value)">
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Filter by Date:</label>
+              <input type="date" id="admin-orders-date-filter" onchange="filterAdminOrdersByDate()" 
+                     style="padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;">
+            </div>
+            <button class="btn btn-secondary" onclick="clearAdminOrdersDateFilter()">
+              <i class="fas fa-times"></i> Clear Filter
+            </button>
           </div>
           <div id="orders-list" class="mt-2">
             <div class="loading"><div class="spinner"></div></div>
@@ -1194,15 +1204,44 @@
 
     let currentOrdersPage = 1;
     const ordersPerPage = 20;
+    let filteredAdminOrders = [];
 
     async function loadOrders() {
       try {
         const response = await api.getAllOrders();
         allOrders = response.orders;
-        displayOrders(allOrders, 1);
+        filteredAdminOrders = allOrders; // Initially show all
+        displayOrders(filteredAdminOrders, 1);
       } catch (error) {
         document.getElementById('orders-list').innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders available yet</p>';
       }
+    }
+
+    window.filterAdminOrdersByDate = function() {
+      const dateInput = document.getElementById('admin-orders-date-filter');
+      const selectedDate = dateInput.value;
+      
+      if (!selectedDate) {
+        filteredAdminOrders = allOrders;
+      } else {
+        const filterDate = new Date(selectedDate);
+        filterDate.setHours(0, 0, 0, 0);
+        
+        filteredAdminOrders = allOrders.filter(order => {
+          const orderDate = new Date(order.createdAt);
+          orderDate.setHours(0, 0, 0, 0);
+          return orderDate.getTime() === filterDate.getTime();
+        });
+      }
+      
+      displayOrders(filteredAdminOrders, 1);
+    }
+
+    window.clearAdminOrdersDateFilter = function() {
+      document.getElementById('admin-orders-date-filter').value = '';
+      document.getElementById('order-search').value = '';
+      filteredAdminOrders = allOrders;
+      displayOrders(filteredAdminOrders, 1);
     }
 
     window.displayOrders = function(orders, page = 1) {
@@ -1276,11 +1315,11 @@
 
     window.searchOrders = function(query) {
       if (!query.trim()) {
-        displayOrders(allOrders, 1);
+        displayOrders(filteredAdminOrders, 1);
         return;
       }
 
-      const filtered = allOrders.filter(order =>
+      const filtered = filteredAdminOrders.filter(order =>
         order._id.toLowerCase().includes(query.toLowerCase()) ||
         order.user.name.toLowerCase().includes(query.toLowerCase()) ||
         order.status.toLowerCase().includes(query.toLowerCase())
