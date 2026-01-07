@@ -1316,6 +1316,7 @@
             <table>
               <thead>
                 <tr>
+                  <th>Image</th>
                   <th>Name</th>
                   <th>Description</th>
                   <th>Products</th>
@@ -1326,6 +1327,9 @@
               <tbody>
                 ${response.categories.map(cat => `
                   <tr>
+                    <td>
+                      ${cat.image ? `<img src="${cat.image}" alt="${cat.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : '<span style="color: var(--gray-400);">No image</span>'}
+                    </td>
                     <td>${cat.name}</td>
                     <td>${cat.description || '-'}</td>
                     <td>${cat.productCount || 0}</td>

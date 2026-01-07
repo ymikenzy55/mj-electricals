@@ -81,6 +81,18 @@ exports.getProduct = async (req, res) => {
 // Create product (Admin only)
 exports.createProduct = async (req, res) => {
   try {
+    // Check if product with same name already exists (case-insensitive)
+    const existingProduct = await Product.findOne({ 
+      name: { $regex: new RegExp(`^${req.body.name}$`, 'i') }
+    });
+
+    if (existingProduct) {
+      return res.status(400).json({
+        success: false,
+        message: `Product "${req.body.name}" already exists`
+      });
+    }
+
     const productId = await Product.generateProductId();
     
     const product = await Product.create({

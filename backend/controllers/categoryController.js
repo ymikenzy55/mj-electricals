@@ -39,6 +39,18 @@ exports.getCategories = async (req, res) => {
 // Create category (Admin only)
 exports.createCategory = async (req, res) => {
   try {
+    // Check if category already exists (case-insensitive)
+    const existingCategory = await Category.findOne({ 
+      name: { $regex: new RegExp(`^${req.body.name}$`, 'i') }
+    });
+
+    if (existingCategory) {
+      return res.status(400).json({
+        success: false,
+        message: `Category "${req.body.name}" already exists`
+      });
+    }
+
     const category = await Category.create(req.body);
 
     res.status(201).json({
