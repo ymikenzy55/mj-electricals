@@ -150,9 +150,9 @@
       </div>
     </div>
     <div id="load-more-container" style="text-align: center; margin-top: 2rem; display: none;">
-      <button id="load-more-btn" class="btn" style="padding: 0.875rem 2rem;">
-        <i class="fas fa-plus-circle"></i> Load More Products
-      </button>
+      <a href="products.html" class="btn" style="padding: 0.875rem 2rem; text-decoration: none; display: inline-block;">
+        <i class="fas fa-th"></i> View All Products
+      </a>
       <p id="products-count" style="margin-top: 1rem; color: var(--gray-600); font-size: 0.9rem;"></p>
     </div>
   </section>
@@ -301,7 +301,7 @@
     });
     
     let currentPage = 1;
-    const productsPerPage = 8;
+    const productsPerPage = 6; // Changed from 8 to 6
     let totalProducts = 0;
     let allProducts = [];
     
@@ -355,25 +355,15 @@
         
         container.innerHTML = productsHTML;
 
-        // Update load more button visibility and count
+        // Update "View All Products" button visibility and count
         const loadMoreContainer = document.getElementById('load-more-container');
-        const loadMoreBtn = document.getElementById('load-more-btn');
         const productsCount = document.getElementById('products-count');
         
-        if (allProducts.length < totalProducts) {
+        if (totalProducts > productsPerPage) {
           loadMoreContainer.style.display = 'block';
-          loadMoreBtn.disabled = false;
-          loadMoreBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Load More Products';
           productsCount.textContent = `Showing ${allProducts.length} of ${totalProducts} products`;
         } else {
-          if (totalProducts > productsPerPage) {
-            loadMoreContainer.style.display = 'block';
-            loadMoreBtn.disabled = true;
-            loadMoreBtn.innerHTML = '<i class="fas fa-check-circle"></i> All Products Loaded';
-            productsCount.textContent = `Showing all ${allProducts.length} products`;
-          } else {
-            loadMoreContainer.style.display = 'none';
-          }
+          loadMoreContainer.style.display = 'none';
         }
 
         // Add wishlist and compare buttons after rendering
@@ -398,15 +388,7 @@
       }
     }
     
-    // Load more button handler
-    document.getElementById('load-more-btn').addEventListener('click', async () => {
-      const btn = document.getElementById('load-more-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-      
-      currentPage++;
-      await loadFeaturedProducts(true);
-    });
+    // Removed load more button handler - now using direct link to products page
 
     async function loadBanners() {
       try {
@@ -533,7 +515,11 @@
           return;
         }
 
-        container.innerHTML = response.categories.map(category => `
+        // Limit to 6 categories
+        const displayCategories = response.categories.slice(0, 6);
+        const hasMore = response.categories.length > 6;
+
+        container.innerHTML = displayCategories.map(category => `
           <a href="products.html?category=${encodeURIComponent(category.name)}" class="category-card">
             <div class="category-icon">
               <img src="${category.image || 'https://via.placeholder.com/150'}" alt="${category.name}">
@@ -542,6 +528,17 @@
             <p class="category-count">${category.productCount || 0} Items</p>
           </a>
         `).join('');
+
+        // Add "View More" button if there are more than 6 categories
+        if (hasMore) {
+          container.innerHTML += `
+            <a href="categories.html" class="category-card view-more-card" style="background: linear-gradient(135deg, var(--primary-orange) 0%, #f7931e 100%); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease;">
+              <i class="fas fa-th" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+              <h3 class="category-name" style="color: white;">View All Categories</h3>
+              <p class="category-count" style="color: rgba(255,255,255,0.9);">${response.categories.length} Total</p>
+            </a>
+          `;
+        }
       } catch (error) {
         console.error('Failed to load categories:', error);
         document.getElementById('categories-grid').innerHTML = 
