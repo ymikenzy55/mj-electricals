@@ -50,6 +50,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Description is required']
   },
+  featured: {
+    type: Boolean,
+    default: false
+  },
   status: {
     type: String,
     enum: ['active', 'inactive'],

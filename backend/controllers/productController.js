@@ -3,12 +3,13 @@ const Product = require('../models/Product');
 // Get all products with filters
 exports.getProducts = async (req, res) => {
   try {
-    const { category, minWattage, maxWattage, minPrice, maxPrice, search, status, page = 1, limit = 12 } = req.query;
+    const { category, minWattage, maxWattage, minPrice, maxPrice, search, status, featured, page = 1, limit = 12 } = req.query;
 
     const query = {};
 
     if (category) query.category = category;
     if (status) query.status = status;
+    if (featured !== undefined) query.featured = featured === 'true';
     if (minWattage || maxWattage) {
       query.wattage = {};
       if (minWattage) query.wattage.$gte = Number(minWattage);
@@ -39,6 +40,7 @@ exports.getProducts = async (req, res) => {
     res.json({
       success: true,
       products,
+      total,
       pagination: {
         page: Number(page),
         limit: Number(limit),

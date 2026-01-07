@@ -317,7 +317,7 @@
           document.getElementById('featured-products').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
         }
         
-        const response = await api.getProducts({ page: currentPage, limit: productsPerPage, status: 'active' });
+        const response = await api.getProducts({ page: currentPage, limit: productsPerPage, status: 'active', featured: true });
         const container = document.getElementById('featured-products');
         
         if (!append) {
@@ -328,7 +328,7 @@
         totalProducts = response.total || response.products.length;
         
         if (allProducts.length === 0) {
-          container.innerHTML = '<p class="text-center">No products available</p>';
+          container.innerHTML = '<p class="text-center">No featured products available</p>';
           document.getElementById('load-more-container').style.display = 'none';
           return;
         }
@@ -521,9 +521,9 @@
           return;
         }
 
-        // Limit to 6 categories
-        const displayCategories = response.categories.slice(0, 6);
-        const hasMore = response.categories.length > 6;
+        // Limit to 4 categories
+        const displayCategories = response.categories.slice(0, 4);
+        const hasMore = response.categories.length > 4;
 
         container.innerHTML = displayCategories.map(category => `
           <a href="products.html?category=${encodeURIComponent(category.name)}" class="category-card">
@@ -535,15 +535,16 @@
           </a>
         `).join('');
 
-        // Add "View More" button if there are more than 6 categories
+        // Add "View All Categories" button if there are more than 4 categories
         if (hasMore) {
-          container.innerHTML += `
-            <a href="categories.html" class="category-card view-more-card" style="background: linear-gradient(135deg, var(--primary-orange) 0%, #f7931e 100%); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease;">
-              <i class="fas fa-th" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-              <h3 class="category-name" style="color: white;">View All Categories</h3>
-              <p class="category-count" style="color: rgba(255,255,255,0.9);">${response.categories.length} Total</p>
+          const viewAllBtn = document.createElement('div');
+          viewAllBtn.style.cssText = 'grid-column: 1 / -1; text-align: center; margin-top: 1.5rem;';
+          viewAllBtn.innerHTML = `
+            <a href="categories.html" class="btn" style="padding: 0.75rem 2rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+              <i class="fas fa-th"></i> View All Categories (${response.categories.length})
             </a>
           `;
+          container.appendChild(viewAllBtn);
         }
       } catch (error) {
         console.error('Failed to load categories:', error);

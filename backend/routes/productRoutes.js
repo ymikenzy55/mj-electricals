@@ -16,8 +16,8 @@ const {
 } = require('../middleware/validator');
 
 router.get('/', getProducts);
-router.get('/:id', mongoIdValidation, getProduct);
 router.get('/:id/related', mongoIdValidation, getRelatedProducts);
+router.get('/:id', mongoIdValidation, getProduct);
 router.post('/', protect, authorize('admin', 'superadmin'), createProductValidation, createProduct);
 router.put('/:id', protect, authorize('admin', 'superadmin'), updateProductValidation, updateProduct);
 router.delete('/:id', protect, authorize('admin', 'superadmin'), mongoIdValidation, deleteProduct);

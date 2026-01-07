@@ -137,11 +137,20 @@ const createProductValidation = [
   
   body('images')
     .optional()
-    .isArray({ max: 4 }).withMessage('Maximum 4 images allowed'),
+    .custom((value) => {
+      if (!Array.isArray(value)) return true;
+      if (value.length > 4) throw new Error('Maximum 4 images allowed');
+      return true;
+    }),
   
   body('images.*')
     .optional()
     .isURL().withMessage('Invalid image URL'),
+  
+  body('featured')
+    .optional()
+    .isBoolean().withMessage('Featured must be true or false')
+    .toBoolean(),
   
   body('status')
     .optional()
