@@ -145,7 +145,16 @@ const createProductValidation = [
   
   body('images.*')
     .optional()
-    .isURL().withMessage('Invalid image URL'),
+    .custom((value) => {
+      // Accept both URLs and base64 data URLs
+      if (!value || typeof value !== 'string') return false;
+      const isUrl = /^https?:\/\/.+/.test(value);
+      const isDataUrl = /^data:image\/(png|jpg|jpeg|gif|webp);base64,/.test(value);
+      if (!isUrl && !isDataUrl) {
+        throw new Error('Invalid image format. Must be a URL or base64 data URL');
+      }
+      return true;
+    }),
   
   body('featured')
     .optional()
