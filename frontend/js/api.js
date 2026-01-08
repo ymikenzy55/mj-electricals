@@ -43,11 +43,11 @@ class API {
 
   async request(endpoint, options = {}) {
     try {
-      const { skipAuth, ...fetchOptions } = options;
+      const { skipAuth, timeout = 60000, ...fetchOptions } = options; // Default 60 seconds
       
       // Add timeout to prevent infinite loading
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
       
       const response = await fetch(`${API_URL}${endpoint}`, {
         ...fetchOptions,
