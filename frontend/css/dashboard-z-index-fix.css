@@ -1,0 +1,41 @@
+/**
+ * Dashboard Z-Index Fix
+ * Ensures mobile menus appear above topbar without affecting layout
+ */
+
+/* High z-index for mobile overlays and menus */
+.mobile-menu-overlay,
+.mobile-dashboard-sidebar,
+.dashboard-overlay {
+  z-index: 10000 !important;
+}
+
+.mobile-menu-sidebar {
+  z-index: 10001 !important;
+}
+
+.mobile-menu-toggle,
+.mobile-dashboard-btn,
+#mobile-dashboard-btn {
+  z-index: 10002 !important;
+}
+
+/* Navbar search overlays */
+.search-overlay {
+  z-index: 9998 !important;
+}
+
+.search-dropdown,
+.nav-search-dropdown {
+  z-index: 9999 !important;
+}
+
+/* Company topbar should be below mobile menus */
+.company-topbar {
+  z-index: 100 !important;
+}
+
+/* Navbar should be below mobile menus but above content */
+.navbar {
+  z-index: 99 !important;
+}
