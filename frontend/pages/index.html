@@ -45,6 +45,7 @@
   <link rel="stylesheet" href="../css/product-card-button-fix.css">
   <link rel="stylesheet" href="../css/homepage-fixes.css">
   <link rel="stylesheet" href="../css/critical-ux-fixes.css">
+  <link rel="stylesheet" href="../css/categories-carousel.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Structured Data for SEO -->
@@ -134,8 +135,24 @@
     <div class="container">
       <h2 class="section-title">Shop by Category</h2>
       <p class="section-subtitle">Browse our wide range of electrical products</p>
-      <div id="categories-grid" class="categories-grid">
-        <div class="loading"><div class="spinner"></div></div>
+      <div class="categories-carousel-wrapper">
+        <button class="carousel-nav carousel-prev" onclick="scrollCategories(-1)" aria-label="Previous categories">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="categories-carousel-container">
+          <div id="categories-carousel" class="categories-carousel">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+        <button class="carousel-nav carousel-next" onclick="scrollCategories(1)" aria-label="Next categories">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="view-all-categories" id="view-all-categories" style="display: none;">
+        <a href="categories.html" class="btn">
+          <i class="fas fa-th"></i> View All Categories
+        </a>
+        <span class="category-count-text" id="category-count-text"></span>
       </div>
     </div>
   </section>
@@ -515,18 +532,17 @@
     async function loadCategories() {
       try {
         const response = await api.getCategories();
-        const container = document.getElementById('categories-grid');
+        const container = document.getElementById('categories-carousel');
         
         if (!response.categories || response.categories.length === 0) {
           container.innerHTML = '<p class="text-center">No categories available</p>';
           return;
         }
 
-        // Limit to 4 categories
-        const displayCategories = response.categories.slice(0, 4);
-        const hasMore = response.categories.length > 4;
+        // Display all categories in carousel
+        const allCategories = response.categories;
 
-        container.innerHTML = displayCategories.map(category => `
+        container.innerHTML = allCategories.map(category => `
           <a href="products.html?category=${encodeURIComponent(category.name)}" class="category-card">
             <div class="category-icon">
               <img src="${category.image || 'https://via.placeholder.com/150'}" alt="${category.name}">
@@ -536,23 +552,89 @@
           </a>
         `).join('');
 
-        // Add "View All Categories" button if there are more than 4 categories
-        if (hasMore) {
-          const viewAllBtn = document.createElement('div');
-          viewAllBtn.style.cssText = 'grid-column: 1 / -1; text-align: center; margin-top: 1.5rem;';
-          viewAllBtn.innerHTML = `
-            <a href="categories.html" class="btn" style="padding: 0.75rem 2rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
-              <i class="fas fa-th"></i> View All Categories (${response.categories.length})
-            </a>
-          `;
-          container.appendChild(viewAllBtn);
-        }
+        // Show "View All Categories" button
+        const viewAllContainer = document.getElementById('view-all-categories');
+        const countText = document.getElementById('category-count-text');
+        viewAllContainer.style.display = 'block';
+        countText.textContent = `Browse all ${allCategories.length} categories`;
+
+        // Initialize carousel auto-scroll
+        initCategoryCarousel();
       } catch (error) {
         console.error('Failed to load categories:', error);
-        document.getElementById('categories-grid').innerHTML = 
+        document.getElementById('categories-carousel').innerHTML = 
           '<p class="text-center">Failed to load categories</p>';
       }
     }
+
+    // Category Carousel Functions
+    let categoryScrollInterval;
+    let currentCategoryScroll = 0;
+
+    function initCategoryCarousel() {
+      const carousel = document.getElementById('categories-carousel');
+      if (!carousel) return;
+
+      // Auto-scroll every 2.5 seconds
+      categoryScrollInterval = setInterval(() => {
+        scrollCategories(1, true);
+      }, 2500);
+
+      // Pause on hover
+      carousel.addEventListener('mouseenter', () => {
+        clearInterval(categoryScrollInterval);
+      });
+
+      carousel.addEventListener('mouseleave', () => {
+        categoryScrollInterval = setInterval(() => {
+          scrollCategories(1, true);
+        }, 2500);
+      });
+    }
+
+    function scrollCategories(direction, isAuto = false) {
+      const carousel = document.getElementById('categories-carousel');
+      const container = carousel.parentElement;
+      const cardWidth = 160 + 24; // card width + gap
+      const visibleCards = Math.floor(container.offsetWidth / cardWidth);
+      const totalCards = carousel.children.length;
+      const maxScroll = Math.max(0, (totalCards - visibleCards) * cardWidth);
+
+      currentCategoryScroll += direction * cardWidth * (isAuto ? 1 : visibleCards);
+
+      // Loop back to start when reaching the end
+      if (currentCategoryScroll > maxScroll) {
+        currentCategoryScroll = 0;
+      } else if (currentCategoryScroll < 0) {
+        currentCategoryScroll = maxScroll;
+      }
+
+      carousel.style.transform = `translateX(-${currentCategoryScroll}px)`;
+
+      // Update button states
+      updateCarouselButtons();
+    }
+
+    function updateCarouselButtons() {
+      const carousel = document.getElementById('categories-carousel');
+      const container = carousel.parentElement;
+      const prevBtn = document.querySelector('.carousel-prev');
+      const nextBtn = document.querySelector('.carousel-next');
+      
+      if (!carousel || !prevBtn || !nextBtn) return;
+
+      const cardWidth = 160 + 24;
+      const visibleCards = Math.floor(container.offsetWidth / cardWidth);
+      const totalCards = carousel.children.length;
+      const maxScroll = Math.max(0, (totalCards - visibleCards) * cardWidth);
+
+      // Always enable buttons for infinite scroll
+      prevBtn.classList.remove('disabled');
+      nextBtn.classList.remove('disabled');
+    }
+
+    // Make scrollCategories globally accessible
+    window.scrollCategories = scrollCategories;
 
     function performSearch() {
       const query = document.getElementById('search-input').value;
