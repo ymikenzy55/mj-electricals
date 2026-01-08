@@ -291,27 +291,36 @@
     }
 
     // Add invoice download functionality
-    async function downloadInvoice() {
+    async function downloadInvoice(event) {
       if (!orderId) {
         toast.error('Order ID not found');
         return;
       }
 
       try {
-        const btn = event.target.closest('button');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        const btn = event?.target?.closest('button');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        }
 
         await invoiceGenerator.generateInvoice(orderId);
 
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-file-invoice"></i> Download Invoice';
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-file-invoice"></i> Download Invoice';
+        }
+        
+        toast.success('Invoice generated successfully!');
       } catch (error) {
         console.error('Invoice error:', error);
         toast.error('Failed to generate invoice. Please try again.');
-        const btn = event.target.closest('button');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-file-invoice"></i> Download Invoice';
+        
+        const btn = event?.target?.closest('button');
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-file-invoice"></i> Download Invoice';
+        }
       }
     }
 

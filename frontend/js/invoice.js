@@ -16,6 +16,14 @@ class InvoiceGenerator {
 
       // Open in new window for printing
       const printWindow = window.open('', '_blank');
+      
+      // Check if popup was blocked
+      if (!printWindow || printWindow.closed || typeof printWindow.closed === 'undefined') {
+        // Popup blocked - fallback to download
+        console.warn('Popup blocked, falling back to download');
+        return this.downloadInvoice(orderId);
+      }
+
       printWindow.document.write(invoiceHTML);
       printWindow.document.close();
 
