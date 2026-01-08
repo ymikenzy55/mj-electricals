@@ -26,11 +26,26 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - network first, then cache
+// Fetch event - network first, then cache (only for GET requests)
 self.addEventListener('fetch', (event) => {
+  // Only cache GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  
+  // Skip caching for API requests
+  if (event.request.url.includes('/api/')) {
+    return;
+  }
+  
   event.respondWith(
     fetch(event.request)
       .then((response) => {
+        // Only cache successful responses
+        if (!response || response.status !== 200 || response.type === 'error') {
+          return response;
+        }
+        
         // Clone the response
         const responseToCache = response.clone();
         
