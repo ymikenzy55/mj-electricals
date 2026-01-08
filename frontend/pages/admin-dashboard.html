@@ -709,6 +709,7 @@
         initOrderSearch();
       }
       if (section === 'feedback') loadFeedback();
+      if (section === 'messages') loadMessages();
       if (section === 'categories') loadCategories();
       if (section === 'delivery') loadDeliveryCharges();
       if (section === 'newsletter') loadNewsletterSubscribers();
@@ -1516,6 +1517,117 @@
         await api.respondToFeedback(feedbackId, response);
         showAlert('Response sent to customer successfully', 'success');
         loadFeedback();
+        loadStats();
+      } catch (error) {
+        showAlert(error.message || 'Failed to send response', 'error');
+      }
+    }
+
+    // Messages Management
+    let allMessages = [];
+    let currentMessagesPage = 1;
+    const messagesPerPage = 10;
+
+    window.loadMessages = async function() {
+      const container = document.getElementById('messages-list');
+      try {
+        container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading messages...</p></div>';
+        const response = await api.getAllContactMessages();
+        
+        if (!response || !response.messages) {
+          throw new Error('Invalid response format');
+        }
+
+        allMessages = response.messages;
+        displayMessages(allMessages, 1);
+      } catch (error) {
+        console.error('Load messages error:', error);
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem;">
+            <p style="color: var(--error-color); margin-bottom: 1rem;">Failed to load messages</p>
+            <p style="color: var(--gray-600); font-size: 0.9rem;">${error.message || 'Unknown error'}</p>
+            <button onclick="loadMessages()" class="btn" style="margin-top: 1rem;">
+              <i class="fas fa-redo"></i> Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    window.displayMessages = function(messages, page = 1) {
+      const container = document.getElementById('messages-list');
+      currentMessagesPage = page;
+
+      if (messages.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No messages yet</p>';
+        return;
+      }
+
+      const totalPages = Math.ceil(messages.length / messagesPerPage);
+      const startIndex = (page - 1) * messagesPerPage;
+      const endIndex = startIndex + messagesPerPage;
+      const paginatedMessages = messages.slice(startIndex, endIndex);
+
+      container.innerHTML = `
+        <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <p style="color: var(--gray-600);">Showing ${startIndex + 1}-${Math.min(endIndex, messages.length)} of ${messages.length} messages</p>
+          <div class="pagination">
+            <button class="btn btn-secondary" onclick="displayMessages(allMessages, ${page - 1})" ${page === 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span style="margin: 0 1rem;">Page ${page} of ${totalPages}</span>
+            <button class="btn btn-secondary" onclick="displayMessages(allMessages, ${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        ${paginatedMessages.map(msg => `
+          <div style="background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+              <div style="flex: 1;">
+                <p style="margin-bottom: 0.5rem;"><strong>${msg.name}</strong> (${msg.email})</p>
+                <p style="color: var(--gray-600); font-size: 0.9rem;">
+                  <i class="fas fa-clock"></i> ${new Date(msg.createdAt).toLocaleString()}
+                </p>
+              </div>
+              <span style="background: ${msg.status === 'responded' ? 'var(--success)' : 'var(--warning)'}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">
+                ${msg.status || 'pending'}
+              </span>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <p style="font-weight: 600; margin-bottom: 0.5rem;">Subject: ${msg.subject}</p>
+              <p style="color: var(--gray-700);">${msg.message}</p>
+            </div>
+            ${msg.response ? `
+              <div style="background: var(--gray-100); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--success);">
+                  <i class="fas fa-reply"></i> Your Response:
+                </p>
+                <p>${msg.response}</p>
+                <p style="color: var(--gray-600); font-size: 0.85rem; margin-top: 0.5rem;">
+                  Responded: ${new Date(msg.respondedAt).toLocaleString()}
+                </p>
+              </div>
+            ` : `
+              <form onsubmit="respondToMessage(event, '${msg._id}')" style="margin-top: 1rem;">
+                <textarea id="response-${msg._id}" placeholder="Type your response..." rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 8px; margin-bottom: 0.5rem;" required></textarea>
+                <button type="submit" class="btn" style="background: var(--success); color: white;">
+                  <i class="fas fa-paper-plane"></i> Send Response
+                </button>
+              </form>
+            `}
+          </div>
+        `).join('')}
+      `;
+    }
+
+    window.respondToMessage = async function(event, messageId) {
+      event.preventDefault();
+      const response = document.getElementById(`response-${messageId}`).value;
+      try {
+        await api.respondToContact(messageId, response);
+        showAlert('Response sent successfully', 'success');
+        loadMessages();
         loadStats();
       } catch (error) {
         showAlert(error.message || 'Failed to send response', 'error');
