@@ -411,14 +411,9 @@
       const container = document.getElementById('hero-banners');
       
       try {
-        // Show loading message for cold starts
+        // Show clean loading spinner
         if (retryCount === 0) {
-          container.innerHTML = `
-            <div class="default-hero">
-              <div class="spinner" style="margin: 0 auto 1rem;"></div>
-              <p style="color: #666;">Loading banners... Server may be waking up, please wait.</p>
-            </div>
-          `;
+          container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
         }
         
         const response = await api.getBanners({ status: 'active' });
@@ -553,17 +548,13 @@
       const container = document.getElementById('categories-carousel');
       
       try {
-        // Show loading message for cold starts
+        // Show clean loading spinner
         if (retryCount === 0) {
-          container.innerHTML = `
-            <div style="text-align: center; padding: 2rem;">
-              <div class="spinner" style="margin: 0 auto 1rem;"></div>
-              <p style="color: #666;">Loading categories... Server may be waking up, please wait.</p>
-            </div>
-          `;
+          container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
         }
         
         const response = await api.getCategories();
+        console.log('Categories response:', response); // Debug log
         
         if (!response.categories || response.categories.length === 0) {
           container.innerHTML = '<p class="text-center">No categories available</p>';
@@ -572,6 +563,7 @@
 
         // Display all categories in carousel
         const allCategories = response.categories;
+        console.log(`Rendering ${allCategories.length} categories`); // Debug log
 
         container.innerHTML = allCategories.map(category => `
           <a href="products.html?category=${encodeURIComponent(category.name)}" class="category-card">
