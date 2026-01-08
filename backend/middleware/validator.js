@@ -340,8 +340,8 @@ const contactValidation = [
     .normalizeEmail(),
   
   body('phone')
-    .optional({ checkFalsy: true })
     .trim()
+    .notEmpty().withMessage('Phone number is required')
     .matches(/^[0-9+\-\s()]+$/).withMessage('Invalid phone format')
     .isLength({ min: 10, max: 20 }).withMessage('Phone must be 10-20 characters'),
   

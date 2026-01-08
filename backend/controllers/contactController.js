@@ -5,10 +5,10 @@ const createContactMessage = async (req, res) => {
   try {
     const { name, email, phone, subject, message } = req.body;
 
-    if (!name || !email || !subject || !message) {
+    if (!name || !email || !phone || !subject || !message) {
       return res.status(400).json({
         success: false,
-        message: 'All required fields must be filled'
+        message: 'All fields are required (name, email, phone, subject, message)'
       });
     }
 
