@@ -107,8 +107,33 @@ const respondToContact = async (req, res) => {
   }
 };
 
+// Delete contact message (Admin only)
+const deleteContactMessage = async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.id);
+
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact message not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Message deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 module.exports = {
   createContactMessage,
   getAllContactMessages,
-  respondToContact
+  respondToContact,
+  deleteContactMessage
 };

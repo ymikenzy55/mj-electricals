@@ -227,6 +227,12 @@ class API {
     });
   }
 
+  async deleteContactMessage(id) {
+    return this.request(`/contact/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
   // Feedback
   async submitFeedback(feedbackData) {
     return this.request('/feedback', {

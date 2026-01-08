@@ -5,7 +5,8 @@ const { contactValidation, mongoIdValidation } = require('../middleware/validato
 const {
   createContactMessage,
   getAllContactMessages,
-  respondToContact
+  respondToContact,
+  deleteContactMessage
 } = require('../controllers/contactController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -15,5 +16,6 @@ router.post('/', protect, contactValidation, createContactMessage);
 // Admin routes
 router.get('/all', protect, authorize('admin', 'superadmin'), getAllContactMessages);
 router.put('/:id/respond', protect, authorize('admin', 'superadmin'), mongoIdValidation, respondToContact);
+router.delete('/:id', protect, authorize('admin', 'superadmin'), mongoIdValidation, deleteContactMessage);
 
 module.exports = router;

@@ -1590,9 +1590,14 @@
                   <i class="fas fa-clock"></i> ${new Date(msg.createdAt).toLocaleString()}
                 </p>
               </div>
-              <span style="background: ${msg.status === 'responded' ? 'var(--success)' : 'var(--warning)'}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">
-                ${msg.status || 'pending'}
-              </span>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span style="background: ${msg.status === 'responded' ? 'var(--success)' : 'var(--warning)'}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">
+                  ${msg.status || 'pending'}
+                </span>
+                <button onclick="deleteMessage('${msg._id}')" class="btn btn-secondary" style="background: var(--error-color); color: white; padding: 0.25rem 0.75rem; font-size: 0.85rem;" title="Delete message">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
             </div>
             <div style="margin-bottom: 1rem;">
               <p style="font-weight: 600; margin-bottom: 0.5rem;">Subject: ${msg.subject}</p>
@@ -1632,6 +1637,19 @@
       } catch (error) {
         showAlert(error.message || 'Failed to send response', 'error');
       }
+    }
+
+    window.deleteMessage = async function(messageId) {
+      Modal.confirm('Are you sure you want to delete this message? This action cannot be undone.', async () => {
+        try {
+          await api.deleteContactMessage(messageId);
+          showAlert('Message deleted successfully', 'success');
+          loadMessages();
+          loadStats();
+        } catch (error) {
+          showAlert(error.message || 'Failed to delete message', 'error');
+        }
+      });
     }
 
     let allCategories = [];
