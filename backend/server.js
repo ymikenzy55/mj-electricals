@@ -36,13 +36,21 @@ app.use(generalLimiter);
 app.use((req, res, next) => {
   // Disable caching for HTML files
   if (req.url.endsWith('.html') || req.url === '/') {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Surrogate-Control', 'no-store');
+  }
+  // Very short cache for CSS/JS (1 minute) with revalidation
+  else if (req.url.endsWith('.css') || req.url.endsWith('.js')) {
+    res.setHeader('Cache-Control', 'public, max-age=60, must-revalidate');
+    res.setHeader('ETag', `"${Date.now()}"`);
+  }
+  // No cache for version.js
+  else if (req.url.includes('version.js')) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-  }
-  // Short cache for CSS/JS (5 minutes)
-  else if (req.url.endsWith('.css') || req.url.endsWith('.js')) {
-    res.setHeader('Cache-Control', 'public, max-age=300');
   }
   next();
 });

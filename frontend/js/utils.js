@@ -7,8 +7,15 @@ function formatPrice(price) {
   const number = parseFloat(price);
   if (isNaN(number)) return 'GH₵ 0.00';
   
-  return 'GH₵ ' + number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return 'GH₵ ' + number.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
+
+// Alias for backward compatibility
+window.formatMoney = formatPrice;
+window.formatPrice = formatPrice;
 
 // Calculate discounted price
 function calculateDiscount(price, discount) {
