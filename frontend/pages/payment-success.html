@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
   <link rel="stylesheet" href="../css/topbar-fix.css">
+  <link rel="stylesheet" href="../css/component-order-fix.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .success-container {
@@ -58,119 +59,7 @@
   </style>
 </head>
 <body>
-  <!-- Company Contact Top Bar -->
-  <div id="company-topbar-container"></div>
-  
-  <nav class="navbar">
-    <div class="nav-container">
-      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
-      <a href="index.html" class="logo">
-        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
-      </a>
-
-      <div class="nav-icons">
-        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
-          <i class="fas fa-search"></i>
-          <span>Search</span>
-        </button>
-        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
-          <i class="fas fa-shopping-cart"></i>
-          <span>Cart</span>
-          <span class="cart-badge">0</span>
-        </a>
-        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
-          <i class="fas fa-user"></i>
-          <span>Account</span>
-        </a>
-        <a href="login.html" class="nav-icon guest-link" title="Login">
-          <i class="fas fa-user"></i>
-          <span>Login</span>
-        </a>
-      </div>
-      
-      <!-- Search Dropdown -->
-      <div class="nav-search-dropdown" id="nav-search-dropdown">
-        <div class="search-dropdown-content">
-          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
-          <button onclick="performNavSearch()" class="search-btn">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="nav-bottom">
-      <div class="nav-container">
-        <ul class="nav-links">
-          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
-          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
-          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-        </ul>
-        <div class="support-contact">
-          <i class="fas fa-phone-alt"></i>
-          <div>
-            <strong>+233 XX XXX XXXX</strong>
-            <small>24/7 Support Center</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Mobile Menu -->
-  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
-  <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
-    <div class="mobile-menu-header">
-      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
-      <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="mobile-menu-content">
-      <div class="mobile-menu-user auth-link" style="display:none;">
-        <div class="mobile-menu-user-avatar"><i class="fas fa-user-circle"></i></div>
-        <div class="mobile-menu-user-info">
-          <strong id="mobile-menu-username">Loading...</strong>
-          <small id="mobile-menu-user-email">Loading...</small>
-        </div>
-      </div>
-      <ul class="mobile-menu-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
-        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-        <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
-        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-      </ul>
-      <ul class="mobile-menu-links mobile-menu-auth">
-        <li class="auth-link" style="display:none;">
-          <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="mobile-menu-badge" id="mobile-menu-cart-badge">0</span></a>
-        </li>
-        <li class="auth-link" style="display:none;">
-          <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
-        </li>
-        <li class="auth-link" style="display:none;">
-          <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </li>
-        <li class="guest-link"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-        <li class="guest-link"><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
-      </ul>
-      <div class="mobile-menu-support">
-        <div class="mobile-menu-support-item">
-          <i class="fas fa-phone-alt"></i>
-          <div><strong>24/7 Support</strong><small>+233 597528733</small></div>
-        </div>
-      </div>
-    </div>
-  </nav>
+  <!-- Company topbar and navbar will be loaded by their respective loaders -->
 
   <div class="container">
     <div class="success-container">
@@ -222,7 +111,12 @@
     </div>
   </div>
 
+  <!-- Load components first -->
   <script src="../js/company-topbar-loader.js"></script>
+  <script src="../js/navbar-loader.js"></script>
+  <script src="../js/footer-loader.js"></script>
+  
+  <!-- Core scripts -->
   <script src="../js/utils.js"></script>
   <script src="../js/toast.js"></script>
   <script src="../js/modal.js"></script>

@@ -76,18 +76,29 @@
   // Load navbar component
   async function loadNavbar() {
     try {
+      // Wait for topbar to load first
+      await new Promise(resolve => {
+        if (document.querySelector('.company-topbar')) {
+          resolve();
+        } else {
+          document.addEventListener('topbarLoaded', resolve, { once: true });
+          // Timeout fallback
+          setTimeout(resolve, 500);
+        }
+      });
+      
       const response = await fetch('../components/navbar.html');
       if (!response.ok) throw new Error('Failed to load navbar');
       
       const navbarHTML = await response.text();
       
-      // Insert navbar at the beginning of body
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = navbarHTML;
-      
-      // Insert all elements from the navbar
-      while (tempDiv.firstChild) {
-        document.body.insertBefore(tempDiv.firstChild, document.body.firstChild);
+      // Insert navbar after topbar
+      const topbar = document.querySelector('.company-topbar');
+      if (topbar) {
+        topbar.insertAdjacentHTML('afterend', navbarHTML);
+      } else {
+        // Fallback: insert at beginning of body
+        document.body.insertAdjacentHTML('afterbegin', navbarHTML);
       }
       
       // Trigger custom event to notify navbar is loaded

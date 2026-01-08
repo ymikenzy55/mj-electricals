@@ -1,0 +1,60 @@
+/**
+ * Component Order Fix
+ * Ensures proper visual ordering of topbar, navbar, and other components
+ */
+
+/* Ensure body uses flexbox for proper ordering */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Company topbar should always be first */
+.company-topbar {
+  order: -2;
+  flex-shrink: 0;
+}
+
+/* Navbar should be second */
+.navbar {
+  order: -1;
+  flex-shrink: 0;
+}
+
+/* Main content should follow */
+.container,
+.dashboard,
+main,
+section {
+  order: 0;
+}
+
+/* Footer should be last (before mobile nav) */
+.footer {
+  order: 998;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+/* Mobile nav should be at the very bottom */
+.mobile-nav {
+  order: 999;
+  flex-shrink: 0;
+}
+
+/* Ensure mobile menu overlays are on top */
+.mobile-menu-overlay,
+.mobile-menu-sidebar,
+.mobile-dashboard-sidebar,
+.search-overlay,
+.search-dropdown {
+  position: fixed;
+  z-index: 1000;
+}
+
+/* Scroll to top button */
+.scroll-to-top {
+  position: fixed;
+  z-index: 997;
+}

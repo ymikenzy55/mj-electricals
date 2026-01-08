@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../css/responsive-fixes.css">
   <link rel="stylesheet" href="../css/topbar-fix.css">
   <link rel="stylesheet" href="../css/mobile-product-details-fix.css">
+  <link rel="stylesheet" href="../css/component-order-fix.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .dashboard-header {
@@ -210,10 +211,7 @@
   </style>
 </head>
 <body>
-  <!-- Company Contact Top Bar -->
-  <div id="company-topbar-container"></div>
-  
-  <!-- Navbar will be loaded by navbar-loader.js -->
+  <!-- Company topbar and navbar will be loaded by their respective loaders -->
 
   <!-- Dashboard Mobile Menu Toggle Button -->
   <button class="mobile-menu-toggle" onclick="toggleDashboardSidebar()" id="mobile-dashboard-btn">
@@ -450,12 +448,17 @@
     </ul>
   </nav>
 
-    <script src="../js/company-topbar-loader.js"></script>
+  <!-- Load components first -->
+  <script src="../js/company-topbar-loader.js"></script>
+  <script src="../js/navbar-loader.js"></script>
+  <script src="../js/footer-loader.js"></script>
+  
+  <!-- Core scripts -->
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="../js/modal.js"></script>
-  <script src="../js/logger.js"></script>`n  <script src="../js/api.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
   <script src="../js/state.js"></script>
-  <script src="../js/navbar-loader.js"></script>
   <script src="../js/socket.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/utils.js"></script>

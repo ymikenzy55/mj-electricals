@@ -1,6 +1,10 @@
-// Company Topbar Loader
+/**
+ * Company Topbar Loader
+ * Loads the company contact topbar at the very top of every page
+ */
 (function() {
-  // Load company topbar on all pages
+  'use strict';
+
   async function loadCompanyTopbar() {
     try {
       const response = await fetch('../components/company-topbar.html');
@@ -9,15 +13,20 @@
       }
       const html = await response.text();
       
-      // Insert at the very beginning of body
+      // Always insert at the very beginning of body (before navbar)
       document.body.insertAdjacentHTML('afterbegin', html);
       
-      // Ensure topbar is visible
+      // Ensure topbar is visible and properly ordered
       const topbar = document.querySelector('.company-topbar');
       if (topbar) {
         topbar.style.display = 'block';
         topbar.style.visibility = 'visible';
+        topbar.style.order = '-2'; // Ensure it's before navbar
       }
+      
+      // Trigger custom event
+      document.dispatchEvent(new CustomEvent('topbarLoaded'));
+      
     } catch (error) {
       // Silently fail in production, log in development
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
