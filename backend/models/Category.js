@@ -23,4 +23,7 @@ const categorySchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Index for faster queries
+categorySchema.index({ isActive: 1, name: 1 });
+
 module.exports = mongoose.model('Category', categorySchema);

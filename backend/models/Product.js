@@ -74,6 +74,13 @@ const productSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Indexes for faster queries
+productSchema.index({ category: 1, status: 1 }); // For category filtering
+productSchema.index({ status: 1, featured: 1 }); // For featured products
+productSchema.index({ name: 'text', description: 'text', category: 'text' }); // For search
+productSchema.index({ price: 1 }); // For price filtering
+productSchema.index({ createdAt: -1 }); // For sorting by newest
+
 // Validate images array length (max 4 images)
 productSchema.pre('save', function(next) {
   if (this.images && this.images.length > 4) {
