@@ -247,15 +247,15 @@ const createOrderValidation = [
     .isLength({ min: 10, max: 20 }).withMessage('Phone must be 10-20 characters'),
   
   body('shippingAddress.address')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
-    .isLength({ min: 5, max: 200 }).withMessage('Address must be 5-200 characters')
+    .isLength({ min: 2, max: 200 }).withMessage('Address must be 2-200 characters')
     .escape(),
   
   body('shippingAddress.street')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
-    .isLength({ min: 5, max: 200 }).withMessage('Street must be 5-200 characters')
+    .isLength({ min: 2, max: 200 }).withMessage('Street must be 2-200 characters')
     .escape(),
   
   body('shippingAddress.city')
