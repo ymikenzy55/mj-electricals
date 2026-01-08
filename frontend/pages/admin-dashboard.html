@@ -103,6 +103,13 @@
             </a>
           </li>
           <li>
+            <a href="#" onclick="showSection('messages', event); return false;">
+              <i class="fas fa-envelope"></i>
+              <span>Messages</span>
+              <span class="menu-badge" id="pending-messages-badge" style="display:none;">0</span>
+            </a>
+          </li>
+          <li>
             <a href="#" onclick="showSection('reviews', event); return false;">
               <i class="fas fa-star"></i>
               <span>Reviews</span>
@@ -371,6 +378,13 @@
         <section id="feedback-section" style="display:none;">
           <h2>Customer Feedback</h2>
           <div id="feedback-list" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <section id="messages-section" style="display:none;">
+          <h2><i class="fas fa-envelope"></i> Contact Messages</h2>
+          <div id="messages-list" class="mt-2">
             <div class="loading"><div class="spinner"></div></div>
           </div>
         </section>
