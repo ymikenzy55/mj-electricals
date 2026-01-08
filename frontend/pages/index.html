@@ -407,10 +407,21 @@
     
     // Removed load more button handler - now using direct link to products page
 
-    async function loadBanners() {
+    async function loadBanners(retryCount = 0) {
+      const container = document.getElementById('hero-banners');
+      
       try {
+        // Show loading message for cold starts
+        if (retryCount === 0) {
+          container.innerHTML = `
+            <div class="default-hero">
+              <div class="spinner" style="margin: 0 auto 1rem;"></div>
+              <p style="color: #666;">Loading banners... Server may be waking up, please wait.</p>
+            </div>
+          `;
+        }
+        
         const response = await api.getBanners({ status: 'active' });
-        const container = document.getElementById('hero-banners');
         
         if (!response.banners || response.banners.length === 0) {
           // Show default hero if no banners
@@ -458,7 +469,16 @@
         }
       } catch (error) {
         console.error('Failed to load banners:', error);
-        document.getElementById('hero-banners').innerHTML = `
+        
+        // Retry once if it's a timeout (cold start)
+        if (retryCount === 0 && error.message.includes('timeout')) {
+          console.log('Retrying banner load after timeout...');
+          setTimeout(() => loadBanners(1), 2000);
+          return;
+        }
+        
+        // Show default hero on error
+        container.innerHTML = `
           <div class="default-hero">
             <h1>Welcome to MJE E-Commerce</h1>
             <p>Your one-stop shop for quality electrical products</p>
@@ -529,10 +549,21 @@
     loadCategories();
     loadFeaturedProducts();
 
-    async function loadCategories() {
+    async function loadCategories(retryCount = 0) {
+      const container = document.getElementById('categories-carousel');
+      
       try {
+        // Show loading message for cold starts
+        if (retryCount === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+              <div class="spinner" style="margin: 0 auto 1rem;"></div>
+              <p style="color: #666;">Loading categories... Server may be waking up, please wait.</p>
+            </div>
+          `;
+        }
+        
         const response = await api.getCategories();
-        const container = document.getElementById('categories-carousel');
         
         if (!response.categories || response.categories.length === 0) {
           container.innerHTML = '<p class="text-center">No categories available</p>';
@@ -562,8 +593,15 @@
         initCategoryCarousel();
       } catch (error) {
         console.error('Failed to load categories:', error);
-        document.getElementById('categories-carousel').innerHTML = 
-          '<p class="text-center">Failed to load categories</p>';
+        
+        // Retry once if it's a timeout (cold start)
+        if (retryCount === 0 && error.message.includes('timeout')) {
+          console.log('Retrying categories load after timeout...');
+          setTimeout(() => loadCategories(1), 2000);
+          return;
+        }
+        
+        container.innerHTML = '<p class="text-center">Failed to load categories. Please refresh the page.</p>';
       }
     }
 

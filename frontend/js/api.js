@@ -43,7 +43,8 @@ class API {
 
   async request(endpoint, options = {}) {
     try {
-      const { skipAuth, timeout = 60000, ...fetchOptions } = options; // Default 60 seconds
+      // Longer timeout for initial requests (Render cold start can take 50+ seconds)
+      const { skipAuth, timeout = 120000, ...fetchOptions } = options; // Default 120 seconds
       
       // Add timeout to prevent infinite loading
       const controller = new AbortController();
