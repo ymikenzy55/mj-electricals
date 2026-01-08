@@ -207,12 +207,11 @@ class API {
     });
   }
 
-  // Contact (Public - no auth required)
+  // Contact (Auth required)
   async submitContactMessage(contactData) {
     return this.request('/contact', {
       method: 'POST',
-      body: JSON.stringify(contactData),
-      skipAuth: true // Don't require authentication
+      body: JSON.stringify(contactData)
     });
   }
 
