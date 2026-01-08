@@ -2054,7 +2054,7 @@
 
     // Helper function to view order by ID
     window.viewAdminOrderById = function(orderId) {
-      const order = allAdminOrders.find(o => o._id === orderId);
+      const order = allOrders.find(o => o._id === orderId);
       if (order) {
         viewAdminOrderDetails(order);
       } else {
