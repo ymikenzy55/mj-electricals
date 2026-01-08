@@ -338,10 +338,11 @@ class InvoiceGenerator {
     <div class="invoice-meta">
       <div class="meta-section">
         <h3>Bill To:</h3>
-        <p><strong>${order.customerName || user.name || 'Customer'}</strong></p>
-        <p>${user.email || ''}</p>
+        <p><strong>${order.customerInfo?.fullName || order.shippingAddress?.fullName || user.name || 'Customer'}</strong></p>
+        <p>${order.customerInfo?.email || user.email || ''}</p>
+        ${order.customerInfo?.phone ? `<p>Phone: ${order.customerInfo.phone}</p>` : ''}
         ${order.shippingAddress ? `
-          <p>${order.shippingAddress.street || ''}</p>
+          <p>${order.shippingAddress.street || order.shippingAddress.address || ''}</p>
           <p>${order.shippingAddress.city || ''}, ${order.shippingAddress.state || ''}</p>
           <p>${order.shippingAddress.zipCode || ''}</p>
           <p>${order.shippingAddress.country || ''}</p>
