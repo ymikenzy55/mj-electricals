@@ -1,0 +1,114 @@
+/* Replace Purple Colors with Company Orange/Black Theme */
+
+/* Sidebar Header */
+.sidebar-header {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+  box-shadow: 0 4px 15px rgba(255, 107, 61, 0.3) !important;
+}
+
+/* Sidebar Menu Active State */
+.sidebar-menu li a::before {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+}
+
+.sidebar-menu li a:hover {
+  background: linear-gradient(135deg, rgba(255, 107, 61, 0.1) 0%, rgba(247, 147, 30, 0.1) 100%) !important;
+}
+
+.sidebar-menu li a.active {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+  box-shadow: 0 4px 12px rgba(255, 107, 61, 0.4) !important;
+}
+
+/* Stat Cards Top Border */
+.stat-card::before {
+  background: linear-gradient(90deg, #FF6B3D 0%, #f7931e 50%, #0f0f0f 75%, #FF6B3D 100%) !important;
+}
+
+/* Stat Values */
+.stat-value {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Section Headings */
+.dashboard-content h2 {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.dashboard-content h2 i {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Table Header */
+.table-container thead {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+}
+
+.table-container tbody tr:hover {
+  background: linear-gradient(135deg, rgba(255, 107, 61, 0.05) 0%, rgba(247, 147, 30, 0.05) 100%) !important;
+}
+
+/* Form Input Focus */
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #FF6B3D !important;
+  box-shadow: 0 0 0 3px rgba(255, 107, 61, 0.1) !important;
+}
+
+/* Loading Spinner */
+.spinner {
+  border-top-color: #FF6B3D !important;
+}
+
+/* Pagination Hover */
+.pagination button:not(:disabled):hover {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+}
+
+/* Card Top Borders */
+.feedback-card::before,
+.review-card::before,
+.order-card::before,
+.user-card::before,
+.admin-card::before {
+  background: linear-gradient(90deg, #FF6B3D 0%, #f7931e 50%, #0f0f0f 75%, #FF6B3D 100%) !important;
+}
+
+/* Mobile Menu Toggle - Already Orange, keep it */
+.mobile-menu-toggle {
+  background: linear-gradient(135deg, #FF6B3D 0%, #f7931e 100%) !important;
+  box-shadow: 0 4px 20px rgba(255, 107, 61, 0.5) !important;
+}
+
+.mobile-menu-toggle:hover {
+  box-shadow: 0 6px 24px rgba(255, 107, 61, 0.6) !important;
+}
+
+/* Super Admin Specific - Keep Pink/Red for Distinction */
+#super-admin-sidebar .sidebar-header {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3) !important;
+}
+
+#super-admin-sidebar .sidebar-menu li a::before {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+
+#super-admin-sidebar .sidebar-menu li a:hover {
+  background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%) !important;
+}
+
+#super-admin-sidebar .sidebar-menu li a.active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4) !important;
+}
