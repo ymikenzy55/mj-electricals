@@ -2424,8 +2424,8 @@ tr:hover {
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba(15, 15, 15, 0.7) 0%,
-    rgba(255, 107, 61, 0.3) 100%
+    rgba(15, 15, 15, 0.25) 0%,
+    rgba(255, 107, 61, 0.15) 100%
   );
   z-index: 1;
 }
@@ -5732,7 +5732,7 @@ tr:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.05) 100%);
   pointer-events: none;
   z-index: 1;
 }
