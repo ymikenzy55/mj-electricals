@@ -1,0 +1,20 @@
+/**
+ * Homepage Specific Fixes
+ * Hides wishlist and compare buttons on homepage
+ */
+
+/* Hide wishlist and compare buttons on homepage only */
+body.homepage .wishlist-btn,
+body.homepage .compare-btn,
+body.homepage .wishlist-btn-placeholder,
+body.homepage .compare-btn-placeholder {
+  display: none !important;
+}
+
+/* Alternative: hide on index page */
+.index-page .wishlist-btn,
+.index-page .compare-btn,
+.index-page .wishlist-btn-placeholder,
+.index-page .compare-btn-placeholder {
+  display: none !important;
+}

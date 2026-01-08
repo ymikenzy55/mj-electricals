@@ -52,9 +52,45 @@
       justify-content: space-between;
       padding: 0.75rem 0;
       border-bottom: 1px solid #e5e7eb;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
     .detail-row:last-child {
       border-bottom: none;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .success-container {
+        margin: 2rem auto;
+        padding: 1rem;
+      }
+      
+      .success-icon {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .success-icon i {
+        font-size: 40px;
+      }
+      
+      h1 {
+        font-size: 1.5rem !important;
+      }
+      
+      .order-details {
+        padding: 1rem;
+      }
+      
+      .detail-row {
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      
+      .detail-row span:first-child {
+        font-weight: 600;
+      }
     }
   </style>
 </head>
