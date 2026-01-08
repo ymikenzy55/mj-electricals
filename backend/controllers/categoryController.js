@@ -4,35 +4,47 @@ const Product = require('../models/Product');
 // Get all categories
 exports.getCategories = async (req, res) => {
   try {
-    // Parallel queries for better performance
-    const [categories, productCounts] = await Promise.all([
-      Category.find({ isActive: true }).sort({ name: 1 }).lean(),
-      Product.aggregate([
-        { $match: { status: 'active' } },
-        { $group: { _id: '$category', count: { $sum: 1 } } }
-      ])
-    ]);
+    // Set a timeout for the entire operation
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Query timeout')), 25000)
+    );
 
-    // Create a map for quick lookup
-    const countMap = {};
-    productCounts.forEach(item => {
-      countMap[item._id] = item.count;
-    });
+    const queryPromise = (async () => {
+      // Parallel queries for better performance
+      const [categories, productCounts] = await Promise.all([
+        Category.find({ isActive: true }).sort({ name: 1 }).lean().maxTimeMS(10000),
+        Product.aggregate([
+          { $match: { status: 'active' } },
+          { $group: { _id: '$category', count: { $sum: 1 } } }
+        ]).maxTimeMS(10000)
+      ]);
 
-    // Add product count to each category
-    const categoriesWithCount = categories.map(category => ({
-      ...category,
-      productCount: countMap[category.name] || 0
-    }));
+      // Create a map for quick lookup
+      const countMap = {};
+      productCounts.forEach(item => {
+        countMap[item._id] = item.count;
+      });
+
+      // Add product count to each category
+      const categoriesWithCount = categories.map(category => ({
+        ...category,
+        productCount: countMap[category.name] || 0
+      }));
+
+      return categoriesWithCount;
+    })();
+
+    const categoriesWithCount = await Promise.race([queryPromise, timeoutPromise]);
 
     res.json({
       success: true,
       categories: categoriesWithCount
     });
   } catch (error) {
+    console.error('Category fetch error:', error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message || 'Failed to fetch categories'
     });
   }
 };

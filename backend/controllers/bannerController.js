@@ -6,16 +6,21 @@ exports.getBanners = async (req, res) => {
     const { status } = req.query;
     const query = status ? { isActive: status } : {};
     
-    const banners = await Banner.find(query).sort({ order: 1, createdAt: -1 }).lean();
+    // Add timeout to prevent hanging
+    const banners = await Banner.find(query)
+      .sort({ order: 1, createdAt: -1 })
+      .lean()
+      .maxTimeMS(10000);
 
     res.json({
       success: true,
       banners
     });
   } catch (error) {
+    console.error('Banner fetch error:', error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message || 'Failed to fetch banners'
     });
   }
 };
