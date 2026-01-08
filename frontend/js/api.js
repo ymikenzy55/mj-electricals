@@ -44,10 +44,18 @@ class API {
   async request(endpoint, options = {}) {
     try {
       const { skipAuth, ...fetchOptions } = options;
+      
+      // Add timeout to prevent infinite loading
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch(`${API_URL}${endpoint}`, {
         ...fetchOptions,
-        headers: this.getHeaders(skipAuth)
+        headers: this.getHeaders(skipAuth),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
@@ -65,6 +73,13 @@ class API {
 
       return data;
     } catch (error) {
+      // Better error messages for common issues
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout - Server is taking too long to respond. Please try again.');
+      }
+      if (error.message === 'Failed to fetch') {
+        throw new Error('Cannot connect to server. Please check your internet connection or try again later.');
+      }
       throw error;
     }
   }
