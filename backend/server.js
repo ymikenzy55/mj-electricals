@@ -24,13 +24,28 @@ connectDB();
 initSuperAdmin();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:8000',
+    'http://localhost:5500',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:5500',
+    'https://mj-electricals-nine.vercel.app',
+    'https://mj-electricals.vercel.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(passport.initialize());
 
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Add cache control headers for static files
 app.use((req, res, next) => {
