@@ -1,7 +1,8 @@
 // Invoice Generation Utility
 class InvoiceGenerator {
   constructor() {
-    this.logoPath = '../mj-images/mj-logo.gif';
+    // Use absolute URL for logo so it works in downloaded HTML
+    this.logoPath = 'https://mj-electricals-nine.vercel.app/mj-images/mj-logo.gif';
   }
 
   async generateInvoice(orderId) {
@@ -331,8 +332,8 @@ class InvoiceGenerator {
     <!-- Header -->
     <div class="invoice-header">
       <div class="company-info">
-        <img src="${this.logoPath}" alt="MJE Logo" class="company-logo" onerror="this.style.display='none'">
-        <div class="company-name">MJE E-Commerce</div>
+        <img src="${this.logoPath}" alt="MJ Electricals Logo" class="company-logo" onerror="this.style.display='none'">
+        <div class="company-name">MJ Electricals</div>
         <div class="company-tagline">Quality Products, Delivered</div>
       </div>
       <div class="invoice-title">
@@ -416,9 +417,9 @@ class InvoiceGenerator {
 
     <!-- Footer -->
     <div class="invoice-footer">
-      <p><strong>MJE E-Commerce</strong></p>
-      <p>Email: support@mje.com | Phone: +233 XX XXX XXXX</p>
-      <p>Website: www.mje.com</p>
+      <p><strong>MJ Electricals Ghana Limited</strong></p>
+      <p>Email: support@mjelectricals.com | Phone: +233 XX XXX XXXX</p>
+      <p>Website: www.mjelectricals.com</p>
       <p style="margin-top: 15px; font-size: 11px;">
         This is a computer-generated invoice and does not require a signature.
       </p>
