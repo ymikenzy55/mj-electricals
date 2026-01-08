@@ -6,23 +6,23 @@ exports.getCategories = async (req, res) => {
   try {
     const categories = await Category.find({ isActive: true }).sort({ name: 1 });
 
-    // Add product count for each category
-    const categoriesWithCount = await Promise.all(
-      categories.map(async (category) => {
-        // Try both exact match and case-insensitive match
-        const productCount = await Product.countDocuments({ 
-          category: category.name,
-          status: 'active'
-        });
-        
-        console.log(`Category: ${category.name}, Count: ${productCount}`);
-        
-        return {
-          ...category.toObject(),
-          productCount
-        };
-      })
-    );
+    // Optimize: Get all product counts in ONE query using aggregation
+    const productCounts = await Product.aggregate([
+      { $match: { status: 'active' } },
+      { $group: { _id: '$category', count: { $sum: 1 } } }
+    ]);
+
+    // Create a map for quick lookup
+    const countMap = {};
+    productCounts.forEach(item => {
+      countMap[item._id] = item.count;
+    });
+
+    // Add product count to each category
+    const categoriesWithCount = categories.map(category => ({
+      ...category.toObject(),
+      productCount: countMap[category.name] || 0
+    }));
 
     res.json({
       success: true,
