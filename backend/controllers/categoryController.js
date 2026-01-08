@@ -4,12 +4,13 @@ const Product = require('../models/Product');
 // Get all categories
 exports.getCategories = async (req, res) => {
   try {
-    const categories = await Category.find({ isActive: true }).sort({ name: 1 });
-
-    // Optimize: Get all product counts in ONE query using aggregation
-    const productCounts = await Product.aggregate([
-      { $match: { status: 'active' } },
-      { $group: { _id: '$category', count: { $sum: 1 } } }
+    // Parallel queries for better performance
+    const [categories, productCounts] = await Promise.all([
+      Category.find({ isActive: true }).sort({ name: 1 }).lean(),
+      Product.aggregate([
+        { $match: { status: 'active' } },
+        { $group: { _id: '$category', count: { $sum: 1 } } }
+      ])
     ]);
 
     // Create a map for quick lookup
@@ -20,7 +21,7 @@ exports.getCategories = async (req, res) => {
 
     // Add product count to each category
     const categoriesWithCount = categories.map(category => ({
-      ...category.toObject(),
+      ...category,
       productCount: countMap[category.name] || 0
     }));
 

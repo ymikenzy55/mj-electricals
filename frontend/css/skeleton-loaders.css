@@ -1,0 +1,63 @@
+/* Skeleton Loaders for Homepage */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton-banner,
+.skeleton-category,
+.skeleton-product {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 8px;
+}
+
+/* Banner Skeleton */
+.skeleton-banner {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Category Skeleton */
+.skeleton-category {
+  min-width: 160px;
+  height: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+/* Product Skeleton */
+.skeleton-product {
+  width: 100%;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .skeleton-banner {
+    min-height: 250px;
+  }
+  
+  .skeleton-category {
+    min-width: 120px;
+    height: 160px;
+  }
+  
+  .skeleton-product {
+    height: 350px;
+  }
+}

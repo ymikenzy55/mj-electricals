@@ -6,7 +6,7 @@ exports.getBanners = async (req, res) => {
     const { status } = req.query;
     const query = status ? { isActive: status } : {};
     
-    const banners = await Banner.find(query).sort({ order: 1, createdAt: -1 });
+    const banners = await Banner.find(query).sort({ order: 1, createdAt: -1 }).lean();
 
     res.json({
       success: true,

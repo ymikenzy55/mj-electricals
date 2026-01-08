@@ -31,6 +31,7 @@
   
   <!-- Cache Busting -->
   <script src="../version.js"></script>
+  <script src="../js/homepage-optimizer.js"></script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -46,6 +47,7 @@
   <link rel="stylesheet" href="../css/homepage-fixes.css">
   <link rel="stylesheet" href="../css/critical-ux-fixes.css">
   <link rel="stylesheet" href="../css/categories-carousel.css">
+  <link rel="stylesheet" href="../css/skeleton-loaders.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Structured Data for SEO -->
@@ -126,7 +128,7 @@
 
   <section class="hero-section">
     <div id="hero-banners" class="hero-banners">
-      <div class="loading"><div class="spinner"></div></div>
+      <div class="skeleton-banner"></div>
     </div>
     <div class="hero-overlay"></div>
   </section>
@@ -141,7 +143,13 @@
         </button>
         <div class="categories-carousel-container">
           <div id="categories-carousel" class="categories-carousel">
-            <div class="loading"><div class="spinner"></div></div>
+            <!-- Skeleton loaders -->
+            <div class="skeleton-category"></div>
+            <div class="skeleton-category"></div>
+            <div class="skeleton-category"></div>
+            <div class="skeleton-category"></div>
+            <div class="skeleton-category"></div>
+            <div class="skeleton-category"></div>
           </div>
         </div>
         <button class="carousel-nav carousel-next" onclick="scrollCategories(1)" aria-label="Next categories">
@@ -162,9 +170,13 @@
     <h2 class="section-title">Featured Products</h2>
     <p class="section-subtitle">Check out our top picks for you</p>
     <div id="featured-products" class="products-grid">
-      <div class="loading">
-        <div class="spinner"></div>
-      </div>
+      <!-- Skeleton loaders -->
+      <div class="skeleton-product"></div>
+      <div class="skeleton-product"></div>
+      <div class="skeleton-product"></div>
+      <div class="skeleton-product"></div>
+      <div class="skeleton-product"></div>
+      <div class="skeleton-product"></div>
     </div>
     <div id="load-more-container" style="text-align: center; margin-top: 2rem; display: none;">
       <a href="products.html" class="btn" style="padding: 0.875rem 2rem; text-decoration: none; display: inline-block;">
@@ -324,85 +336,103 @@
     
     async function loadFeaturedProducts(append = false) {
       try {
-        if (!append) {
-          document.getElementById('featured-products').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        // Check cache first
+        const cacheKey = 'homepage_featured';
+        const cached = sessionStorage.getItem(cacheKey);
+        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
+        const now = Date.now();
+        
+        // Use cache if less than 5 minutes old
+        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000 && !append) {
+          const response = JSON.parse(cached);
+          renderFeaturedProducts(response);
+          return;
         }
         
         const response = await api.getProducts({ page: currentPage, limit: productsPerPage, status: 'active', featured: true });
-        const container = document.getElementById('featured-products');
         
         if (!append) {
           allProducts = [];
+          // Cache the response
+          sessionStorage.setItem(cacheKey, JSON.stringify(response));
+          sessionStorage.setItem(cacheKey + '_time', now.toString());
         }
         
         allProducts = [...allProducts, ...response.products];
         totalProducts = response.total || response.products.length;
         
-        if (allProducts.length === 0) {
-          container.innerHTML = '<p class="text-center">No featured products available</p>';
-          document.getElementById('load-more-container').style.display = 'none';
-          return;
-        }
-
-        const productsHTML = allProducts.map(product => `
-          <div class="product-card" data-product-id="${product._id}">
-            ${getDiscountBadge(product.discount || 0)}
-            <div class="wishlist-btn-placeholder" data-product-id="${product._id}"></div>
-            <div class="compare-btn-placeholder" data-product-id="${product._id}"></div>
-            <img src="${product.images[0] || 'https://via.placeholder.com/250'}" 
-                 alt="${product.name}" 
-                 class="product-image"
-                 onclick="window.location.href='product-details.html?id=${product._id}'" 
-                 style="cursor: pointer;"
-                 title="Click to view details">
-            <div class="product-info">
-              <div class="product-id">${product.productId}</div>
-              <h3 class="product-name">${product.name}</h3>
-              <p class="product-category">${product.category} | ${product.wattage}W</p>
-              ${getPriceDisplay(product.price, product.discount || 0)}
-              <p style="color: ${product.stock > 10 ? '#28a745' : product.stock > 0 ? '#ffc107' : '#dc3545'}; font-weight: 600; font-size: 0.875rem;">
-                ${product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left!` : 'Out of Stock'}
-              </p>
-              <button class="btn add-to-cart-btn" data-product-id="${product._id}" onclick="addToCartFromHome('${product._id}', event)" ${product.stock === 0 ? 'disabled' : ''}>
-                <i class="fas fa-shopping-cart"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-              </button>
-            </div>
-          </div>
-        `).join('');
-        
-        container.innerHTML = productsHTML;
-
-        // Update "View All Products" button visibility and count
-        const loadMoreContainer = document.getElementById('load-more-container');
-        const productsCount = document.getElementById('products-count');
-        
-        if (totalProducts > productsPerPage) {
-          loadMoreContainer.style.display = 'block';
-          productsCount.textContent = `Showing ${allProducts.length} of ${totalProducts} products`;
-        } else {
-          loadMoreContainer.style.display = 'none';
-        }
-
-        // Add wishlist and compare buttons after rendering
-        setTimeout(() => {
-          document.querySelectorAll('.wishlist-btn-placeholder').forEach(placeholder => {
-            const productId = placeholder.dataset.productId;
-            const wishlistBtn = wishlistManager.createWishlistButton(productId);
-            placeholder.replaceWith(wishlistBtn);
-          });
-
-          document.querySelectorAll('.compare-btn-placeholder').forEach(placeholder => {
-            const productId = placeholder.dataset.productId;
-            const compareBtn = compareManager.createCompareButton(productId);
-            placeholder.replaceWith(compareBtn);
-          });
-        }, 100);
+        renderFeaturedProducts(response);
       } catch (error) {
         console.error('Failed to load products:', error);
         document.getElementById('featured-products').innerHTML = 
           '<p class="text-center">Failed to load products</p>';
         document.getElementById('load-more-container').style.display = 'none';
       }
+    }
+
+    function renderFeaturedProducts(response) {
+      const container = document.getElementById('featured-products');
+      
+      if (allProducts.length === 0) {
+        container.innerHTML = '<p class="text-center">No featured products available</p>';
+        document.getElementById('load-more-container').style.display = 'none';
+        return;
+      }
+
+      const productsHTML = allProducts.map(product => `
+        <div class="product-card" data-product-id="${product._id}">
+          ${getDiscountBadge(product.discount || 0)}
+          <div class="wishlist-btn-placeholder" data-product-id="${product._id}"></div>
+          <div class="compare-btn-placeholder" data-product-id="${product._id}"></div>
+          <img src="${product.images[0] || 'https://via.placeholder.com/250'}" 
+               alt="${product.name}" 
+               class="product-image"
+               onclick="window.location.href='product-details.html?id=${product._id}'" 
+               style="cursor: pointer;"
+               title="Click to view details"
+               loading="lazy">
+          <div class="product-info">
+            <div class="product-id">${product.productId}</div>
+            <h3 class="product-name">${product.name}</h3>
+            <p class="product-category">${product.category} | ${product.wattage}W</p>
+            ${getPriceDisplay(product.price, product.discount || 0)}
+            <p style="color: ${product.stock > 10 ? '#28a745' : product.stock > 0 ? '#ffc107' : '#dc3545'}; font-weight: 600; font-size: 0.875rem;">
+              ${product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left!` : 'Out of Stock'}
+            </p>
+            <button class="btn add-to-cart-btn" data-product-id="${product._id}" onclick="addToCartFromHome('${product._id}', event)" ${product.stock === 0 ? 'disabled' : ''}>
+              <i class="fas fa-shopping-cart"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      container.innerHTML = productsHTML;
+
+      // Update "View All Products" button visibility and count
+      const loadMoreContainer = document.getElementById('load-more-container');
+      const productsCount = document.getElementById('products-count');
+      
+      if (totalProducts > productsPerPage) {
+        loadMoreContainer.style.display = 'block';
+        productsCount.textContent = `Showing ${allProducts.length} of ${totalProducts} products`;
+      } else {
+        loadMoreContainer.style.display = 'none';
+      }
+
+      // Add wishlist and compare buttons after rendering
+      setTimeout(() => {
+        document.querySelectorAll('.wishlist-btn-placeholder').forEach(placeholder => {
+          const productId = placeholder.dataset.productId;
+          const wishlistBtn = wishlistManager.createWishlistButton(productId);
+          placeholder.replaceWith(wishlistBtn);
+        });
+
+        document.querySelectorAll('.compare-btn-placeholder').forEach(placeholder => {
+          const productId = placeholder.dataset.productId;
+          const compareBtn = compareManager.createCompareButton(productId);
+          placeholder.replaceWith(compareBtn);
+        });
+      }, 100);
     }
     
     // Removed load more button handler - now using direct link to products page
@@ -411,76 +441,92 @@
       const container = document.getElementById('hero-banners');
       
       try {
-        // Show clean loading spinner
-        if (retryCount === 0) {
-          container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        // Check cache first
+        const cacheKey = 'homepage_banners';
+        const cached = sessionStorage.getItem(cacheKey);
+        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
+        const now = Date.now();
+        
+        // Use cache if less than 5 minutes old
+        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000) {
+          const response = JSON.parse(cached);
+          renderBanners(response.banners);
+          return;
         }
         
         const response = await api.getBanners({ status: 'active' });
         
-        if (!response.banners || response.banners.length === 0) {
-          // Show default hero if no banners
-          container.innerHTML = `
-            <div class="default-hero">
-              <h1>Welcome to MJE E-Commerce</h1>
-              <p>Your one-stop shop for quality electrical products</p>
-              <a href="products.html" class="btn">Shop Now</a>
-            </div>
-          `;
-          return;
-        }
-
-        // Show banners carousel with animations
-        container.innerHTML = `
-          <div class="banner-carousel">
-            ${response.banners.map((banner, index) => `
-              <div class="banner-slide ${index === 0 ? 'active' : ''}" style="background-image: url('${banner.image}')">
-                <div class="banner-content animate-fade-in-up">
-                  <h1 class="banner-title">${banner.title}</h1>
-                  ${banner.subtitle ? `<p class="banner-subtitle">${banner.subtitle}</p>` : ''}
-                  ${banner.link ? `<a href="${banner.link}" class="btn btn-hero">Shop Now <i class="fas fa-arrow-right"></i></a>` : ''}
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          ${response.banners.length > 1 ? `
-            <button class="banner-nav banner-prev" onclick="changeBanner(-1)" aria-label="Previous banner">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="banner-nav banner-next" onclick="changeBanner(1)" aria-label="Next banner">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-            <div class="banner-indicators">
-              ${response.banners.map((_, index) => `
-                <button class="banner-dot ${index === 0 ? 'active' : ''}" onclick="currentBanner(${index})" aria-label="Go to banner ${index + 1}"></button>
-              `).join('')}
-            </div>
-          ` : ''}
-        `;
-
-        // Auto-rotate banners
-        if (response.banners.length > 1) {
-          setInterval(() => changeBanner(1), 5000);
-        }
+        // Cache the response
+        sessionStorage.setItem(cacheKey, JSON.stringify(response));
+        sessionStorage.setItem(cacheKey + '_time', now.toString());
+        
+        renderBanners(response.banners);
       } catch (error) {
         console.error('Failed to load banners:', error);
         
         // Retry once if it's a timeout (cold start)
-        if (retryCount === 0 && error.message.includes('timeout')) {
+        if (retryCount === 0 && (error.message.includes('timeout') || error.message.includes('connect'))) {
           console.log('Retrying banner load after timeout...');
           setTimeout(() => loadBanners(1), 2000);
           return;
         }
         
         // Show default hero on error
-        container.innerHTML = `
-          <div class="default-hero">
-            <h1>Welcome to MJE E-Commerce</h1>
-            <p>Your one-stop shop for quality electrical products</p>
-            <a href="products.html" class="btn">Shop Now</a>
-          </div>
-        `;
+        renderDefaultHero();
       }
+    }
+
+    function renderBanners(banners) {
+      const container = document.getElementById('hero-banners');
+      
+      if (!banners || banners.length === 0) {
+        renderDefaultHero();
+        return;
+      }
+
+      // Show banners carousel with animations
+      container.innerHTML = `
+        <div class="banner-carousel">
+          ${banners.map((banner, index) => `
+            <div class="banner-slide ${index === 0 ? 'active' : ''}" style="background-image: url('${banner.image}')">
+              <div class="banner-content animate-fade-in-up">
+                <h1 class="banner-title">${banner.title}</h1>
+                ${banner.subtitle ? `<p class="banner-subtitle">${banner.subtitle}</p>` : ''}
+                ${banner.link ? `<a href="${banner.link}" class="btn btn-hero">Shop Now <i class="fas fa-arrow-right"></i></a>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        ${banners.length > 1 ? `
+          <button class="banner-nav banner-prev" onclick="changeBanner(-1)" aria-label="Previous banner">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="banner-nav banner-next" onclick="changeBanner(1)" aria-label="Next banner">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          <div class="banner-indicators">
+            ${banners.map((_, index) => `
+              <button class="banner-dot ${index === 0 ? 'active' : ''}" onclick="currentBanner(${index})" aria-label="Go to banner ${index + 1}"></button>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+
+      // Auto-rotate banners
+      if (banners.length > 1) {
+        setInterval(() => changeBanner(1), 5000);
+      }
+    }
+
+    function renderDefaultHero() {
+      const container = document.getElementById('hero-banners');
+      container.innerHTML = `
+        <div class="default-hero">
+          <h1>Welcome to MJE E-Commerce</h1>
+          <p>Your one-stop shop for quality electrical products</p>
+          <a href="products.html" class="btn">Shop Now</a>
+        </div>
+      `;
     }
 
     let currentBannerIndex = 0;
@@ -540,54 +586,47 @@
         .catch(err => console.log('Service Worker registration failed'));
     }
 
-    loadBanners();
-    loadCategories();
-    loadFeaturedProducts();
+    // Load all sections in parallel for faster page load
+    Promise.all([
+      loadBanners(),
+      loadCategories(),
+      loadFeaturedProducts()
+    ]).catch(err => console.error('Error loading homepage:', err));
 
     async function loadCategories(retryCount = 0) {
       const container = document.getElementById('categories-carousel');
       
       try {
-        // Show clean loading spinner
-        if (retryCount === 0) {
-          container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        // Check cache first
+        const cacheKey = 'homepage_categories';
+        const cached = sessionStorage.getItem(cacheKey);
+        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
+        const now = Date.now();
+        
+        // Use cache if less than 5 minutes old
+        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000) {
+          const response = JSON.parse(cached);
+          renderCategories(response.categories);
+          return;
         }
         
         const response = await api.getCategories();
-        console.log('Categories response:', response); // Debug log
         
         if (!response.categories || response.categories.length === 0) {
           container.innerHTML = '<p class="text-center">No categories available</p>';
           return;
         }
 
-        // Display all categories in carousel
-        const allCategories = response.categories;
-        console.log(`Rendering ${allCategories.length} categories`); // Debug log
+        // Cache the response
+        sessionStorage.setItem(cacheKey, JSON.stringify(response));
+        sessionStorage.setItem(cacheKey + '_time', now.toString());
 
-        container.innerHTML = allCategories.map(category => `
-          <a href="products.html?category=${encodeURIComponent(category.name)}" class="category-card">
-            <div class="category-icon">
-              <img src="${category.image || 'https://via.placeholder.com/150'}" alt="${category.name}">
-            </div>
-            <h3 class="category-name">${category.name}</h3>
-            <p class="category-count">${category.productCount || 0} Items</p>
-          </a>
-        `).join('');
-
-        // Show "View All Categories" button
-        const viewAllContainer = document.getElementById('view-all-categories');
-        const countText = document.getElementById('category-count-text');
-        viewAllContainer.style.display = 'block';
-        countText.textContent = `Browse all ${allCategories.length} categories`;
-
-        // Initialize carousel auto-scroll
-        initCategoryCarousel();
+        renderCategories(response.categories);
       } catch (error) {
         console.error('Failed to load categories:', error);
         
         // Retry once if it's a timeout (cold start)
-        if (retryCount === 0 && error.message.includes('timeout')) {
+        if (retryCount === 0 && (error.message.includes('timeout') || error.message.includes('connect'))) {
           console.log('Retrying categories load after timeout...');
           setTimeout(() => loadCategories(1), 2000);
           return;
@@ -595,6 +634,29 @@
         
         container.innerHTML = '<p class="text-center">Failed to load categories. Please refresh the page.</p>';
       }
+    }
+
+    function renderCategories(categories) {
+      const container = document.getElementById('categories-carousel');
+      
+      container.innerHTML = categories.map(category => `
+        <a href="products.html?category=${encodeURIComponent(category.name)}" class="category-card">
+          <div class="category-icon">
+            <img src="${category.image || 'https://via.placeholder.com/150'}" alt="${category.name}" loading="lazy">
+          </div>
+          <h3 class="category-name">${category.name}</h3>
+          <p class="category-count">${category.productCount || 0} Items</p>
+        </a>
+      `).join('');
+
+      // Show "View All Categories" button
+      const viewAllContainer = document.getElementById('view-all-categories');
+      const countText = document.getElementById('category-count-text');
+      viewAllContainer.style.display = 'block';
+      countText.textContent = `Browse all ${categories.length} categories`;
+
+      // Initialize carousel auto-scroll
+      initCategoryCarousel();
     }
 
     // Category Carousel Functions
