@@ -9,6 +9,9 @@ const contactSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Email is required']
   },
+  phone: {
+    type: String
+  },
   subject: {
     type: String,
     required: [true, 'Subject is required']
@@ -16,6 +19,10 @@ const contactSchema = new mongoose.Schema({
   message: {
     type: String,
     required: [true, 'Message is required']
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   status: {
     type: String,

@@ -191,6 +191,18 @@
         <div class="auth-link" style="display:none;">
           <form id="contact-form">
             <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" id="contact-name" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="contact-email" required placeholder="your.email@example.com">
+            </div>
+            <div class="form-group">
+              <label>Phone Number (Optional)</label>
+              <input type="tel" id="contact-phone" placeholder="+233 XX XXX XXXX">
+            </div>
+            <div class="form-group">
               <label>Subject</label>
               <input type="text" id="subject" required placeholder="What is this about?">
             </div>
@@ -332,19 +344,23 @@
         return;
       }
       
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email').value;
+      const phone = document.getElementById('contact-phone').value;
       const subject = document.getElementById('subject').value;
       const message = document.getElementById('message').value;
 
-      if (!subject || !message) {
-        toast.error('Please fill in all fields');
+      if (!name || !email || !subject || !message) {
+        toast.error('Please fill in all required fields');
         return;
       }
 
       try {
         const loadingToast = toast.loading('Sending your message...');
         await api.submitContactMessage({ 
-          name: state.user.name,
-          email: state.user.email,
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || undefined,
           subject: subject.trim(),
           message: message.trim()
         });

@@ -1586,6 +1586,7 @@
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
               <div style="flex: 1;">
                 <p style="margin-bottom: 0.5rem;"><strong>${msg.name}</strong> (${msg.email})</p>
+                ${msg.phone ? `<p style="margin-bottom: 0.5rem; color: var(--gray-600);"><i class="fas fa-phone"></i> ${msg.phone}</p>` : ''}
                 <p style="color: var(--gray-600); font-size: 0.9rem;">
                   <i class="fas fa-clock"></i> ${new Date(msg.createdAt).toLocaleString()}
                 </p>
