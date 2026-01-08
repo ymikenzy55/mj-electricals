@@ -43,12 +43,12 @@ class API {
 
   async request(endpoint, options = {}) {
     try {
-      // Shorter timeout for homepage requests (30s instead of 120s)
+      // Longer timeout for Render cold start (can take 50+ seconds on free tier)
       const isHomepageRequest = endpoint.includes('/banners') || 
                                 endpoint.includes('/categories') || 
                                 (endpoint.includes('/products') && options.method !== 'POST');
       
-      const { skipAuth, timeout = isHomepageRequest ? 30000 : 120000, ...fetchOptions } = options;
+      const { skipAuth, timeout = isHomepageRequest ? 60000 : 120000, ...fetchOptions } = options;
       
       // Add timeout to prevent infinite loading
       const controller = new AbortController();

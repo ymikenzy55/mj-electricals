@@ -454,6 +454,11 @@
           return;
         }
         
+        // Show message while waiting for cold start
+        if (retryCount === 0) {
+          console.log('Loading banners... (Server may be waking up, this can take up to 60 seconds)');
+        }
+        
         const response = await api.getBanners({ status: 'active' });
         
         // Cache the response
@@ -464,10 +469,10 @@
       } catch (error) {
         console.error('Failed to load banners:', error);
         
-        // Retry once if it's a timeout (cold start)
-        if (retryCount === 0 && (error.message.includes('timeout') || error.message.includes('connect'))) {
-          console.log('Retrying banner load after timeout...');
-          setTimeout(() => loadBanners(1), 2000);
+        // Retry up to 2 times if it's a timeout (cold start can be slow)
+        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('connect'))) {
+          console.log(`Retrying banner load (attempt ${retryCount + 2}/3)...`);
+          setTimeout(() => loadBanners(retryCount + 1), 3000);
           return;
         }
         
@@ -610,10 +615,15 @@
           return;
         }
         
+        // Show message while waiting
+        if (retryCount === 0) {
+          console.log('Loading categories... (Server may be waking up)');
+        }
+        
         const response = await api.getCategories();
         
         if (!response.categories || response.categories.length === 0) {
-          container.innerHTML = '<p class="text-center">No categories available</p>';
+          container.innerHTML = '<p class="text-center" style="padding: 2rem;">No categories available. Please add categories in the admin panel.</p>';
           return;
         }
 
@@ -625,14 +635,14 @@
       } catch (error) {
         console.error('Failed to load categories:', error);
         
-        // Retry once if it's a timeout (cold start)
-        if (retryCount === 0 && (error.message.includes('timeout') || error.message.includes('connect'))) {
-          console.log('Retrying categories load after timeout...');
-          setTimeout(() => loadCategories(1), 2000);
+        // Retry up to 2 times if it's a timeout
+        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('connect'))) {
+          console.log(`Retrying categories load (attempt ${retryCount + 2}/3)...`);
+          setTimeout(() => loadCategories(retryCount + 1), 3000);
           return;
         }
         
-        container.innerHTML = '<p class="text-center">Failed to load categories. Please refresh the page.</p>';
+        container.innerHTML = '<p class="text-center" style="padding: 2rem; color: #dc3545;">Server is taking too long to respond. Please refresh the page or try again later.</p>';
       }
     }
 
