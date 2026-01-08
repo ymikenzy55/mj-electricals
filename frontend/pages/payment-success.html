@@ -6,6 +6,7 @@
   <title>Payment Successful - MJE E-Commerce</title>
   <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar-redesign.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
   <link rel="stylesheet" href="../css/topbar-fix.css">
   <link rel="stylesheet" href="../css/component-order-fix.css">
@@ -95,7 +96,63 @@
   </style>
 </head>
 <body>
-  <!-- Company topbar and navbar will be loaded by their respective loaders -->
+  <!-- Company Contact Top Bar -->
+  <div id="company-topbar-container"></div>
+  
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <!-- Search Bar -->
+      <div class="nav-search-bar">
+        <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+        <button onclick="performNavSearch()" class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right Icons -->
+      <div class="nav-icons">
+        <a href="cart.html" class="nav-icon" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
 
   <div class="container">
     <div class="success-container">
@@ -309,6 +366,24 @@
         btn.innerHTML = '<i class="fas fa-file-invoice"></i> Download Invoice';
       }
     }
+
+    // Navbar functions
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input').value.trim();
+      if (query) {
+        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+
+    // Prevent dropdown toggle link from navigating
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownToggle = document.querySelector('.dropdown-toggle');
+      if (dropdownToggle) {
+        dropdownToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+        });
+      }
+    });
   </script>
 </body>
 </html>

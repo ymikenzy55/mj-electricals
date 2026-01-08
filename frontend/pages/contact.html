@@ -238,7 +238,8 @@
   <script src="../js/utils.js"></script>
   <script src="../js/toast.js"></script>
   <script src="../js/modal.js"></script>
-  <script src="../js/logger.js"></script>`n  <script src="../js/api.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
   <script src="../js/state.js"></script>
   <script src="../js/socket.js"></script>
   <script src="../js/auth.js"></script>
@@ -354,6 +355,99 @@
         toast.error(error.message || 'Failed to send message. Please try again.');
       }
     });
+  </script>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
+    <div class="mobile-menu-header">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="mobile-menu-content">
+      <ul class="mobile-menu-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+        <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+      </ul>
+      <ul class="mobile-menu-links mobile-menu-auth">
+        <li class="auth-link" style="display:none;">
+          <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="user-dashboard.html"><i class="fas fa-user"></i> My Account</a>
+        </li>
+        <li class="auth-link" style="display:none;">
+          <a href="#" onclick="handleLogout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+        <li class="guest-link"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+        <li class="guest-link"><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-logo">
+          <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+        </div>
+        <h3>About MJE</h3>
+        <p>Your trusted partner for quality electrical products. We provide the best lighting solutions and electrical components.</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Products</a></p>
+        <p><a href="categories.html">Categories</a></p>
+        <p><a href="about.html">About Us</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Info</h3>
+        <p>📧 support@mje-ecommerce.com</p>
+        <p>📞 +233 (0) 123-456-789</p>
+        <p>🕒 Mon-Fri, 9AM-6PM</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Newsletter</h3>
+        <p>Subscribe to get updates on new products and special offers!</p>
+        <form class="newsletter-form" id="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" id="newsletter-email" placeholder="Your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; <span id="current-year">2025</span> MJ Electricals. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    
+    async function subscribeNewsletter(event) {
+      event.preventDefault();
+      const email = document.getElementById('newsletter-email').value;
+      
+      try {
+        const response = await api.subscribeNewsletter(email);
+        toast.success('Thank you for subscribing to our newsletter!');
+        document.getElementById('newsletter-form').reset();
+      } catch (error) {
+        toast.error(error.message || 'Failed to subscribe. Please try again.');
+      }
+    }
   </script>
 </body>
 </html>
