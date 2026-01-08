@@ -1347,7 +1347,7 @@
                   <td>${formatPrice(order.totalAmount)}</td>
                   <td>${order.status}</td>
                   <td>
-                    <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; margin-right: 0.5rem;" onclick='viewAdminOrderDetails(${JSON.stringify(order).replace(/'/g, "&#39;")})'>
+                    <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; margin-right: 0.5rem;" onclick="viewAdminOrderById('${order._id}')">
                       <i class="fas fa-eye"></i> View
                     </button>
                     <select onchange="updateOrderStatus('${order._id}', this.value)" style="padding: 0.5rem; font-size: 0.85rem;">
@@ -2051,6 +2051,16 @@
       if (typeof addr === 'string') return addr;
       return `${addr.street || ''}, ${addr.city || ''}, ${addr.state || ''} ${addr.zipCode || ''}, ${addr.country || ''}`.replace(/,\s*,/g, ',').trim();
     }
+
+    // Helper function to view order by ID
+    window.viewAdminOrderById = function(orderId) {
+      const order = allAdminOrders.find(o => o._id === orderId);
+      if (order) {
+        viewAdminOrderDetails(order);
+      } else {
+        toast.error('Order not found');
+      }
+    };
 
     window.viewAdminOrderDetails = function(order) {
       const itemsList = order.items.map((item, index) => `
