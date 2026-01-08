@@ -9,8 +9,8 @@ const {
 } = require('../controllers/contactController');
 const { protect, authorize } = require('../middleware/auth');
 
-// Protected route - auth required with rate limiting and validation
-router.post('/', protect, messageLimiter, contactValidation, createContactMessage);
+// Protected route - auth required with validation (rate limiting removed to prevent validation errors on retry)
+router.post('/', protect, contactValidation, createContactMessage);
 
 // Admin routes
 router.get('/all', protect, authorize('admin', 'superadmin'), getAllContactMessages);

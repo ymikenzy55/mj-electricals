@@ -55,7 +55,8 @@ const getAllContactMessages = async (req, res) => {
 
     res.json({
       success: true,
-      contacts,
+      messages: contacts, // Frontend expects 'messages' property
+      contacts, // Keep for backward compatibility
       pagination: {
         page: Number(page),
         limit: Number(limit),
