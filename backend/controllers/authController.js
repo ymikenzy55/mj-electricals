@@ -256,10 +256,32 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
+    // Password strength validation with detailed error messages
     if (newPassword.length < 8) {
       return res.status(400).json({
         success: false,
         message: 'Password must be at least 8 characters long'
+      });
+    }
+
+    if (!/[a-z]/.test(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must contain at least one lowercase letter'
+      });
+    }
+
+    if (!/[A-Z]/.test(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must contain at least one uppercase letter'
+      });
+    }
+
+    if (!/\d/.test(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must contain at least one number'
       });
     }
 

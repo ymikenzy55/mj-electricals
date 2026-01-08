@@ -40,8 +40,8 @@ const registerValidation = [
   
   body('password')
     .notEmpty().withMessage('Password is required')
-    .isLength({ min: 8, max: 128 }).withMessage('Password must be 8-128 characters')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain uppercase, lowercase, and number'),
+    .isLength({ min: 8, max: 128 }).withMessage('Password must be at least 8 characters long'),
+    // Removed regex validation - let controller handle detailed password validation
   
   handleValidationErrors
 ];
@@ -84,8 +84,8 @@ const resetPasswordValidation = [
   
   body('newPassword')
     .notEmpty().withMessage('New password is required')
-    .isLength({ min: 8, max: 128 }).withMessage('Password must be 8-128 characters')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain uppercase, lowercase, and number'),
+    .isLength({ min: 8, max: 128 }).withMessage('Password must be at least 8 characters long'),
+    // Removed regex validation - let controller handle detailed password validation
   
   handleValidationErrors
 ];
