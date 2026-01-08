@@ -338,7 +338,7 @@ class InvoiceGenerator {
     <div class="invoice-meta">
       <div class="meta-section">
         <h3>Bill To:</h3>
-        <p><strong>${user.name || 'Customer'}</strong></p>
+        <p><strong>${order.customerName || user.name || 'Customer'}</strong></p>
         <p>${user.email || ''}</p>
         ${order.shippingAddress ? `
           <p>${order.shippingAddress.street || ''}</p>
