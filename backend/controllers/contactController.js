@@ -95,6 +95,39 @@ const respondToContact = async (req, res) => {
       });
     }
 
+    // Send email notification to user
+    try {
+      const { sendEmail } = require('../config/email');
+      await sendEmail({
+        to: contact.email,
+        subject: `Re: ${contact.subject}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #FF6B3D;">Response to Your Message</h2>
+            <p>Hello ${contact.name},</p>
+            <p>Thank you for contacting us. Here's our response to your inquiry:</p>
+            
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 0;"><strong>Your Message:</strong></p>
+              <p style="margin: 10px 0 0 0;">${contact.message}</p>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FF6B3D;">
+              <p style="margin: 0;"><strong>Our Response:</strong></p>
+              <p style="margin: 10px 0 0 0;">${response}</p>
+            </div>
+            
+            <p>If you have any further questions, feel free to contact us again.</p>
+            
+            <p style="margin-top: 30px;">Best regards,<br><strong>MJ Electricals Team</strong></p>
+          </div>
+        `
+      });
+    } catch (emailError) {
+      console.error('Failed to send email notification:', emailError);
+      // Don't fail the request if email fails
+    }
+
     res.json({
       success: true,
       contact

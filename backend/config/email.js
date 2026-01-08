@@ -107,6 +107,33 @@ const sendPasswordResetEmail = async (email, resetToken, userName) => {
   }
 };
 
+// Generic send email function
+const sendEmail = async ({ to, subject, html }) => {
+  const transporter = createTransporter();
+  
+  if (!transporter) {
+    throw new Error('Email service not configured');
+  }
+
+  try {
+    const fromEmail = process.env.SMTP_USER || process.env.EMAIL_USER;
+    const mailOptions = {
+      from: `"MJ Electricals" <${fromEmail}>`,
+      to,
+      subject,
+      html
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Email sent to ${to}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Email sending failed:', error.message);
+    throw new Error('Failed to send email');
+  }
+};
+
 module.exports = {
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  sendEmail
 };
