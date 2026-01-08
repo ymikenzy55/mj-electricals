@@ -557,6 +557,43 @@
   <script src="../js/admin-reviews.js"></script>
   <script src="../js/search-suggestions.js"></script>
   <script>
+    // Safe date formatting functions to prevent "Daylight" syntax errors
+    function safeFormatDate(dateString) {
+      try {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleDateString();
+      } catch (error) {
+        console.error('Date formatting error:', error);
+        return 'N/A';
+      }
+    }
+
+    function safeFormatTime(dateString) {
+      try {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleTimeString();
+      } catch (error) {
+        console.error('Time formatting error:', error);
+        return 'N/A';
+      }
+    }
+
+    function safeFormatDateTime(dateString) {
+      try {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      } catch (error) {
+        console.error('DateTime formatting error:', error);
+        return 'N/A';
+      }
+    }
+
     // Ensure api is available before proceeding
     function waitForApi() {
       return new Promise((resolve) => {
