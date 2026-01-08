@@ -233,6 +233,10 @@ class API {
     });
   }
 
+  async getUserContactMessages() {
+    return this.request('/contact/my-messages');
+  }
+
   // Feedback
   async submitFeedback(feedbackData) {
     return this.request('/feedback', {

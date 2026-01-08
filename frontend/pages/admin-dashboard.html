@@ -1594,7 +1594,7 @@
                 <span style="background: ${msg.status === 'responded' ? 'var(--success)' : 'var(--warning)'}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">
                   ${msg.status || 'pending'}
                 </span>
-                <button onclick="deleteMessage('${msg._id}')" class="btn btn-secondary" style="background: var(--error-color); color: white; padding: 0.25rem 0.75rem; font-size: 0.85rem;" title="Delete message">
+                <button onclick="deleteMessage('${msg._id}')" class="btn" style="background: #dc3545; color: white; padding: 0.25rem 0.75rem; font-size: 0.85rem; border: none;" title="Delete message">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>

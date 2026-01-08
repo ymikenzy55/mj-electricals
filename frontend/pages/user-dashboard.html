@@ -324,6 +324,12 @@
           <span>Feedback</span>
         </a>
       </li>
+      <li>
+        <a href="#" onclick="showSection('messages', event); closeDashboardSidebar();" id="mobile-sidebar-messages">
+          <i class="fas fa-envelope"></i>
+          <span>Messages</span>
+        </a>
+      </li>
       <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
         <a href="#" onclick="handleLogout(event)" style="color: #ef4444; font-weight: 600;">
           <i class="fas fa-sign-out-alt"></i>
@@ -375,6 +381,7 @@
           <li><a href="#" onclick="showSection('wishlist', event)" id="menu-wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
           <li><a href="#" onclick="showSection('compare', event)" id="menu-compare"><i class="fas fa-balance-scale"></i> Compare</a></li>
           <li><a href="#" onclick="showSection('feedback', event)" id="menu-feedback"><i class="fas fa-comment"></i> Feedback</a></li>
+          <li><a href="#" onclick="showSection('messages', event)" id="menu-messages"><i class="fas fa-envelope"></i> Messages</a></li>
           <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
             <a href="#" onclick="handleLogout(event)" style="color: #ef4444; font-weight: 600;">
               <i class="fas fa-sign-out-alt"></i> Logout
@@ -488,6 +495,16 @@
             <div class="loading"><div class="spinner"></div></div>
           </div>
         </section>
+
+        <!-- Messages Section -->
+        <section id="messages-section" style="display:none;">
+          <h2><i class="fas fa-envelope"></i> My Messages</h2>
+          <p style="color: var(--gray-600); margin-bottom: 1.5rem;">View your contact messages and admin responses</p>
+          
+          <div id="user-messages-container" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
       </main>
     </div>
   </div>
@@ -501,6 +518,7 @@
       <li><a href="#" onclick="showSection('wishlist', event)" id="mobile-menu-wishlist"><i class="fas fa-heart"></i><br>Wishlist</a></li>
       <li><a href="#" onclick="showSection('compare', event)" id="mobile-menu-compare"><i class="fas fa-balance-scale"></i><br>Compare</a></li>
       <li><a href="#" onclick="showSection('feedback', event)" id="mobile-menu-feedback"><i class="fas fa-comment"></i><br>Feedback</a></li>
+      <li><a href="#" onclick="showSection('messages', event)" id="mobile-menu-messages"><i class="fas fa-envelope"></i><br>Messages</a></li>
     </ul>
   </div>
 
@@ -600,6 +618,8 @@ currentFilter = 'all';
       if (section === 'profile') loadProfile();
       if (section === 'orders') loadOrders();
       if (section === 'wishlist') loadWishlist();
+      if (section === 'feedback') loadFeedback();
+      if (section === 'messages') loadUserMessages();
       if (section === 'compare') loadCompare();
       if (section === 'feedback') loadFeedback();
     }
@@ -1063,6 +1083,58 @@ currentFilter = 'all';
         toast.error(error.message || 'Failed to submit feedback');
       }
     });
+
+    // Load user messages
+    async function loadUserMessages() {
+      try {
+        const response = await api.getUserContactMessages();
+        const messages = response.messages || [];
+        const container = document.getElementById('user-messages-container');
+        
+        if (messages.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No messages yet. Contact us from the <a href="contact.html">Contact page</a>.</p>';
+          return;
+        }
+
+        container.innerHTML = messages.map(msg => `
+          <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+              <div style="flex: 1;">
+                <p style="font-weight: 600; margin-bottom: 0.5rem; font-size: 1.1rem;">${msg.subject}</p>
+                <p style="color: var(--gray-600); font-size: 0.9rem; margin: 0;">
+                  <i class="fas fa-clock"></i> ${new Date(msg.createdAt).toLocaleString()}
+                </p>
+              </div>
+              <span style="background: ${msg.status === 'responded' ? '#10b981' : '#f59e0b'}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">
+                ${msg.status || 'pending'}
+              </span>
+            </div>
+            <div style="background: var(--gray-100); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <p style="margin: 0; color: var(--gray-700);"><strong>Your Message:</strong></p>
+              <p style="margin: 0.5rem 0 0 0;">${msg.message}</p>
+            </div>
+            ${msg.response ? `
+              <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; border-left: 4px solid #FF6B3D;">
+                <p style="margin: 0; color: #FF6B3D; font-weight: 600;">
+                  <i class="fas fa-reply"></i> Admin Response:
+                </p>
+                <p style="margin: 0.5rem 0 0 0; color: var(--gray-700);">${msg.response}</p>
+                <p style="color: var(--gray-600); font-size: 0.85rem; margin-top: 0.5rem;">
+                  Responded: ${new Date(msg.respondedAt).toLocaleString()}
+                </p>
+              </div>
+            ` : `
+              <p style="color: var(--gray-600); font-style: italic; margin: 0;">
+                <i class="fas fa-hourglass-half"></i> Waiting for admin response...
+              </p>
+            `}
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+        document.getElementById('user-messages-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load messages</p>';
+      }
+    }
 
     // Cancel order function for users
     async function cancelUserOrder(orderId) {

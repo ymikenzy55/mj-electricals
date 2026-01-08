@@ -5,6 +5,7 @@ const { contactValidation, mongoIdValidation } = require('../middleware/validato
 const {
   createContactMessage,
   getAllContactMessages,
+  getUserContactMessages,
   respondToContact,
   deleteContactMessage
 } = require('../controllers/contactController');
@@ -12,6 +13,9 @@ const { protect, authorize } = require('../middleware/auth');
 
 // Protected route - auth required with validation (rate limiting removed to prevent validation errors on retry)
 router.post('/', protect, contactValidation, createContactMessage);
+
+// User route - get own messages
+router.get('/my-messages', protect, getUserContactMessages);
 
 // Admin routes
 router.get('/all', protect, authorize('admin', 'superadmin'), getAllContactMessages);
