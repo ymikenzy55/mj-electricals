@@ -339,6 +339,12 @@ const contactValidation = [
     .isEmail().withMessage('Invalid email format')
     .normalizeEmail(),
   
+  body('phone')
+    .optional({ checkFalsy: true })
+    .trim()
+    .matches(/^[0-9+\-\s()]+$/).withMessage('Invalid phone format')
+    .isLength({ min: 10, max: 20 }).withMessage('Phone must be 10-20 characters'),
+  
   body('subject')
     .trim()
     .notEmpty().withMessage('Subject is required')
