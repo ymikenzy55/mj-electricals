@@ -624,12 +624,20 @@
           return;
         }
         
-        // Show loading message on first attempt
+        // Show loading message with retry count
         if (retryCount === 0) {
           container.innerHTML = `
             <div style="text-align: center; padding: 2rem; width: 100%;">
               <div class="spinner" style="margin: 0 auto 1rem;"></div>
-              <p style="color: var(--gray-600);">Loading categories... (Server may be waking up)</p>
+              <p style="color: var(--gray-600);">Loading categories... (Server may be waking up, this can take up to 60 seconds)</p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem; width: 100%;">
+              <div class="spinner" style="margin: 0 auto 1rem;"></div>
+              <p style="color: var(--gray-600);">Retrying... (Attempt ${retryCount + 1}/3)</p>
+              <p style="color: var(--gray-500); font-size: 0.85rem;">Server is waking up, please wait...</p>
             </div>
           `;
         }
@@ -649,19 +657,20 @@
       } catch (error) {
         console.error('Failed to load categories:', error);
         
-        // Retry up to 2 times if it's a timeout
-        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('cold start') || error.message.includes('connect'))) {
-          console.log(`Retrying categories load (attempt ${retryCount + 2}/3)...`);
-          setTimeout(() => loadCategories(retryCount + 1), 5000);
+        // Auto-retry up to 3 times if it's a timeout (increased from 2)
+        if (retryCount < 3 && (error.message.includes('timeout') || error.message.includes('cold start') || error.message.includes('connect') || error.message.includes('taking too long'))) {
+          console.log(`Auto-retrying categories load (attempt ${retryCount + 2}/4)...`);
+          // Shorter delay for faster retry
+          setTimeout(() => loadCategories(retryCount + 1), 3000);
           return;
         }
         
         container.innerHTML = `
           <div style="text-align: center; padding: 2rem; width: 100%;">
-            <p style="color: #dc3545; margin-bottom: 1rem;">Server is taking too long to respond</p>
-            <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 1rem;">${error.message}</p>
+            <p style="color: #dc3545; margin-bottom: 1rem;">Unable to load categories</p>
+            <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 1rem;">The server took too long to respond. This happens when the server is waking up from sleep.</p>
             <button onclick="loadCategories()" class="btn">
-              <i class="fas fa-redo"></i> Retry
+              <i class="fas fa-redo"></i> Try Again
             </button>
           </div>
         `;

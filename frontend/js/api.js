@@ -57,7 +57,8 @@ class API {
       // Admin requests need even longer timeout for cold starts
       const isAdminRequest = endpoint.includes('/admin') || endpoint.includes('/orders/all');
       
-      const { skipAuth, timeout = isAdminRequest ? 90000 : (isHomepageRequest ? 60000 : 120000), ...fetchOptions } = options;
+      // Increased timeout: 75s for homepage, 90s for admin, 120s for others
+      const { skipAuth, timeout = isAdminRequest ? 90000 : (isHomepageRequest ? 75000 : 120000), ...fetchOptions } = options;
       
       console.log(`⏱️ Timeout set to: ${timeout}ms for ${endpoint}`);
       
