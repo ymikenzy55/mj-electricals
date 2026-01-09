@@ -191,6 +191,14 @@
   flex-shrink: 0;
 }
 
+/* Mobile Search Icon - Hidden on desktop */
+.mobile-search-icon {
+  display: none !important;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
 .navbar .nav-icon {
   display: flex;
   align-items: center;
@@ -203,6 +211,7 @@
   transition: var(--transition);
   position: relative;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .navbar .nav-icon:hover {
@@ -292,6 +301,11 @@
   .navbar .nav-links,
   .nav-search-bar {
     display: none !important;
+  }
+  
+  /* Show mobile search icon */
+  .mobile-search-icon {
+    display: flex !important;
   }
 
   .navbar .nav-container {
