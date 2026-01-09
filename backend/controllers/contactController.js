@@ -47,6 +47,7 @@ const getAllContactMessages = async (req, res) => {
 
     const skip = (page - 1) * limit;
     const contacts = await Contact.find(query)
+      .populate('user', 'name email') // Include user info for admins
       .populate('respondedBy', 'name')
       .limit(Number(limit))
       .skip(skip)
