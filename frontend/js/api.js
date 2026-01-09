@@ -42,6 +42,12 @@ class API {
   }
 
   async request(endpoint, options = {}) {
+    const startTime = Date.now();
+    console.log(`🔵 API Request Started: ${endpoint}`, {
+      method: options.method || 'GET',
+      timestamp: new Date().toISOString()
+    });
+    
     try {
       // Longer timeout for Render cold start (can take 50+ seconds on free tier)
       const isHomepageRequest = endpoint.includes('/banners') || 
@@ -53,10 +59,16 @@ class API {
       
       const { skipAuth, timeout = isAdminRequest ? 90000 : (isHomepageRequest ? 60000 : 120000), ...fetchOptions } = options;
       
+      console.log(`⏱️ Timeout set to: ${timeout}ms for ${endpoint}`);
+      
       // Add timeout to prevent infinite loading
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      const timeoutId = setTimeout(() => {
+        console.error(`❌ TIMEOUT after ${timeout}ms for ${endpoint}`);
+        controller.abort();
+      }, timeout);
       
+      console.log(`📡 Fetching: ${API_URL}${endpoint}`);
       const response = await fetch(`${API_URL}${endpoint}`, {
         ...fetchOptions,
         headers: this.getHeaders(skipAuth),
@@ -64,10 +76,25 @@ class API {
       });
       
       clearTimeout(timeoutId);
+      const duration = Date.now() - startTime;
+      console.log(`✅ Response received in ${duration}ms for ${endpoint}`, {
+        status: response.status,
+        ok: response.ok
+      });
 
       const data = await response.json();
+      console.log(`📦 Data parsed for ${endpoint}:`, {
+        success: data.success,
+        dataKeys: Object.keys(data),
+        itemCount: data.orders?.length || data.products?.length || data.banners?.length || data.categories?.length || 'N/A'
+      });
 
       if (!response.ok) {
+        console.error(`❌ Request failed for ${endpoint}:`, {
+          status: response.status,
+          message: data.message
+        });
+        
         // Handle 401 Unauthorized - token might be expired
         // BUT don't clear token during payment verification to prevent logout
         if (response.status === 401 && !skipAuth && !endpoint.includes('/verify/')) {
@@ -81,12 +108,23 @@ class API {
 
       return data;
     } catch (error) {
+      const duration = Date.now() - startTime;
+      console.error(`💥 API Request FAILED after ${duration}ms for ${endpoint}:`, {
+        errorName: error.name,
+        errorMessage: error.message,
+        stack: error.stack?.split('\n')[0]
+      });
+      
       // Better error messages for common issues
       if (error.name === 'AbortError') {
-        throw new Error('Server is taking too long (cold start). Please wait 60 seconds and try again.');
+        const msg = `Server is taking too long (cold start). Please wait 60 seconds and try again. Endpoint: ${endpoint}`;
+        console.error(`⏰ ${msg}`);
+        throw new Error(msg);
       }
       if (error.message === 'Failed to fetch') {
-        throw new Error('Cannot connect to server. Please check your internet connection or the server may be down.');
+        const msg = `Cannot connect to server. Please check your internet connection or the server may be down. Endpoint: ${endpoint}`;
+        console.error(`🌐 ${msg}`);
+        throw new Error(msg);
       }
       throw error;
     }
