@@ -57,8 +57,11 @@ class API {
       // Admin requests need even longer timeout for cold starts
       const isAdminRequest = endpoint.includes('/admin') || endpoint.includes('/orders/all');
       
-      // Increased timeout: 75s for homepage, 90s for admin, 120s for others
-      const { skipAuth, timeout = isAdminRequest ? 90000 : (isHomepageRequest ? 75000 : 120000), ...fetchOptions } = options;
+      // Banners need longest timeout as they're first request on cold start
+      const isBannerRequest = endpoint.includes('/banners');
+      
+      // Increased timeout: 90s for banners, 75s for homepage, 90s for admin, 120s for others
+      const { skipAuth, timeout = isBannerRequest ? 90000 : (isAdminRequest ? 90000 : (isHomepageRequest ? 75000 : 120000)), ...fetchOptions } = options;
       
       console.log(`⏱️ Timeout set to: ${timeout}ms for ${endpoint}`);
       
