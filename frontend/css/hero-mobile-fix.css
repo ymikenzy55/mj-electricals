@@ -1,22 +1,25 @@
 /**
  * Hero Banner Mobile Fix
  * Ensures hero banners display properly on mobile devices
+ * This file provides consistent hero banner display across all devices
  */
 
 /* Hero Section - Ensure visibility on all devices */
 .hero-section {
   position: relative;
   width: 100%;
-  min-height: 400px;
+  min-height: 500px;
+  height: 500px;
   overflow: hidden;
   margin-bottom: 2rem;
+  background: linear-gradient(135deg, #0f0f0f 0%, #2d2d2d 100%);
 }
 
 .hero-banners {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 500px;
 }
 
 /* Default Hero */
@@ -25,17 +28,35 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
   background: linear-gradient(135deg, #FF6B3D 0%, #ff8555 100%);
   color: white;
   text-align: center;
-  padding: 2rem;
+  padding: 3rem 2rem;
   position: relative;
   overflow: hidden;
 }
 
+.default-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .default-hero h1 {
-  font-size: clamp(1.75rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
   margin-bottom: 1rem;
   color: white;
@@ -45,24 +66,27 @@
 }
 
 .default-hero p {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  margin-bottom: 1.5rem;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  margin-bottom: 2rem;
   opacity: 0.95;
   z-index: 2;
   position: relative;
+  max-width: 600px;
 }
 
 .default-hero .btn {
   background: white;
   color: #FF6B3D;
-  padding: 0.875rem 2rem;
-  font-size: 1rem;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
   border-radius: 50px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 2;
   position: relative;
   transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .default-hero .btn:hover {
@@ -75,7 +99,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 500px;
 }
 
 .banner-slide {
@@ -84,7 +108,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  min-height: 500px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -121,11 +145,11 @@
   text-align: center;
   color: white;
   max-width: 90%;
-  padding: 2rem 1rem;
+  padding: 2.5rem 2rem;
 }
 
 .banner-content h1 {
-  font-size: clamp(1.75rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 800;
   margin-bottom: 1rem;
   color: white;
@@ -134,8 +158,8 @@
 }
 
 .banner-content p {
-  font-size: clamp(0.95rem, 2vw, 1.25rem);
-  margin-bottom: 1.5rem;
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+  margin-bottom: 2rem;
   opacity: 0.95;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.5);
 }
@@ -144,8 +168,8 @@
 .banner-content .btn-hero {
   background: #FF6B3D;
   color: white;
-  padding: 0.875rem 2rem;
-  font-size: 1rem;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
   border-radius: 50px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -233,7 +257,8 @@
 /* Skeleton Loader */
 .skeleton-banner {
   width: 100%;
-  min-height: 400px;
+  height: 100%;
+  min-height: 500px;
   background: linear-gradient(
     90deg,
     #f0f0f0 25%,
@@ -242,7 +267,6 @@
   );
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
-  border-radius: 16px;
 }
 
 @keyframes loading {
@@ -257,17 +281,18 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 300px;
+    min-height: 350px;
+    height: 350px;
     margin-bottom: 1.5rem;
   }
 
   .hero-banners {
-    min-height: 300px;
+    min-height: 350px;
   }
 
   .default-hero {
-    min-height: 300px;
-    padding: 1.5rem 1rem;
+    min-height: 350px;
+    padding: 2rem 1.5rem;
   }
 
   .default-hero h1 {
@@ -286,11 +311,11 @@
   }
 
   .banner-carousel {
-    min-height: 300px;
+    min-height: 350px;
   }
 
   .banner-slide {
-    min-height: 300px;
+    min-height: 350px;
   }
 
   .banner-content {
@@ -299,66 +324,67 @@
   }
 
   .banner-content h1 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     margin-bottom: 0.75rem;
   }
 
   .banner-content p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-bottom: 1.25rem;
   }
 
   .banner-content .btn,
   .banner-content .btn-hero {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
+    padding: 0.875rem 1.75rem;
+    font-size: 0.95rem;
   }
 
   .banner-nav {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     font-size: 1rem;
   }
 
   .banner-prev {
-    left: 0.5rem;
+    left: 0.75rem;
   }
 
   .banner-next {
-    right: 0.5rem;
+    right: 0.75rem;
   }
 
   .banner-indicators {
-    bottom: 1rem;
+    bottom: 1.25rem;
   }
 
   .banner-dot {
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
   }
 
   .banner-dot.active {
-    width: 24px;
+    width: 28px;
   }
 
   .skeleton-banner {
-    min-height: 300px;
+    min-height: 350px;
   }
 }
 
 /* Extra small devices */
 @media (max-width: 480px) {
   .hero-section {
-    min-height: 250px;
+    min-height: 280px;
+    height: 280px;
   }
 
   .hero-banners {
-    min-height: 250px;
+    min-height: 280px;
   }
 
   .default-hero {
-    min-height: 250px;
-    padding: 1.25rem 0.75rem;
+    min-height: 280px;
+    padding: 1.5rem 1rem;
   }
 
   .default-hero h1 {
@@ -370,23 +396,23 @@
   }
 
   .banner-carousel {
-    min-height: 250px;
+    min-height: 280px;
   }
 
   .banner-slide {
-    min-height: 250px;
+    min-height: 280px;
   }
 
   .banner-content h1 {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
   }
 
   .banner-content p {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .skeleton-banner {
-    min-height: 250px;
+    min-height: 280px;
   }
 }
 
@@ -556,5 +582,82 @@
   .search-dropdown {
     width: 95%;
     max-height: 90vh;
+  }
+}
+
+
+/* CRITICAL: Override any conflicting hero styles from other CSS files */
+body .hero-section {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  min-height: 500px !important;
+  height: 500px !important;
+}
+
+body .hero-banners {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 500px !important;
+}
+
+body .banner-carousel {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+body .banner-slide {
+  display: flex !important;
+  visibility: visible !important;
+}
+
+body .banner-slide.active {
+  opacity: 1 !important;
+  z-index: 1 !important;
+}
+
+body .default-hero {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+body .skeleton-banner {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure hero section is never hidden on mobile */
+@media (max-width: 768px) {
+  body .hero-section {
+    display: block !important;
+    min-height: 350px !important;
+    height: 350px !important;
+  }
+  
+  body .hero-banners {
+    display: block !important;
+    min-height: 350px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body .hero-section {
+    display: block !important;
+    min-height: 280px !important;
+    height: 280px !important;
+  }
+  
+  body .hero-banners {
+    display: block !important;
+    min-height: 280px !important;
   }
 }
