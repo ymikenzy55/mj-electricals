@@ -335,6 +335,10 @@
     let totalProducts = 0;
     let allProducts = [];
     
+    // Category Carousel Variables (must be declared before renderCategories function)
+    let categoryScrollInterval;
+    let currentCategoryScroll = 0;
+    
     async function loadFeaturedProducts(append = false) {
       try {
         // Check cache first
@@ -701,9 +705,6 @@
     }
 
     // Category Carousel Functions
-    let categoryScrollInterval;
-    let currentCategoryScroll = 0;
-
     function initCategoryCarousel() {
       const carousel = document.getElementById('categories-carousel');
       if (!carousel) return;
