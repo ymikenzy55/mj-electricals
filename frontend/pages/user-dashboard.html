@@ -276,7 +276,20 @@
         </a>
       </div>
     </div>
-  </nav>
+  
+      <!-- Search Overlay -->
+      <div class="search-overlay" id="search-overlay" onclick="closeSearch()"></div>
+      <div class="search-dropdown" id="search-dropdown">
+        <div class="search-header">
+          <input type="text" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button onclick="closeSearch()" class="search-close-btn" aria-label="Close search">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="search-results" id="navbar-search-results"></div>
+      </div>
+
+</nav>
 
   <!-- Dashboard Mobile Menu Toggle Button -->
   <button class="mobile-menu-toggle" onclick="toggleDashboardSidebar()" id="mobile-dashboard-btn">
