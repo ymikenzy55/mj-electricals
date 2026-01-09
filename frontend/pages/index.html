@@ -355,26 +355,10 @@
     
     async function loadFeaturedProducts(append = false) {
       try {
-        // Check cache first
-        const cacheKey = 'homepage_featured';
-        const cached = sessionStorage.getItem(cacheKey);
-        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
-        const now = Date.now();
-        
-        // Use cache if less than 5 minutes old
-        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000 && !append) {
-          const response = JSON.parse(cached);
-          renderFeaturedProducts(response);
-          return;
-        }
-        
         const response = await api.getProducts({ page: currentPage, limit: productsPerPage, status: 'active', featured: true });
         
         if (!append) {
           allProducts = [];
-          // Cache the response
-          sessionStorage.setItem(cacheKey, JSON.stringify(response));
-          sessionStorage.setItem(cacheKey + '_time', now.toString());
         }
         
         allProducts = [...allProducts, ...response.products];
@@ -460,19 +444,6 @@
       const container = document.getElementById('hero-banners');
       
       try {
-        // Check cache first
-        const cacheKey = 'homepage_banners';
-        const cached = sessionStorage.getItem(cacheKey);
-        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
-        const now = Date.now();
-        
-        // Use cache if less than 5 minutes old
-        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000) {
-          const response = JSON.parse(cached);
-          renderBanners(response.banners);
-          return;
-        }
-        
         // Show professional loading message
         if (retryCount === 0) {
           container.innerHTML = `
@@ -486,10 +457,6 @@
         }
         
         const response = await api.getBanners({ status: 'active' });
-        
-        // Cache the response
-        sessionStorage.setItem(cacheKey, JSON.stringify(response));
-        sessionStorage.setItem(cacheKey + '_time', now.toString());
         
         renderBanners(response.banners);
       } catch (error) {
@@ -630,19 +597,6 @@
       const container = document.getElementById('categories-carousel');
       
       try {
-        // Check cache first
-        const cacheKey = 'homepage_categories';
-        const cached = sessionStorage.getItem(cacheKey);
-        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
-        const now = Date.now();
-        
-        // Use cache if less than 5 minutes old
-        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000) {
-          const response = JSON.parse(cached);
-          renderCategories(response.categories);
-          return;
-        }
-        
         // Show loading message with retry count
         if (retryCount === 0) {
           container.innerHTML = `
@@ -666,10 +620,6 @@
           container.innerHTML = '<p class="text-center" style="padding: 2rem;">No categories available. Please add categories in the admin panel.</p>';
           return;
         }
-
-        // Cache the response
-        sessionStorage.setItem(cacheKey, JSON.stringify(response));
-        sessionStorage.setItem(cacheKey + '_time', now.toString());
 
         renderCategories(response.categories);
       } catch (error) {
