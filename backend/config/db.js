@@ -5,11 +5,14 @@ const connectDB = async () => {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000, // 10 seconds
-      socketTimeoutMS: 45000, // 45 seconds
+      serverSelectionTimeoutMS: 30000, // 30 seconds - increased for Render
+      socketTimeoutMS: 75000, // 75 seconds - increased for slow connections
       maxPoolSize: 10,
       minPoolSize: 2,
-      connectTimeoutMS: 10000
+      connectTimeoutMS: 30000, // 30 seconds - increased for initial connection
+      retryWrites: true,
+      retryReads: true,
+      w: 'majority'
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     
@@ -27,7 +30,9 @@ const connectDB = async () => {
     });
   } catch (error) {
     console.error(`Error: ${error.message}`);
-    process.exit(1);
+    // Don't exit immediately - let Render retry
+    console.error('MongoDB connection failed. Server will retry...');
+    setTimeout(() => connectDB(), 5000); // Retry after 5 seconds
   }
 };
 
