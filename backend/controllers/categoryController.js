@@ -4,37 +4,26 @@ const Product = require('../models/Product');
 // Get all categories
 exports.getCategories = async (req, res) => {
   try {
-    // Set a timeout for the entire operation
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Query timeout')), 25000)
-    );
+    // Parallel queries for better performance
+    const [categories, productCounts] = await Promise.all([
+      Category.find({ isActive: true }).sort({ name: 1 }).lean(),
+      Product.aggregate([
+        { $match: { status: 'active' } },
+        { $group: { _id: '$category', count: { $sum: 1 } } }
+      ])
+    ]);
 
-    const queryPromise = (async () => {
-      // Parallel queries for better performance
-      const [categories, productCounts] = await Promise.all([
-        Category.find({ isActive: true }).sort({ name: 1 }).lean().maxTime(10000),
-        Product.aggregate([
-          { $match: { status: 'active' } },
-          { $group: { _id: '$category', count: { $sum: 1 } } }
-        ]).maxTime(10000)
-      ]);
+    // Create a map for quick lookup
+    const countMap = {};
+    productCounts.forEach(item => {
+      countMap[item._id] = item.count;
+    });
 
-      // Create a map for quick lookup
-      const countMap = {};
-      productCounts.forEach(item => {
-        countMap[item._id] = item.count;
-      });
-
-      // Add product count to each category
-      const categoriesWithCount = categories.map(category => ({
-        ...category,
-        productCount: countMap[category.name] || 0
-      }));
-
-      return categoriesWithCount;
-    })();
-
-    const categoriesWithCount = await Promise.race([queryPromise, timeoutPromise]);
+    // Add product count to each category
+    const categoriesWithCount = categories.map(category => ({
+      ...category,
+      productCount: countMap[category.name] || 0
+    }));
 
     res.json({
       success: true,

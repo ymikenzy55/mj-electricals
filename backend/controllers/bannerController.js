@@ -6,11 +6,9 @@ exports.getBanners = async (req, res) => {
     const { status } = req.query;
     const query = status ? { isActive: status } : {};
     
-    // Add timeout to prevent hanging
     const banners = await Banner.find(query)
       .sort({ order: 1, createdAt: -1 })
-      .lean()
-      .maxTime(10000);
+      .lean();
 
     res.json({
       success: true,
