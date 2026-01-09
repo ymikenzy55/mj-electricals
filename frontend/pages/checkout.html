@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/navbar-redesign.css">
   <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/hero-mobile-fix.css">
   <link rel="stylesheet" href="../css/topbar-fix.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../js/company-topbar-loader.js"></script>
@@ -160,6 +161,11 @@
 
       <!-- Right Icons -->
       <div class="nav-icons">
+        <!-- Mobile Search Icon -->
+        <button class="nav-icon mobile-search-icon" onclick="toggleSearch()" title="Search" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        
         <a href="cart.html" class="nav-icon" title="Cart">
           <i class="fas fa-shopping-cart"></i>
           <span>Cart</span>
@@ -908,6 +914,7 @@
       }
     }
   </script>
+  <script src="../js/navbar-search.js"></script>
 </body>
 </html>
 
