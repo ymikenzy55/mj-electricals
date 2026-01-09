@@ -459,14 +459,13 @@
           return;
         }
         
-        // Show loading message on first attempt
+        // Show professional loading message
         if (retryCount === 0) {
           container.innerHTML = `
             <div class="default-hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
               <div style="text-align: center; color: white;">
                 <div class="spinner" style="margin: 0 auto 1rem; border-color: white; border-top-color: transparent;"></div>
                 <h2>Loading...</h2>
-                <p>Server is waking up, this may take up to 60 seconds</p>
               </div>
             </div>
           `;
@@ -482,14 +481,15 @@
       } catch (error) {
         console.error('Failed to load banners:', error);
         
-        // Retry up to 2 times if it's a timeout (cold start can be slow)
-        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('cold start') || error.message.includes('connect'))) {
-          console.log(`Retrying banner load (attempt ${retryCount + 2}/3)...`);
-          setTimeout(() => loadBanners(retryCount + 1), 5000);
+        // Auto-retry up to 3 times silently (increased from 2)
+        if (retryCount < 3 && (error.message.includes('timeout') || error.message.includes('cold start') || error.message.includes('connect') || error.message.includes('taking too long'))) {
+          console.log(`Auto-retrying banner load (attempt ${retryCount + 2}/4)...`);
+          // Shorter delay for faster retry
+          setTimeout(() => loadBanners(retryCount + 1), 3000);
           return;
         }
         
-        // Show default hero on error
+        // Show default hero on error (after all retries failed)
         renderDefaultHero();
       }
     }
@@ -633,15 +633,14 @@
           container.innerHTML = `
             <div style="text-align: center; padding: 2rem; width: 100%;">
               <div class="spinner" style="margin: 0 auto 1rem;"></div>
-              <p style="color: var(--gray-600);">Loading categories... (Server may be waking up, this can take up to 60 seconds)</p>
+              <p style="color: var(--gray-600);">Loading categories...</p>
             </div>
           `;
         } else {
           container.innerHTML = `
             <div style="text-align: center; padding: 2rem; width: 100%;">
               <div class="spinner" style="margin: 0 auto 1rem;"></div>
-              <p style="color: var(--gray-600);">Retrying... (Attempt ${retryCount + 1}/3)</p>
-              <p style="color: var(--gray-500); font-size: 0.85rem;">Server is waking up, please wait...</p>
+              <p style="color: var(--gray-600);">Loading... (Attempt ${retryCount + 1}/4)</p>
             </div>
           `;
         }
