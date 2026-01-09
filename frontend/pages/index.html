@@ -31,6 +31,7 @@
   
   <!-- Cache Busting -->
   <script src="../version.js"></script>
+  <script src="../js/server-wakeup.js"></script>
   <script src="../js/homepage-optimizer.js"></script>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -48,7 +49,7 @@
   <link rel="stylesheet" href="../css/critical-ux-fixes.css">
   <link rel="stylesheet" href="../css/categories-carousel.css">
   <link rel="stylesheet" href="../css/skeleton-loaders.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
   
   <!-- Structured Data for SEO -->
   <script type="application/ld+json">
@@ -454,9 +455,17 @@
           return;
         }
         
-        // Show message while waiting for cold start
+        // Show loading message on first attempt
         if (retryCount === 0) {
-          console.log('Loading banners... (Server may be waking up, this can take up to 60 seconds)');
+          container.innerHTML = `
+            <div class="default-hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <div style="text-align: center; color: white;">
+                <div class="spinner" style="margin: 0 auto 1rem; border-color: white; border-top-color: transparent;"></div>
+                <h2>Loading...</h2>
+                <p>Server is waking up, this may take up to 60 seconds</p>
+              </div>
+            </div>
+          `;
         }
         
         const response = await api.getBanners({ status: 'active' });
@@ -470,9 +479,9 @@
         console.error('Failed to load banners:', error);
         
         // Retry up to 2 times if it's a timeout (cold start can be slow)
-        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('connect'))) {
+        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('cold start') || error.message.includes('connect'))) {
           console.log(`Retrying banner load (attempt ${retryCount + 2}/3)...`);
-          setTimeout(() => loadBanners(retryCount + 1), 3000);
+          setTimeout(() => loadBanners(retryCount + 1), 5000);
           return;
         }
         
@@ -615,9 +624,14 @@
           return;
         }
         
-        // Show message while waiting
+        // Show loading message on first attempt
         if (retryCount === 0) {
-          console.log('Loading categories... (Server may be waking up)');
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem; width: 100%;">
+              <div class="spinner" style="margin: 0 auto 1rem;"></div>
+              <p style="color: var(--gray-600);">Loading categories... (Server may be waking up)</p>
+            </div>
+          `;
         }
         
         const response = await api.getCategories();
@@ -636,13 +650,21 @@
         console.error('Failed to load categories:', error);
         
         // Retry up to 2 times if it's a timeout
-        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('connect'))) {
+        if (retryCount < 2 && (error.message.includes('timeout') || error.message.includes('cold start') || error.message.includes('connect'))) {
           console.log(`Retrying categories load (attempt ${retryCount + 2}/3)...`);
-          setTimeout(() => loadCategories(retryCount + 1), 3000);
+          setTimeout(() => loadCategories(retryCount + 1), 5000);
           return;
         }
         
-        container.innerHTML = '<p class="text-center" style="padding: 2rem; color: #dc3545;">Server is taking too long to respond. Please refresh the page or try again later.</p>';
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem; width: 100%;">
+            <p style="color: #dc3545; margin-bottom: 1rem;">Server is taking too long to respond</p>
+            <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 1rem;">${error.message}</p>
+            <button onclick="loadCategories()" class="btn">
+              <i class="fas fa-redo"></i> Retry
+            </button>
+          </div>
+        `;
       }
     }
 

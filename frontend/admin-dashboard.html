@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - MJE E-Commerce</title>
   <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive-fixes.css">
   <link rel="stylesheet" href="css/admin-dashboard-enhanced.css">
   <link rel="stylesheet" href="css/admin-notifications.css">
   <link rel="stylesheet" href="css/admin-responsive-modal.css">
+  <script src="js/server-wakeup.js"></script>
   <style>
     /* Hide any preloader that might exist */
     .admin-preloader { display: none !important; }
@@ -140,6 +141,20 @@
 
         <section id="overview-section">
           <h2>Dashboard Overview</h2>
+          
+          <!-- Server Status Indicator -->
+          <div id="server-status" style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: none;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="spinner" style="width: 24px; height: 24px; border-width: 3px;"></div>
+              <div>
+                <strong style="color: #856404;">Server is waking up...</strong>
+                <p style="margin: 0.25rem 0 0 0; color: #856404; font-size: 0.9rem;">
+                  This may take up to 60 seconds on first visit. Please wait...
+                </p>
+              </div>
+            </div>
+          </div>
+          
           <div class="stats-grid mt-2">
             <div class="stat-card">
               <div class="stat-value" id="stat-products">0</div>
@@ -523,6 +538,23 @@
     document.addEventListener('DOMContentLoaded', async () => {
       // Wait for api to be available
       await waitForApi();
+      
+      // Show server status if not ready
+      const serverStatus = document.getElementById('server-status');
+      if (!window.serverWakeup?.isComplete()) {
+        serverStatus.style.display = 'block';
+        
+        // Hide when server is ready
+        window.addEventListener('serverReady', () => {
+          serverStatus.style.display = 'none';
+        });
+        
+        // Auto-hide after 60 seconds
+        setTimeout(() => {
+          serverStatus.style.display = 'none';
+        }, 60000);
+      }
+      
       const lastSection = localStorage.getItem('adminCurrentSection');
       if (lastSection && lastSection !== 'overview') {
         setTimeout(() => {
@@ -1033,10 +1065,20 @@
     async function loadOrders() {
       try {
         const response = await api.getAllOrders();
-        allOrders = response.orders;
+        // DON'T store in localStorage - causes QuotaExceededError
+        allOrders = response.orders || [];
         displayOrders(allOrders, 1);
       } catch (error) {
-        document.getElementById('orders-list').innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders available yet</p>';
+        console.error('Failed to load orders:', error);
+        document.getElementById('orders-list').innerHTML = `
+          <div style="text-align: center; padding: 2rem;">
+            <p style="color: var(--error); margin-bottom: 1rem;">Failed to load orders</p>
+            <p style="color: var(--gray-600); font-size: 0.9rem;">${error.message || 'Server may be waking up. Please wait 60 seconds and try again.'}</p>
+            <button onclick="loadOrders()" class="btn" style="margin-top: 1rem;">
+              <i class="fas fa-redo"></i> Retry
+            </button>
+          </div>
+        `;
       }
     }
 

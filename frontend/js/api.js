@@ -48,7 +48,10 @@ class API {
                                 endpoint.includes('/categories') || 
                                 (endpoint.includes('/products') && options.method !== 'POST');
       
-      const { skipAuth, timeout = isHomepageRequest ? 60000 : 120000, ...fetchOptions } = options;
+      // Admin requests need even longer timeout for cold starts
+      const isAdminRequest = endpoint.includes('/admin') || endpoint.includes('/orders/all');
+      
+      const { skipAuth, timeout = isAdminRequest ? 90000 : (isHomepageRequest ? 60000 : 120000), ...fetchOptions } = options;
       
       // Add timeout to prevent infinite loading
       const controller = new AbortController();
@@ -80,10 +83,10 @@ class API {
     } catch (error) {
       // Better error messages for common issues
       if (error.name === 'AbortError') {
-        throw new Error('Request timeout - Server is taking too long to respond. Please try again.');
+        throw new Error('Server is taking too long (cold start). Please wait 60 seconds and try again.');
       }
       if (error.message === 'Failed to fetch') {
-        throw new Error('Cannot connect to server. Please check your internet connection or try again later.');
+        throw new Error('Cannot connect to server. Please check your internet connection or the server may be down.');
       }
       throw error;
     }

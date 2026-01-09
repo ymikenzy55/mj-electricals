@@ -236,7 +236,7 @@ exports.getOrder = async (req, res) => {
 // Get all orders (Admin only)
 exports.getAllOrders = async (req, res) => {
   try {
-    const { status, page = 1, limit = 20 } = req.query;
+    const { status, page = 1, limit = 50 } = req.query; // Increased limit to reduce requests
     const now = new Date();
     
     // Base query - exclude expired unpaid orders
@@ -257,12 +257,16 @@ exports.getAllOrders = async (req, res) => {
     }
 
     const skip = (page - 1) * limit;
+    
+    // Optimize: Only select necessary fields and use lean() for better performance
     const orders = await Order.find(query)
+      .select('orderId user items status paymentStatus totalAmount createdAt shippingAddress customerInfo refundStatus')
       .populate('user', 'name email')
-      .populate('items.product')
+      .populate('items.product', 'name productId price images')
       .limit(Number(limit))
       .skip(skip)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean(); // Convert to plain JS objects for better performance
 
     const total = await Order.countDocuments(query);
 
@@ -277,6 +281,7 @@ exports.getAllOrders = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Get all orders error:', error);
     res.status(500).json({
       success: false,
       message: error.message
