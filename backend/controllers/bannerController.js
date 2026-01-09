@@ -10,7 +10,7 @@ exports.getBanners = async (req, res) => {
     const banners = await Banner.find(query)
       .sort({ order: 1, createdAt: -1 })
       .lean()
-      .maxTimeMS(10000);
+      .maxTime(10000);
 
     res.json({
       success: true,

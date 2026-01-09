@@ -12,6 +12,14 @@
   <link rel="stylesheet" href="css/admin-notifications.css">
   <link rel="stylesheet" href="css/admin-responsive-modal.css">
   <script src="js/server-wakeup.js"></script>
+  <script>
+    // Force clear old localStorage cache that causes QuotaExceededError
+    try {
+      localStorage.removeItem('admin_orders');
+      localStorage.removeItem('admin_products');
+      localStorage.removeItem('admin_banners');
+    } catch(e) { console.log('Cache clear:', e); }
+  </script>
   <style>
     /* Hide any preloader that might exist */
     .admin-preloader { display: none !important; }

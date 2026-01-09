@@ -12,11 +12,11 @@ exports.getCategories = async (req, res) => {
     const queryPromise = (async () => {
       // Parallel queries for better performance
       const [categories, productCounts] = await Promise.all([
-        Category.find({ isActive: true }).sort({ name: 1 }).lean().maxTimeMS(10000),
+        Category.find({ isActive: true }).sort({ name: 1 }).lean().maxTime(10000),
         Product.aggregate([
           { $match: { status: 'active' } },
           { $group: { _id: '$category', count: { $sum: 1 } } }
-        ]).maxTimeMS(10000)
+        ]).maxTime(10000)
       ]);
 
       // Create a map for quick lookup
