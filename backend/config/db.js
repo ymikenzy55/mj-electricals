@@ -2,19 +2,29 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
+    // Add aggressive connection options for slow Atlas connections
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 30000, // 30 seconds - increased for Render
-      socketTimeoutMS: 75000, // 75 seconds - increased for slow connections
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 75000,
       maxPoolSize: 10,
       minPoolSize: 2,
-      connectTimeoutMS: 30000, // 30 seconds - increased for initial connection
+      connectTimeoutMS: 30000,
       retryWrites: true,
       retryReads: true,
-      w: 'majority'
+      w: 'majority',
+      // Force read from primary to avoid slow secondary reads
+      readPreference: 'primary',
+      // Compress network traffic
+      compressors: 'zlib',
+      // Reduce connection overhead
+      maxIdleTimeMS: 10000
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    
+    // Set default query timeout
+    mongoose.set('maxTimeMS', 25000); // 25 second max for any query
     
     // Handle connection errors after initial connection
     mongoose.connection.on('error', err => {
