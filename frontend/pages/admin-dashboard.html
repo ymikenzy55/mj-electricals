@@ -622,6 +622,16 @@
 
     // Wait for user to load before checking role
     document.addEventListener('DOMContentLoaded', async () => {
+      // Clear old cached data to prevent quota errors
+      try {
+        sessionStorage.removeItem('admin_products');
+        sessionStorage.removeItem('admin_products_time');
+        sessionStorage.removeItem('admin_orders');
+        sessionStorage.removeItem('admin_orders_time');
+      } catch (e) {
+        console.log('Cleared old cache');
+      }
+      
       // Wait for api to be available
       await waitForApi();
       // Hide preloader after minimum time
@@ -937,24 +947,9 @@
 
     async function loadProducts() {
       try {
-        // Check cache first (5 minute cache)
-        const cacheKey = 'admin_products';
-        const cached = sessionStorage.getItem(cacheKey);
-        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
-        const now = Date.now();
-        
-        if (cached && cacheTime && (now - parseInt(cacheTime)) < 300000) {
-          const response = JSON.parse(cached);
-          allProducts = response.products;
-        } else {
-          // Load with pagination - only 100 at a time
-          const response = await api.getProducts({ limit: 100, page: 1 });
-          allProducts = response.products;
-          
-          // Cache the response
-          sessionStorage.setItem(cacheKey, JSON.stringify(response));
-          sessionStorage.setItem(cacheKey + '_time', now.toString());
-        }
+        // Load with pagination - only 100 at a time
+        const response = await api.getProducts({ limit: 100, page: 1 });
+        allProducts = response.products;
         
         // Store products in a global map for easy access
         window.productsMap = {};
@@ -1246,13 +1241,9 @@
         const productId = document.getElementById('product-id').value;
         if (productId) {
           await api.updateProduct(productId, productData);
-          // Clear cache
-          sessionStorage.removeItem('admin_products');
           showAlert(`"${productData.name}" updated successfully`, 'success');
         } else {
           await api.createProduct(productData);
-          // Clear cache
-          sessionStorage.removeItem('admin_products');
           showAlert(`"${productData.name}" added successfully`, 'success');
         }
         hideProductForm();
@@ -1268,8 +1259,6 @@
         try {
           const product = await api.getProduct(id);
           await api.deleteProduct(id);
-          // Clear cache
-          sessionStorage.removeItem('admin_products');
           showAlert(`"${product.product.name}" deleted successfully`, 'success');
           loadProducts();
           loadStats();
@@ -1285,23 +1274,8 @@
 
     async function loadOrders() {
       try {
-        // Check cache first (2 minute cache for orders - shorter because they change more)
-        const cacheKey = 'admin_orders';
-        const cached = sessionStorage.getItem(cacheKey);
-        const cacheTime = sessionStorage.getItem(cacheKey + '_time');
-        const now = Date.now();
-        
-        if (cached && cacheTime && (now - parseInt(cacheTime)) < 120000) {
-          const response = JSON.parse(cached);
-          allOrders = response.orders;
-        } else {
-          const response = await api.getAllOrders();
-          allOrders = response.orders;
-          
-          // Cache the response
-          sessionStorage.setItem(cacheKey, JSON.stringify(response));
-          sessionStorage.setItem(cacheKey + '_time', now.toString());
-        }
+        const response = await api.getAllOrders();
+        allOrders = response.orders;
         
         filteredAdminOrders = allOrders; // Initially show all
         displayOrders(filteredAdminOrders, 1);
@@ -1434,8 +1408,6 @@
       
       try {
         await api.updateOrderStatus(orderId, status);
-        // Clear cache
-        sessionStorage.removeItem('admin_orders');
         showAlert(`Order #${orderId.slice(-8)} status updated to "${status}"`, 'success');
         loadOrders();
         loadStats();
