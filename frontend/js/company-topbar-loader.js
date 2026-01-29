@@ -7,7 +7,7 @@
 
   async function loadCompanyTopbar() {
     try {
-      const response = await fetch('../components/company-topbar.html');
+      const response = await fetch('components/company-topbar.html');
       if (!response.ok) {
         throw new Error('Failed to fetch topbar');
       }

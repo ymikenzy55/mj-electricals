@@ -87,7 +87,7 @@
         }
       });
       
-      const response = await fetch('../components/navbar.html');
+      const response = await fetch('components/navbar.html');
       if (!response.ok) throw new Error('Failed to load navbar');
       
       const navbarHTML = await response.text();

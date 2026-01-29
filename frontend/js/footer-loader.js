@@ -9,7 +9,7 @@
   // Load footer component
   async function loadFooter() {
     try {
-      const response = await fetch('../components/footer.html');
+      const response = await fetch('components/footer.html');
       if (!response.ok) throw new Error('Failed to load footer');
       
       const footerHTML = await response.text();
