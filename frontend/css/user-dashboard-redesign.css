@@ -22,6 +22,96 @@
   min-height: 100vh;
 }
 
+/* Dashboard Layout */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Sidebar Navigation */
+.dashboard-sidebar-nav {
+  background: var(--dashboard-card-bg);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.sidebar-nav-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dashboard-text);
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--dashboard-border);
+}
+
+.sidebar-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav-item {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  text-decoration: none;
+  color: var(--dashboard-text-muted);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.sidebar-nav-link:hover {
+  background: rgba(255, 107, 61, 0.05);
+  color: var(--dashboard-primary);
+  transform: translateX(5px);
+}
+
+.sidebar-nav-link.active {
+  background: var(--dashboard-primary);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 61, 0.3);
+}
+
+.sidebar-nav-link i {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-logout {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--dashboard-border);
+}
+
+.sidebar-logout .sidebar-nav-link {
+  color: var(--dashboard-danger);
+  font-weight: 600;
+}
+
+.sidebar-logout .sidebar-nav-link:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--dashboard-danger);
+}
+
+/* Main Content Area */
+.dashboard-main-content {
+  min-height: 500px;
+}
+
 /* Welcome Header */
 .dashboard-welcome-header {
   background: linear-gradient(135deg, #FF6B3D 0%, #FF8C42 100%);
@@ -345,6 +435,14 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-sidebar-nav {
+    display: none;
+  }
+  
   .dashboard-welcome-header {
     padding: 1.5rem;
   }
