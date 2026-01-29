@@ -1032,7 +1032,16 @@ currentFilter = 'all';
         const container = document.getElementById('wishlist-container');
         
         if (wishlist.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">Your wishlist is empty. <a href="products.html">Browse products</a></p>';
+          container.innerHTML = `
+            <div class="empty-state-modern">
+              <div class="empty-icon"><i class="fas fa-heart"></i></div>
+              <h3 class="empty-title">Your Wishlist is Empty</h3>
+              <p class="empty-subtitle">Save items you love for later</p>
+              <a href="products.html" class="action-btn-modern btn-primary-modern" style="text-decoration: none;">
+                <i class="fas fa-shopping-bag"></i> Browse Products
+              </a>
+            </div>
+          `;
           return;
         }
 
@@ -1060,7 +1069,16 @@ currentFilter = 'all';
         `;
       } catch (error) {
         console.error('Failed to load wishlist:', error);
-        document.getElementById('wishlist-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load wishlist</p>';
+        document.getElementById('wishlist-container').innerHTML = `
+          <div class="empty-state-modern">
+            <div class="empty-icon"><i class="fas fa-heart"></i></div>
+            <h3 class="empty-title">Your Wishlist is Empty</h3>
+            <p class="empty-subtitle">Save items you love for later</p>
+            <a href="products.html" class="action-btn-modern btn-primary-modern" style="text-decoration: none;">
+              <i class="fas fa-shopping-bag"></i> Browse Products
+            </a>
+          </div>
+        `;
       }
     }
 
@@ -1089,7 +1107,16 @@ currentFilter = 'all';
         const container = document.getElementById('compare-container');
         
         if (compareList.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No products to compare. <a href="products.html">Browse products</a></p>';
+          container.innerHTML = `
+            <div class="empty-state-modern">
+              <div class="empty-icon"><i class="fas fa-balance-scale"></i></div>
+              <h3 class="empty-title">No Products to Compare</h3>
+              <p class="empty-subtitle">Add products to compare their features</p>
+              <a href="products.html" class="action-btn-modern btn-primary-modern" style="text-decoration: none;">
+                <i class="fas fa-shopping-bag"></i> Browse Products
+              </a>
+            </div>
+          `;
           return;
         }
 
@@ -1100,7 +1127,16 @@ currentFilter = 'all';
         const validProducts = products.filter(p => p && p.product);
 
         if (validProducts.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No products to compare. <a href="products.html">Browse products</a></p>';
+          container.innerHTML = `
+            <div class="empty-state-modern">
+              <div class="empty-icon"><i class="fas fa-balance-scale"></i></div>
+              <h3 class="empty-title">No Products to Compare</h3>
+              <p class="empty-subtitle">Add products to compare their features</p>
+              <a href="products.html" class="action-btn-modern btn-primary-modern" style="text-decoration: none;">
+                <i class="fas fa-shopping-bag"></i> Browse Products
+              </a>
+            </div>
+          `;
           return;
         }
 
@@ -1134,7 +1170,16 @@ currentFilter = 'all';
         `;
       } catch (error) {
         console.error('Failed to load compare:', error);
-        document.getElementById('compare-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load comparison</p>';
+        document.getElementById('compare-container').innerHTML = `
+          <div class="empty-state-modern">
+            <div class="empty-icon"><i class="fas fa-balance-scale"></i></div>
+            <h3 class="empty-title">No Products to Compare</h3>
+            <p class="empty-subtitle">Add products to compare their features</p>
+            <a href="products.html" class="action-btn-modern btn-primary-modern" style="text-decoration: none;">
+              <i class="fas fa-shopping-bag"></i> Browse Products
+            </a>
+          </div>
+        `;
       }
     }
 
