@@ -7,20 +7,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart - MJ Electricals</title>
-  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive-fixes.css">
-  <link rel="stylesheet" href="css/breadcrumbs.css">
-  <link rel="stylesheet" href="css/cart-quantity-fix.css">
-  <link rel="stylesheet" href="css/mobile-fixes-phase2.css">
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar-redesign.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/hero-mobile-fix.css">
+  <link rel="stylesheet" href="../css/topbar-fix.css">
+  <link rel="stylesheet" href="../css/breadcrumbs.css">
+  <link rel="stylesheet" href="../css/cart-quantity-fix.css">
+  <link rel="stylesheet" href="../css/mobile-fixes-phase2.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="js/auto-cache-clear.js"></script>
+  <script src="../js/navbar-search.js"></script>
+  <script src="../js/auto-cache-clear.js"></script>
 </head>
 <body>
   <!-- Company Contact Top Bar -->
   <div id="company-topbar-container"></div>
   
-  <nav class="navbar">
+    <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
         <span></span>
@@ -29,15 +33,40 @@
       </button>
       
       <a href="index.html" class="logo">
-        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
-      <div class="nav-icons">
-        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+      <!-- Search Bar -->
+      <div class="nav-search-bar">
+        <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+        <button onclick="performNavSearch()" class="search-btn">
           <i class="fas fa-search"></i>
-          <span>Search</span>
         </button>
-        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right Icons -->
+      <div class="nav-icons">
+        <!-- Mobile Search Icon -->
+        <button class="nav-icon mobile-search-icon" onclick="toggleSearch()" title="Search" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <a href="cart.html" class="nav-icon" title="Cart">
           <i class="fas fa-shopping-cart"></i>
           <span>Cart</span>
           <span class="cart-badge">0</span>
@@ -51,38 +80,21 @@
           <span>Login</span>
         </a>
       </div>
-      
-      <!-- Search Dropdown -->
-      <div class="nav-search-dropdown" id="nav-search-dropdown">
-        <div class="search-dropdown-content">
-          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
-          <button onclick="performNavSearch()" class="search-btn">
-            <i class="fas fa-search"></i>
+    </div>
+  
+      <!-- Search Overlay -->
+      <div class="search-overlay" id="search-overlay" onclick="closeSearch()"></div>
+      <div class="search-dropdown" id="search-dropdown">
+        <div class="search-header">
+          <input type="text" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button onclick="closeSearch()" class="search-close-btn" aria-label="Close search">
+            <i class="fas fa-times"></i>
           </button>
         </div>
+        <div class="search-results" id="navbar-search-results"></div>
       </div>
-    </div>
 
-    <div class="nav-bottom">
-      <div class="nav-container">
-        <ul class="nav-links">
-          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
-          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
-          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-        </ul>
-        <div class="support-contact">
-          <i class="fas fa-phone-alt"></i>
-          <div>
-            <strong>+233 XX XXX XXXX</strong>
-            <small>24/7 Support Center</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+</nav>
 
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--gray-200);">
@@ -113,9 +125,9 @@
           <span>Total Price:</span>
           <strong id="total-price" style="color: var(--primary-orange);">$0.00</strong>
         </div>
-        <a href="checkout.html" class="btn mt-2" style="width: 100%; text-align: center;">
+        <button onclick="proceedToCheckout()" class="btn mt-2" style="width: 100%; text-align: center;">
           Proceed to Checkout
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -124,7 +136,7 @@
   <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
   <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
     <div class="mobile-menu-header">
-      <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
       <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
         <i class="fas fa-times"></i>
       </button>
@@ -228,32 +240,27 @@
     document.getElementById('current-year').textContent = new Date().getFullYear();
   </script>
 
-    <script src="js/company-topbar-loader.js"></script>
+    <script src="../js/company-topbar-loader.js"></script>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="js/preloader.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/toast.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/logger.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/socket.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/breadcrumbs.js"></script>
+  <script src="../js/preloader.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/logger.js"></script>`n  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/breadcrumbs.js"></script>
   <script>
     // Initialize breadcrumbs
     breadcrumbManager.insert();
     
-    // Wait for authentication before loading cart
+    // Load cart for both guest and authenticated users
     document.addEventListener('DOMContentLoaded', async () => {
-      if (!requireAuth()) {
-        return;
-      }
-      
-      // Wait for user to be loaded
+      // Load user state (works for both guest and authenticated)
       await stateManager.loadUser();
       
-      // Now load the cart
+      // Load the cart
       await loadCart();
     });
 
@@ -287,7 +294,7 @@
         }
 
         console.log('Rendering', state.cart.length, 'items');
-        container.innerHTML = state.cart.map(item => {
+        container.innerHTML = state.cart.filter(item => item.product).map(item => {
           console.log('Item:', item);
           
           // Calculate discount percentage if original price exists
@@ -306,12 +313,16 @@
           return `
           <div class="cart-item">
             <div style="display: flex; gap: 1rem; align-items: flex-start;">
-              <img src="${item.product.images[0] || 'https://via.placeholder.com/100'}" 
-                   alt="${item.product.name}" class="cart-item-image">
+              <a href="product-details.html?id=${item.product._id}" style="flex-shrink: 0;">
+                <img src="${item.product.images[0] || 'https://via.placeholder.com/100'}" 
+                     alt="${item.product.name}" class="cart-item-image" style="cursor: pointer;">
+              </a>
               
               <div class="cart-item-details" style="flex: 1;">
                 ${hasDiscount ? `<div class="discount-badge">-${discountPercent}%</div>` : ''}
-                <h3 class="cart-item-title">${item.product.name}</h3>
+                <a href="product-details.html?id=${item.product._id}" style="text-decoration: none; color: inherit;">
+                  <h3 class="cart-item-title" style="cursor: pointer;">${item.product.name}</h3>
+                </a>
                 <p class="cart-item-meta">${item.product.category || 'Electrical Product'}${item.product.wattage ? ` | ${item.product.wattage}W` : ''}</p>
                 ${item.product.variation ? `<p class="cart-item-meta" style="margin-top: 0.25rem;">Variation: ${item.product.variation}</p>` : ''}
                 <p class="cart-item-price">
@@ -427,6 +438,27 @@
       }
     }
 
+    function proceedToCheckout() {
+      const state = stateManager.getState();
+      
+      if (!state.isAuthenticated) {
+        // Guest user - prompt to login
+        Modal.confirm(
+          'Please sign in to continue with checkout. Your cart items will be saved.',
+          () => {
+            // Save current page to redirect back after login
+            localStorage.setItem('redirectAfterLogin', '/pages/checkout.html');
+            window.location.href = 'login.html';
+          },
+          'Sign In',
+          'Cancel'
+        );
+      } else {
+        // Authenticated user - proceed to checkout
+        window.location.href = 'checkout.html';
+      }
+    }
+
     async function subscribeNewsletter(event) {
       event.preventDefault();
       const email = document.getElementById('newsletter-email').value;
@@ -539,6 +571,6 @@
       }
     });
   </script>
-</body>
+  </body>
 </html>
 

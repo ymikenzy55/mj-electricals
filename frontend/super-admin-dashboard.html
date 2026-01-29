@@ -7,19 +7,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Admin Dashboard - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/responsive-fixes.css">
-  <link rel="stylesheet" href="css/admin-dashboard-enhanced.css">
-  <script src="js/admin-mobile-toggle.js" defer></script>
-  <script src="js/auto-cache-clear.js"></script>
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/topbar-fix.css">
+  <link rel="stylesheet" href="../css/admin-dashboard-enhanced.css">
+  <link rel="stylesheet" href="../css/admin-color-fix.css">
+  <script src="../js/admin-mobile-toggle.js" defer></script>
+  <script src="../js/auto-cache-clear.js"></script>
 </head>
 <body>
   <nav class="navbar" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff8c42 100%); box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);">
     <div class="nav-container">
       <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
-        <img src="mj-images/mj-logo.gif" alt="MJE Super Admin" style="height: 45px; vertical-align: middle; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Super Admin" style="height: 45px; vertical-align: middle; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
         <div style="display: flex; flex-direction: column; line-height: 1.2;">
           <span style="font-weight: 700; font-size: 1.1rem; color: white;">MJ Electricals Ghana Limited</span>
           <span style="font-size: 0.75rem; color: rgba(255,255,255,0.9); font-weight: 500;">Super Admin Dashboard</span>
@@ -99,6 +101,12 @@
             </a>
           </li>
           <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
+            <a href="#" onclick="showSection('profile', event); return false;">
+              <i class="fas fa-user-circle"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
             <a href="index.html" style="color: #10b981; font-weight: 600;">
               <i class="fas fa-store"></i>
               <span>Go to Store</span>
@@ -266,6 +274,16 @@
 
         <section id="orders-section" style="display:none;">
           <h2>All Orders</h2>
+          <div style="margin: 1rem 0; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Filter by Date:</label>
+              <input type="date" id="orders-date-filter" onchange="filterOrdersByDate()" 
+                     style="padding: 0.5rem; border: 1px solid var(--gray-300); border-radius: 5px;">
+            </div>
+            <button class="btn btn-secondary" onclick="clearOrdersDateFilter()" style="margin-top: 1.7rem;">
+              <i class="fas fa-times"></i> Clear Filter
+            </button>
+          </div>
           <div id="orders-list" class="mt-2">
             <div class="loading"><div class="spinner"></div></div>
           </div>
@@ -277,19 +295,83 @@
             <div class="loading"><div class="spinner"></div></div>
           </div>
         </section>
+
+        <section id="profile-section" style="display:none;">
+          <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+          
+          <div style="max-width: 600px; margin-top: 2rem;">
+            <!-- Profile Info Card -->
+            <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-bottom: 2rem;">
+              <h3 style="margin-top: 0; color: var(--primary-orange);">Profile Information</h3>
+              <form id="profile-form">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input type="text" id="profile-name" required>
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="profile-email" required>
+                </div>
+                <div class="form-group">
+                  <label>Role</label>
+                  <input type="text" id="profile-role" readonly style="background: #f5f5f5;">
+                </div>
+                <div class="form-group">
+                  <label>Member Since</label>
+                  <input type="text" id="profile-created" readonly style="background: #f5f5f5;">
+                </div>
+                <button type="submit" class="btn">
+                  <i class="fas fa-save"></i> Update Profile
+                </button>
+              </form>
+            </div>
+
+            <!-- Change Password Card -->
+            <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: var(--shadow-md);">
+              <h3 style="margin-top: 0; color: var(--primary-orange);">Change Password</h3>
+              <form id="change-password-form">
+                <div class="form-group" style="position: relative;">
+                  <label>Current Password</label>
+                  <input type="password" id="current-password" required style="padding-right: 3rem;">
+                  <button type="button" onclick="togglePasswordVisibility('current-password')" style="position: absolute; right: 10px; top: 38px; background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem; padding: 0.5rem;" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye" id="current-password-icon"></i>
+                  </button>
+                </div>
+                <div class="form-group" style="position: relative;">
+                  <label>New Password</label>
+                  <input type="password" id="new-password" required minlength="8" style="padding-right: 3rem;">
+                  <button type="button" onclick="togglePasswordVisibility('new-password')" style="position: absolute; right: 10px; top: 38px; background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem; padding: 0.5rem;" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye" id="new-password-icon"></i>
+                  </button>
+                  <small>At least 8 characters</small>
+                </div>
+                <div class="form-group" style="position: relative;">
+                  <label>Confirm New Password</label>
+                  <input type="password" id="confirm-password" required style="padding-right: 3rem;">
+                  <button type="button" onclick="togglePasswordVisibility('confirm-password')" style="position: absolute; right: 10px; top: 38px; background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem; padding: 0.5rem;" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye" id="confirm-password-icon"></i>
+                  </button>
+                </div>
+                <button type="submit" class="btn">
+                  <i class="fas fa-key"></i> Change Password
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </div>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/toast.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/logger.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/socket.js"></script>
-  <script src="js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
   <script>
     // Ensure api is available before proceeding
     function waitForApi() {
@@ -361,6 +443,7 @@
       if (section === 'products') loadProducts();
       if (section === 'orders') loadOrders();
       if (section === 'feedback') loadFeedback();
+      if (section === 'profile') loadProfile();
     }
 
     async function loadStats() {
@@ -696,57 +779,15 @@
     let currentOrderPage = 1;
     const ordersPerPage = 20;
     let allOrders = [];
+    let filteredOrders = [];
 
     async function loadOrders(page = 1) {
       try {
         const response = await api.getAllOrders();
         allOrders = response.orders;
+        filteredOrders = allOrders; // Initially show all
         currentOrderPage = page;
-        
-        const startIndex = (page - 1) * ordersPerPage;
-        const endIndex = startIndex + ordersPerPage;
-        const paginatedOrders = allOrders.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(allOrders.length / ordersPerPage);
-        
-        const container = document.getElementById('orders-list');
-
-        container.innerHTML = `
-          <div class="table-container" style="margin: 0; width: 100%;">
-            <table style="width: 100%;">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${paginatedOrders.map(order => `
-                  <tr>
-                    <td>#${order._id.slice(-8)}</td>
-                    <td>${order.user.name}</td>
-                    <td>${new Date(order.createdAt).toLocaleDateString()}</td>
-                    <td style="font-weight: 600; color: var(--primary-orange);">GH₵ ${order.totalAmount.toFixed(2)}</td>
-                    <td><span class="status-badge ${order.status}">${order.status}</span></td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-          ${totalPages > 1 ? `
-            <div class="pagination" style="margin-top: 1.5rem;">
-              <button class="btn btn-secondary" onclick="loadOrders(${page - 1})" ${page === 1 ? 'disabled' : ''}>
-                <i class="fas fa-chevron-left"></i> Previous
-              </button>
-              <span style="padding: 0 1rem;">Page ${page} of ${totalPages}</span>
-              <button class="btn btn-secondary" onclick="loadOrders(${page + 1})" ${page === totalPages ? 'disabled' : ''}>
-                Next <i class="fas fa-chevron-right"></i>
-              </button>
-            </div>
-          ` : ''}
-        `;
+        displayOrders(page);
         
         // Update notification badge
         updateNotificationBadges();
@@ -755,10 +796,93 @@
       }
     }
 
+    function displayOrders(page = 1) {
+      const startIndex = (page - 1) * ordersPerPage;
+      const endIndex = startIndex + ordersPerPage;
+      const paginatedOrders = filteredOrders.slice(startIndex, endIndex);
+      const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+      
+      const container = document.getElementById('orders-list');
+
+      if (filteredOrders.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders found for selected date</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="table-container" style="margin: 0; width: 100%;">
+          <table style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${paginatedOrders.map(order => `
+                <tr>
+                  <td>#${order._id.slice(-8)}</td>
+                  <td>${order.user.name}</td>
+                  <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td style="font-weight: 600; color: var(--primary-orange);">GH₵ ${order.totalAmount.toFixed(2)}</td>
+                  <td><span class="status-badge ${order.status}">${order.status}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ${totalPages > 1 ? `
+          <div class="pagination" style="margin-top: 1.5rem;">
+            <button class="btn btn-secondary" onclick="displayOrders(${page - 1})" ${page === 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span style="padding: 0 1rem;">Page ${page} of ${totalPages}</span>
+            <button class="btn btn-secondary" onclick="displayOrders(${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    window.filterOrdersByDate = function() {
+      const dateInput = document.getElementById('orders-date-filter');
+      const selectedDate = dateInput.value;
+      
+      if (!selectedDate) {
+        filteredOrders = allOrders;
+      } else {
+        const filterDate = new Date(selectedDate);
+        filterDate.setHours(0, 0, 0, 0);
+        
+        filteredOrders = allOrders.filter(order => {
+          const orderDate = new Date(order.createdAt);
+          orderDate.setHours(0, 0, 0, 0);
+          return orderDate.getTime() === filterDate.getTime();
+        });
+      }
+      
+      displayOrders(1);
+    }
+
+    window.clearOrdersDateFilter = function() {
+      document.getElementById('orders-date-filter').value = '';
+      filteredOrders = allOrders;
+      displayOrders(1);
+    }
+
     async function loadFeedback() {
       try {
         const response = await api.getAllFeedbacks();
         const container = document.getElementById('feedback-list');
+
+        if (!response.feedbacks || response.feedbacks.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">💬 No feedback available yet</p>';
+          return;
+        }
 
         container.innerHTML = response.feedbacks.map(fb => `
           <div style="background: var(--gray-light); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
@@ -837,11 +961,86 @@
       }
     }
 
+    // Profile Management
+    async function loadProfile() {
+      try {
+        const response = await api.getMe();
+        const user = response.user;
+        
+        document.getElementById('profile-name').value = user.name;
+        document.getElementById('profile-email').value = user.email;
+        document.getElementById('profile-role').value = user.role.toUpperCase();
+        document.getElementById('profile-created').value = new Date(user.createdAt).toLocaleDateString();
+      } catch (error) {
+        toast.error('Failed to load profile');
+      }
+    }
+
+    document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('profile-name').value;
+      const email = document.getElementById('profile-email').value;
+      
+      try {
+        await api.updateProfile({ name, email });
+        toast.success('Profile updated successfully');
+        
+        // Update state
+        const response = await api.getMe();
+        stateManager.setState({ user: response.user });
+      } catch (error) {
+        toast.error(error.message || 'Failed to update profile');
+      }
+    });
+
+    document.getElementById('change-password-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      
+      if (newPassword !== confirmPassword) {
+        toast.error('New passwords do not match');
+        return;
+      }
+      
+      if (newPassword.length < 8) {
+        toast.error('Password must be at least 8 characters');
+        return;
+      }
+      
+      try {
+        await api.updatePassword({ currentPassword, newPassword });
+        toast.success('Password changed successfully');
+        
+        // Clear form
+        document.getElementById('change-password-form').reset();
+      } catch (error) {
+        toast.error(error.message || 'Failed to change password');
+      }
+    });
+
     function showAlert(message, type) {
       toast.show(message, type);
+    }
+  
+    // Password visibility toggle function
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(inputId + '-icon');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
     }
   </script>
 </body>
 </html>
-
-

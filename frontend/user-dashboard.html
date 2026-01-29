@@ -7,9 +7,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Dashboard - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive-fixes.css">
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar-redesign.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/hero-mobile-fix.css">
+  <link rel="stylesheet" href="../css/topbar-fix.css">
+  <link rel="stylesheet" href="../css/mobile-product-details-fix.css">
+  <link rel="stylesheet" href="../css/component-order-fix.css">
+  <link rel="stylesheet" href="../css/dashboard-z-index-fix.css">
+  <link rel="stylesheet" href="../css/critical-ux-fixes.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .dashboard-header {
@@ -45,24 +52,24 @@
     .mobile-menu-toggle {
       display: none;
       position: fixed;
-      top: 80px;
+      bottom: 20px; /* Changed from top to bottom */
       right: 1rem;
       z-index: 1001;
-      width: 50px;
-      height: 50px;
+      width: 56px; /* Slightly larger for better touch target */
+      height: 56px;
       background: var(--primary-orange);
       border: none;
       border-radius: 50%;
       color: white;
       font-size: 1.5rem;
       cursor: pointer;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
       transition: var(--transition);
     }
     
     .mobile-menu-toggle:hover {
       transform: scale(1.1);
-      box-shadow: var(--shadow-xl);
+      box-shadow: 0 6px 25px rgba(255, 107, 53, 0.5);
     }
     
     .mobile-menu-toggle.active {
@@ -209,13 +216,84 @@
       }
     }
   </style>
-  <script src="js/auto-cache-clear.js"></script>
+  <script src="../js/navbar-search.js"></script>
+  <script src="../js/auto-cache-clear.js"></script>
 </head>
 <body>
   <!-- Company Contact Top Bar -->
   <div id="company-topbar-container"></div>
   
-  <!-- Navbar will be loaded by navbar-loader.js -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <a href="index.html" class="logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
+      </a>
+
+      <!-- Search Bar -->
+      <div class="nav-search-bar">
+        <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+        <button onclick="performNavSearch()" class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right Icons -->
+      <div class="nav-icons">
+        <!-- Mobile Search Icon -->
+        <button class="nav-icon mobile-search-icon" onclick="toggleSearch()" title="Search" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <a href="cart.html" class="nav-icon" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge">0</span>
+        </a>
+        <a href="user-dashboard.html" class="nav-icon auth-link" style="display:none" title="Account">
+          <i class="fas fa-user"></i>
+          <span>Account</span>
+        </a>
+        <a href="login.html" class="nav-icon guest-link" title="Login">
+          <i class="fas fa-user"></i>
+          <span>Login</span>
+        </a>
+      </div>
+    </div>
+  
+      <!-- Search Overlay -->
+      <div class="search-overlay" id="search-overlay" onclick="closeSearch()"></div>
+      <div class="search-dropdown" id="search-dropdown">
+        <div class="search-header">
+          <input type="text" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button onclick="closeSearch()" class="search-close-btn" aria-label="Close search">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="search-results" id="navbar-search-results"></div>
+      </div>
+
+</nav>
 
   <!-- Dashboard Mobile Menu Toggle Button -->
   <button class="mobile-menu-toggle" onclick="toggleDashboardSidebar()" id="mobile-dashboard-btn">
@@ -259,9 +337,21 @@
         </a>
       </li>
       <li>
+        <a href="#" onclick="showSection('compare', event); closeDashboardSidebar();" id="mobile-sidebar-compare">
+          <i class="fas fa-balance-scale"></i>
+          <span>Compare</span>
+        </a>
+      </li>
+      <li>
         <a href="#" onclick="showSection('feedback', event); closeDashboardSidebar();" id="mobile-sidebar-feedback">
           <i class="fas fa-comment"></i>
           <span>Feedback</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="showSection('messages', event); closeDashboardSidebar();" id="mobile-sidebar-messages">
+          <i class="fas fa-envelope"></i>
+          <span>Messages</span>
         </a>
       </li>
       <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
@@ -313,7 +403,9 @@
           <li><a href="#" onclick="showSection('profile', event)" id="menu-profile"><i class="fas fa-user"></i> Profile</a></li>
           <li><a href="#" onclick="showSection('orders', event)" id="menu-orders"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
           <li><a href="#" onclick="showSection('wishlist', event)" id="menu-wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
+          <li><a href="#" onclick="showSection('compare', event)" id="menu-compare"><i class="fas fa-balance-scale"></i> Compare</a></li>
           <li><a href="#" onclick="showSection('feedback', event)" id="menu-feedback"><i class="fas fa-comment"></i> Feedback</a></li>
+          <li><a href="#" onclick="showSection('messages', event)" id="menu-messages"><i class="fas fa-envelope"></i> Messages</a></li>
           <li style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1rem;">
             <a href="#" onclick="handleLogout(event)" style="color: #ef4444; font-weight: 600;">
               <i class="fas fa-sign-out-alt"></i> Logout
@@ -402,6 +494,14 @@
           </div>
         </section>
 
+        <!-- Compare Section -->
+        <section id="compare-section" style="display:none;">
+          <h2><i class="fas fa-balance-scale"></i> Compare Products</h2>
+          <div id="compare-container" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
         <!-- Feedback Section -->
         <section id="feedback-section" style="display:none;">
           <h2><i class="fas fa-comment"></i> Feedback</h2>
@@ -419,6 +519,16 @@
             <div class="loading"><div class="spinner"></div></div>
           </div>
         </section>
+
+        <!-- Messages Section -->
+        <section id="messages-section" style="display:none;">
+          <h2><i class="fas fa-envelope"></i> My Messages</h2>
+          <p style="color: var(--gray-600); margin-bottom: 1.5rem;">View your contact messages and admin responses</p>
+          
+          <div id="user-messages-container" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
       </main>
     </div>
   </div>
@@ -430,7 +540,9 @@
       <li><a href="#" onclick="showSection('profile', event)" id="mobile-menu-profile"><i class="fas fa-user"></i><br>Profile</a></li>
       <li><a href="#" onclick="showSection('orders', event)" id="mobile-menu-orders"><i class="fas fa-shopping-bag"></i><br>Orders</a></li>
       <li><a href="#" onclick="showSection('wishlist', event)" id="mobile-menu-wishlist"><i class="fas fa-heart"></i><br>Wishlist</a></li>
+      <li><a href="#" onclick="showSection('compare', event)" id="mobile-menu-compare"><i class="fas fa-balance-scale"></i><br>Compare</a></li>
       <li><a href="#" onclick="showSection('feedback', event)" id="mobile-menu-feedback"><i class="fas fa-comment"></i><br>Feedback</a></li>
+      <li><a href="#" onclick="showSection('messages', event)" id="mobile-menu-messages"><i class="fas fa-envelope"></i><br>Messages</a></li>
     </ul>
   </div>
 
@@ -448,20 +560,23 @@
       <li><a href="user-dashboard.html" class="active"><i class="fas fa-user"></i><br>Dashboard</a></li>
       <li><a href="about.html"><i class="fas fa-info-circle"></i><br>About</a></li>
       <li><a href="contact.html"><i class="fas fa-phone"></i><br>Contact</a></li>
+      <li class="auth-link" style="display:none"><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i><br>Logout</a></li>
     </ul>
   </nav>
 
-    <script src="js/company-topbar-loader.js"></script>
+  <!-- Load components first -->
+  <script src="../js/footer-loader.js"></script>
+  
+  <!-- Core scripts -->
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/logger.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/navbar-loader.js"></script>
-  <script src="js/socket.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/toast.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
   <script>
     let allOrders = [];    let 
 currentFilter = 'all';
@@ -528,6 +643,9 @@ currentFilter = 'all';
       if (section === 'orders') loadOrders();
       if (section === 'wishlist') loadWishlist();
       if (section === 'feedback') loadFeedback();
+      if (section === 'messages') loadUserMessages();
+      if (section === 'compare') loadCompare();
+      if (section === 'feedback') loadFeedback();
     }
 
     // Dashboard mobile sidebar toggle functions (separate from navbar mobile menu)
@@ -573,24 +691,26 @@ currentFilter = 'all';
     document.addEventListener('DOMContentLoaded', async () => {
       if (!requireAuth()) return;
       
+      // Instantly show user name from localStorage
+      const cachedUser = localStorage.getItem('user');
+      if (cachedUser) {
+        try {
+          const user = JSON.parse(cachedUser);
+          document.getElementById('user-name').textContent = user.name || 'User';
+        } catch (e) {
+          console.error('Error parsing cached user:', e);
+        }
+      }
+      
       await stateManager.loadUser();
       const state = stateManager.getState();
       
       if (state.user) {
         document.getElementById('user-name').textContent = state.user.name;
         
-        // Check if user is new (created within last 24 hours)
-        const userCreatedAt = new Date(state.user.createdAt);
-        const now = new Date();
-        const hoursSinceCreation = (now - userCreatedAt) / (1000 * 60 * 60);
-        
-        // Show "Welcome" for new users (less than 24 hours), "Welcome back" for returning users
+        // Always show "Welcome" for all users (both new and returning)
         const welcomeText = document.getElementById('welcome-text');
-        if (hoursSinceCreation < 24) {
-          welcomeText.textContent = 'Welcome';
-        } else {
-          welcomeText.textContent = 'Welcome back';
-        }
+        welcomeText.textContent = 'Welcome';
         
         loadDashboardStats();
         loadRecentOrders();
@@ -784,15 +904,6 @@ currentFilter = 'all';
             <div>
               <p style="margin: 0; color: var(--gray-600);"><i class="fas fa-credit-card"></i> ${order.paymentMethod || 'N/A'}</p>
               <p style="margin: 0.25rem 0 0 0; color: var(--gray-600); font-size: 0.9rem;"><i class="fas fa-truck"></i> ${order.shippingAddress || 'N/A'}</p>
-              ${order.refundStatus === 'processed' ? `
-                <p style="margin: 0.5rem 0 0 0; color: #10b981; font-weight: 600; font-size: 0.95rem;">
-                  <i class="fas fa-check-circle"></i> Refund Processed on ${new Date(order.refundedAt).toLocaleDateString()}
-                </p>
-              ` : order.status === 'cancelled' && order.refundStatus !== 'processed' ? `
-                <p style="margin: 0.5rem 0 0 0; color: #f59e0b; font-weight: 600; font-size: 0.95rem;">
-                  <i class="fas fa-clock"></i> Refund Pending - Admin will process soon
-                </p>
-              ` : ''}
             </div>
             <div style="text-align: right;">
               <p style="margin: 0; color: var(--gray-600);">Total</p>
@@ -803,10 +914,10 @@ currentFilter = 'all';
           ${order.status === 'pending' ? `
             <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
               <button onclick="cancelUserOrder('${order._id}')" class="btn btn-secondary" style="width: 100%; background: #ef4444; color: white;">
-                <i class="fas fa-times-circle"></i> Cancel Order & Request Refund
+                <i class="fas fa-times-circle"></i> Cancel Order
               </button>
               <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: var(--gray-600); text-align: center;">
-                <i class="fas fa-info-circle"></i> Admin will be notified to process your refund
+                <i class="fas fa-info-circle"></i> Admin will be notified
               </p>
             </div>
           ` : ''}
@@ -872,6 +983,80 @@ currentFilter = 'all';
       }
     }
 
+    async function loadCompare() {
+      try {
+        const compareList = compareManager.getCompareList();
+        const container = document.getElementById('compare-container');
+        
+        if (compareList.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No products to compare. <a href="products.html">Browse products</a></p>';
+          return;
+        }
+
+        // Fetch full product details
+        const products = await Promise.all(
+          compareList.map(id => api.getProduct(id).catch(() => null))
+        );
+        const validProducts = products.filter(p => p && p.product);
+
+        if (validProducts.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No products to compare. <a href="products.html">Browse products</a></p>';
+          return;
+        }
+
+        container.innerHTML = `
+          <div style="margin-bottom: 1rem;">
+            <a href="compare.html" class="btn">
+              <i class="fas fa-external-link-alt"></i> View Full Comparison
+            </a>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+            ${validProducts.map(({product}) => `
+              <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-md); position: relative;">
+                <button onclick="removeFromCompare('${product._id}')" 
+                        style="position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 50%; background: white; border: 2px solid var(--info); color: var(--info); cursor: pointer; z-index: 10;">
+                  <i class="fas fa-times"></i>
+                </button>
+                <img src="${product.images?.[0] || 'https://via.placeholder.com/250'}" 
+                     alt="${product.name || 'Product'}" 
+                     style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 1rem;">
+                  <h4 style="margin: 0 0 0.5rem 0;">${product.name || 'Product'}</h4>
+                  <p style="margin: 0 0 0.5rem 0; color: var(--primary-orange); font-weight: 600; font-size: 1.25rem;">${formatPrice(product.price || 0)}</p>
+                  <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: var(--gray-600);">${product.wattage}W | ${product.category}</p>
+                  <button onclick="addToCartFromCompare('${product._id}')" class="btn" style="width: 100%;">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch (error) {
+        console.error('Failed to load compare:', error);
+        document.getElementById('compare-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load comparison</p>';
+      }
+    }
+
+    async function removeFromCompare(productId) {
+      try {
+        compareManager.removeFromCompare(productId);
+        toast.success('Removed from comparison');
+        loadCompare();
+      } catch (error) {
+        toast.error('Failed to remove from comparison');
+      }
+    }
+
+    async function addToCartFromCompare(productId) {
+      try {
+        await stateManager.addToCart(productId, 1);
+        toast.success('Added to cart!');
+      } catch (error) {
+        toast.error('Failed to add to cart');
+      }
+    }
+
     async function loadFeedback() {
       try {
         const response = await api.getMyFeedback();
@@ -923,14 +1108,66 @@ currentFilter = 'all';
       }
     });
 
+    // Load user messages
+    async function loadUserMessages() {
+      try {
+        const response = await api.getUserContactMessages();
+        const messages = response.messages || [];
+        const container = document.getElementById('user-messages-container');
+        
+        if (messages.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No messages yet. Contact us from the <a href="contact.html">Contact page</a>.</p>';
+          return;
+        }
+
+        container.innerHTML = messages.map(msg => `
+          <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+              <div style="flex: 1;">
+                <p style="font-weight: 600; margin-bottom: 0.5rem; font-size: 1.1rem;">${msg.subject}</p>
+                <p style="color: var(--gray-600); font-size: 0.9rem; margin: 0;">
+                  <i class="fas fa-clock"></i> ${new Date(msg.createdAt).toLocaleString()}
+                </p>
+              </div>
+              <span style="background: ${msg.status === 'responded' ? '#10b981' : '#f59e0b'}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">
+                ${msg.status || 'pending'}
+              </span>
+            </div>
+            <div style="background: var(--gray-100); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+              <p style="margin: 0; color: var(--gray-700);"><strong>Your Message:</strong></p>
+              <p style="margin: 0.5rem 0 0 0;">${msg.message}</p>
+            </div>
+            ${msg.response ? `
+              <div style="background: #fff3e0; padding: 1rem; border-radius: 8px; border-left: 4px solid #FF6B3D;">
+                <p style="margin: 0; color: #FF6B3D; font-weight: 600;">
+                  <i class="fas fa-reply"></i> Admin Response:
+                </p>
+                <p style="margin: 0.5rem 0 0 0; color: var(--gray-700);">${msg.response}</p>
+                <p style="color: var(--gray-600); font-size: 0.85rem; margin-top: 0.5rem;">
+                  Responded: ${new Date(msg.respondedAt).toLocaleString()}
+                </p>
+              </div>
+            ` : `
+              <p style="color: var(--gray-600); font-style: italic; margin: 0;">
+                <i class="fas fa-hourglass-half"></i> Waiting for admin response...
+              </p>
+            `}
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+        document.getElementById('user-messages-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load messages</p>';
+      }
+    }
+
     // Cancel order function for users
     async function cancelUserOrder(orderId) {
       Modal.confirm(
-        'Are you sure you want to cancel this order? The admin will be notified to process your refund.',
+        'Are you sure you want to cancel this order? The admin will be notified.',
         async () => {
           try {
             await api.cancelOrder(orderId);
-            toast.success('Order cancelled successfully! Admin will process your refund shortly.');
+            toast.success('Order cancelled successfully!');
             loadOrders();
             loadDashboardStats();
             loadRecentOrders();
@@ -952,7 +1189,28 @@ currentFilter = 'all';
         }
       );
     }
+
+    // Navbar functions
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input').value.trim();
+      if (query) {
+        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+      }
+    }
+
+    // Prevent dropdown toggle link from navigating
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownToggle = document.querySelector('.dropdown-toggle');
+      if (dropdownToggle) {
+        dropdownToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+        });
+      }
+    });
   </script>
-</body>
+  
+  <!-- Company Topbar Loader -->
+  <script src="../js/company-topbar-loader.js"></script>
+  </body>
 </html>
 

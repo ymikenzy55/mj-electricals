@@ -7,19 +7,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products - MJ Electricals</title>
-  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive-fixes.css">
-  <link rel="stylesheet" href="css/mobile-fixes-phase2.css">
-  <link rel="stylesheet" href="css/breadcrumbs.css">
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar-redesign.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/hero-mobile-fix.css">
+  <link rel="stylesheet" href="../css/topbar-fix.css">
+  <link rel="stylesheet" href="../css/mobile-fixes-phase2.css">
+  <link rel="stylesheet" href="../css/breadcrumbs.css">
+  <link rel="stylesheet" href="../css/cart-button-states.css">
+  <link rel="stylesheet" href="../css/mobile-product-details-fix.css">
+  <link rel="stylesheet" href="../css/product-card-button-fix.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="js/auto-cache-clear.js"></script>
+  <script src="../js/navbar-search.js"></script>
+  <script src="../js/auto-cache-clear.js"></script>
 </head>
 <body>
   <!-- Company Contact Top Bar -->
   <div id="company-topbar-container"></div>
   
-  <nav class="navbar">
+    <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
         <span></span>
@@ -28,15 +35,40 @@
       </button>
       
       <a href="index.html" class="logo">
-        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
-      <div class="nav-icons">
-        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+      <!-- Search Bar -->
+      <div class="nav-search-bar">
+        <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+        <button onclick="performNavSearch()" class="search-btn">
           <i class="fas fa-search"></i>
-          <span>Search</span>
         </button>
-        <a href="cart.html" class="nav-icon auth-link" style="display: flex;" title="Cart">
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right Icons -->
+      <div class="nav-icons">
+        <!-- Mobile Search Icon -->
+        <button class="nav-icon mobile-search-icon" onclick="toggleSearch()" title="Search" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <a href="cart.html" class="nav-icon" title="Cart">
           <i class="fas fa-shopping-cart"></i>
           <span>Cart</span>
           <span class="cart-badge">0</span>
@@ -50,38 +82,21 @@
           <span>Login</span>
         </a>
       </div>
-      
-      <!-- Search Dropdown -->
-      <div class="nav-search-dropdown" id="nav-search-dropdown">
-        <div class="search-dropdown-content">
-          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
-          <button onclick="performNavSearch()" class="search-btn">
-            <i class="fas fa-search"></i>
+    </div>
+  
+      <!-- Search Overlay -->
+      <div class="search-overlay" id="search-overlay" onclick="closeSearch()"></div>
+      <div class="search-dropdown" id="search-dropdown">
+        <div class="search-header">
+          <input type="text" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button onclick="closeSearch()" class="search-close-btn" aria-label="Close search">
+            <i class="fas fa-times"></i>
           </button>
         </div>
+        <div class="search-results" id="navbar-search-results"></div>
       </div>
-    </div>
 
-    <div class="nav-bottom">
-      <div class="nav-container">
-        <ul class="nav-links">
-          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
-          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
-          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-        </ul>
-        <div class="support-contact">
-          <i class="fas fa-phone-alt"></i>
-          <div>
-            <strong>+233 XX XXX XXXX</strong>
-            <small>24/7 Support Center</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+</nav>
 
   <div class="container">
     <div id="breadcrumb-container"></div>
@@ -183,7 +198,7 @@
   <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
   <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
     <div class="mobile-menu-header">
-      <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px; width: auto; object-fit: contain; max-width: 150px;">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px; width: auto; object-fit: contain; max-width: 150px;">
       <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
         <i class="fas fa-times"></i>
       </button>
@@ -230,7 +245,7 @@
     <div class="footer-content">
       <div class="footer-section">
         <div class="footer-logo">
-          <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+          <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
         </div>
         <h3>About MJE</h3>
         <p>Your trusted partner for quality electrical products. We provide the best lighting solutions and electrical components.</p>
@@ -272,24 +287,40 @@
     document.getElementById('current-year').textContent = new Date().getFullYear();
   </script>
 
-    <script src="js/company-topbar-loader.js"></script>
+    <script src="../js/company-topbar-loader.js"></script>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="js/preloader.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/toast.js"></script>
-  <script src="js/discount.js"></script>
-  <script src="js/logger.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/socket.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/breadcrumbs.js"></script>
-  <script src="js/wishlist.js"></script>
-  <script src="js/compare.js"></script>
-  <script>
+  <script src="../js/preloader.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/discount.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/cart-button-state.js"></script>
+  <script src="../js/breadcrumbs.js"></script>
+  <script src="../js/wishlist.js"></script>
+  <script src="../js/compare.js"></script>
+  <script src="../js/search-suggestions.js"></script>
+    <script>
     // Initialize breadcrumbs
     breadcrumbManager.insert();
+    
+    // Initialize search suggestions
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('nav-search-input');
+      if (searchInput) {
+        new SearchSuggestions(searchInput, {
+          searchType: 'products',
+          placeholder: 'Search products...',
+          onSelect: (product) => {
+            window.location.href = `product-details.html?id=${product._id}`;
+          }
+        });
+      }
+    });
     
     let currentPage = 1;
     let currentFilters = {};
@@ -380,7 +411,7 @@
               <p style="color: ${product.stock > 10 ? '#28a745' : product.stock > 0 ? '#ffc107' : '#dc3545'}; font-weight: 600; font-size: 0.875rem;">
                 ${product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left!` : 'Out of Stock'}
               </p>
-              <button class="btn add-to-cart-btn" onclick="addToCartFromList('${product._id}', event)" ${product.stock === 0 ? 'disabled' : ''}>
+              <button class="btn add-to-cart-btn" data-product-id="${product._id}" onclick="addToCartFromList('${product._id}', event)" ${product.stock === 0 ? 'disabled' : ''}>
                 <i class="fas fa-shopping-cart"></i> ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
               </button>
             </div>
@@ -483,41 +514,30 @@
     });
 
     async function addToCartFromList(productId, event) {
-      const state = stateManager.getState();
-      if (!state.isAuthenticated) {
-        Modal.confirm('Please login to add items to cart. Go to login page?', () => {
-          window.location.href = 'login.html';
-        });
-        return;
-      }
-
       const button = event.target.closest('button');
-      const originalText = button.innerHTML;
       
-      try {
-        button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+      // Use the cart button state manager for consistent behavior
+      if (typeof cartButtonState !== 'undefined') {
+        await cartButtonState.handleAddToCart(productId, 1, button);
+      } else {
+        // Fallback to old behavior
+        const originalText = button.innerHTML;
         
-        await stateManager.addToCart(productId, 1);
-        
-        button.innerHTML = '<i class="fas fa-check"></i> Added!';
-        button.style.background = '#28a745';
-        
-        // Update cart badge
-        updateCartBadge();
-        
-        // Reset button after 2 seconds
-        setTimeout(() => {
+        try {
+          button.disabled = true;
+          button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+          
+          await stateManager.addToCart(productId, 1);
+          
+          button.innerHTML = '<i class="fas fa-check"></i> Added!';
+          button.classList.add('added');
+          
+          toast.success('Product added to cart!');
+        } catch (error) {
           button.innerHTML = originalText;
-          button.style.background = '';
           button.disabled = false;
-        }, 2000);
-        
-        toast.success('Product added to cart!');
-      } catch (error) {
-        button.innerHTML = originalText;
-        button.disabled = false;
-        toast.error('Failed to add to cart: ' + error.message);
+          toast.error('Failed to add to cart: ' + error.message);
+        }
       }
     }
 

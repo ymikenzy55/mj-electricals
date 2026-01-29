@@ -7,13 +7,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Details - MJ Electricals</title>
-  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive-fixes.css">
-  <link rel="stylesheet" href="css/add-to-cart-responsive.css">
-  <link rel="stylesheet" href="css/breadcrumbs.css">
-  <link rel="stylesheet" href="css/mobile-fixes-phase2.css">
-  <link rel="stylesheet" href="css/product-details-responsive.css">
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar-redesign.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/hero-mobile-fix.css">
+  <link rel="stylesheet" href="../css/topbar-fix.css">
+  <link rel="stylesheet" href="../css/add-to-cart-responsive.css">
+  <link rel="stylesheet" href="../css/cart-button-states.css">
+  <link rel="stylesheet" href="../css/mobile-product-details-fix.css">
+  <link rel="stylesheet" href="../css/breadcrumbs.css">
+  <link rel="stylesheet" href="../css/mobile-fixes-phase2.css">
+  <link rel="stylesheet" href="../css/product-details-responsive.css">
+  <link rel="stylesheet" href="../css/product-image-gallery.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Product Details Modern Redesign */
@@ -426,13 +432,14 @@
       }
     }
   </style>
-  <script src="js/auto-cache-clear.js"></script>
+  <script src="../js/navbar-search.js"></script>
+  <script src="../js/auto-cache-clear.js"></script>
 </head>
 <body>
   <!-- Company Contact Top Bar -->
   <div id="company-topbar-container"></div>
   
-  <nav class="navbar">
+    <nav class="navbar">
     <div class="nav-container">
       <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
         <span></span>
@@ -441,15 +448,40 @@
       </button>
       
       <a href="index.html" class="logo">
-        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
-      <div class="nav-icons">
-        <button class="nav-icon search-toggle" onclick="toggleNavSearch()" title="Search">
+      <!-- Search Bar -->
+      <div class="nav-search-bar">
+        <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+        <button onclick="performNavSearch()" class="search-btn">
           <i class="fas fa-search"></i>
-          <span>Search</span>
         </button>
-        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right Icons -->
+      <div class="nav-icons">
+        <!-- Mobile Search Icon -->
+        <button class="nav-icon mobile-search-icon" onclick="toggleSearch()" title="Search" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <a href="cart.html" class="nav-icon" title="Cart">
           <i class="fas fa-shopping-cart"></i>
           <span>Cart</span>
           <span class="cart-badge">0</span>
@@ -463,44 +495,27 @@
           <span>Login</span>
         </a>
       </div>
-      
-      <!-- Search Dropdown -->
-      <div class="nav-search-dropdown" id="nav-search-dropdown">
-        <div class="search-dropdown-content">
-          <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
-          <button onclick="performNavSearch()" class="search-btn">
-            <i class="fas fa-search"></i>
+    </div>
+  
+      <!-- Search Overlay -->
+      <div class="search-overlay" id="search-overlay" onclick="closeSearch()"></div>
+      <div class="search-dropdown" id="search-dropdown">
+        <div class="search-header">
+          <input type="text" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button onclick="closeSearch()" class="search-close-btn" aria-label="Close search">
+            <i class="fas fa-times"></i>
           </button>
         </div>
+        <div class="search-results" id="navbar-search-results"></div>
       </div>
-    </div>
 
-    <div class="nav-bottom">
-      <div class="nav-container">
-        <ul class="nav-links">
-          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
-          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
-          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-        </ul>
-        <div class="support-contact">
-          <i class="fas fa-phone-alt"></i>
-          <div>
-            <strong>+233 XX XXX XXXX</strong>
-            <small>24/7 Support Center</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+</nav>
 
   <!-- Mobile Menu -->
   <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
   <nav class="mobile-menu-sidebar" id="mobile-menu-sidebar">
     <div class="mobile-menu-header">
-      <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
+      <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 40px;">
       <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Close menu">
         <i class="fas fa-times"></i>
       </button>
@@ -583,17 +598,18 @@
   </nav>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="js/company-topbar-loader.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/toast.js"></script>
-  <script src="js/discount.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/logger.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/socket.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/breadcrumbs.js"></script>
+  <script src="../js/company-topbar-loader.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/discount.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/cart-button-state.js"></script>
+  <script src="../js/breadcrumbs.js"></script>
   <script>
     // Initialize breadcrumbs with product name
     // Note: urlParams is declared later in the main script
@@ -710,6 +726,11 @@
         renderProduct(currentProduct);
         loadReviews();
         loadRelatedProducts(); // Load related products
+        
+        // Update cart button state after rendering
+        if (typeof cartButtonState !== 'undefined') {
+          setTimeout(() => cartButtonState.updateAllButtons(), 100);
+        }
       } catch (error) {
         console.error('Failed to load product:', error);
         document.getElementById('product-content').innerHTML = 
@@ -777,10 +798,9 @@
                 Delivery Available
               </div>
               <div class="delivery-info">
-                Available in: <strong>Kumasi, Accra, Takoradi</strong><br>
+                <strong>Delivery across Ghana</strong><br>
                 <i class="fas fa-clock"></i> 2-3 business days
               </div>
-              <div class="delivery-cost">Delivery Cost: GH₵ 55.00</div>
             </div>
 
             ${product.stock > 0 ? `
@@ -809,7 +829,7 @@
 
               <!-- Action Buttons -->
               <div class="action-buttons">
-                <button class="add-to-cart-btn" onclick="addToCart()">
+                <button class="add-to-cart-btn" data-product-id="${product._id}" onclick="addToCart()">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -936,19 +956,25 @@
     }
 
     async function addToCart() {
-      const state = stateManager.getState();
-      if (!state.isAuthenticated) {
-        Modal.confirm('Please login to add items to cart. Go to login page?', () => {
-          window.location.href = 'login.html';
-        });
-        return;
-      }
-
-      try {
-        await stateManager.addToCart(productId, currentQuantity);
-        toast.success('Product added to cart!');
-      } catch (error) {
-        toast.error('Failed to add to cart: ' + error.message);
+      const button = document.querySelector('.add-to-cart-btn');
+      
+      // Use the cart button state manager for consistent behavior
+      if (typeof cartButtonState !== 'undefined' && button) {
+        await cartButtonState.handleAddToCart(productId, currentQuantity, button);
+      } else {
+        // Fallback to old behavior
+        try {
+          await stateManager.addToCart(productId, currentQuantity);
+          toast.success('Product added to cart!');
+          
+          // Update button state manually if cart button state manager not available
+          if (button) {
+            button.classList.add('added');
+            button.innerHTML = '<i class="fas fa-check"></i> Added';
+          }
+        } catch (error) {
+          toast.error('Failed to add to cart: ' + error.message);
+        }
       }
     }
 
@@ -1377,9 +1403,23 @@
     async function loadRelatedProducts() {
       try {
         const response = await fetch(`/api/products/${productId}/related?limit=4`);
+        
+        // Check if response is OK
+        if (!response.ok) {
+          console.log('Related products API returned error:', response.status);
+          return;
+        }
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          console.log('Related products API did not return JSON');
+          return;
+        }
+        
         const data = await response.json();
         
-        if (data.success && data.products.length > 0) {
+        if (data.success && data.products && data.products.length > 0) {
           const section = document.getElementById('related-products-section');
           const grid = document.getElementById('related-products-grid');
           
@@ -1408,11 +1448,12 @@
         }
       } catch (error) {
         console.error('Failed to load related products:', error);
+        // Silently fail - related products are not critical
       }
     }
 
     loadProduct();
   </script>
-</body>
+  </body>
 </html>
 

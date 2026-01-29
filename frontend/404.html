@@ -7,8 +7,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 - Page Not Found | MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar-redesign.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .error-container {
@@ -127,20 +128,56 @@
       margin: 0;
     }
   </style>
-  <script src="js/auto-cache-clear.js"></script>
+  <script src="../js/navbar-search.js"></script>
+  <script src="../js/auto-cache-clear.js"></script>
 </head>
 <body>
   <!-- Company Contact Top Bar -->
   <div id="company-topbar-container"></div>
   
-  <nav class="navbar">
+    <nav class="navbar">
     <div class="nav-container">
+      <button class="hamburger-menu" id="hamburger-menu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
       <a href="index.html" class="logo">
-        <img src="mj-images/mj-logo.gif" alt="MJE Logo">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Logo">
       </a>
 
+      <!-- Search Bar -->
+      <div class="nav-search-bar">
+        <input type="text" id="nav-search-input" placeholder="Search products..." onkeypress="if(event.key==='Enter') performNavSearch()">
+        <button onclick="performNavSearch()" class="search-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
+        <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
+        <li class="nav-dropdown">
+          <a href="#" class="dropdown-toggle"><i class="fas fa-ellipsis-h"></i> More <i class="fas fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
+            <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right Icons -->
       <div class="nav-icons">
-        <a href="cart.html" class="nav-icon auth-link" style="display:none" title="Cart">
+        <!-- Mobile Search Icon -->
+        <button class="nav-icon mobile-search-icon" onclick="toggleSearch()" title="Search" aria-label="Search">
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <a href="cart.html" class="nav-icon" title="Cart">
           <i class="fas fa-shopping-cart"></i>
           <span>Cart</span>
           <span class="cart-badge">0</span>
@@ -155,27 +192,20 @@
         </a>
       </div>
     </div>
-
-    <div class="nav-bottom">
-      <div class="nav-container">
-        <ul class="nav-links">
-          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="products.html"><i class="fas fa-box"></i> Products</a></li>
-          <li><a href="categories.html"><i class="fas fa-th"></i> Categories</a></li>
-          <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-          <li><a href="contact.html"><i class="fas fa-phone"></i> Contact</a></li>
-          <li><a href="faq.html"><i class="fas fa-question-circle"></i> FAQ</a></li>
-        </ul>
-        <div class="support-contact">
-          <i class="fas fa-phone-alt"></i>
-          <div>
-            <strong>+233 XX XXX XXXX</strong>
-            <small>24/7 Support Center</small>
-          </div>
+  
+      <!-- Search Overlay -->
+      <div class="search-overlay" id="search-overlay" onclick="closeSearch()"></div>
+      <div class="search-dropdown" id="search-dropdown">
+        <div class="search-header">
+          <input type="text" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button onclick="closeSearch()" class="search-close-btn" aria-label="Close search">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
+        <div class="search-results" id="navbar-search-results"></div>
       </div>
-    </div>
-  </nav>
+
+</nav>
 
   <div class="error-container">
     <div class="error-icon">
@@ -228,7 +258,7 @@
     <div class="footer-content">
       <div class="footer-section">
         <div class="footer-logo">
-          <img src="mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
+          <img src="../mj-images/mj-logo.gif" alt="MJE Logo" style="height: 60px; margin-bottom: 1rem; background: white; padding: 0.5rem; border-radius: 8px;">
         </div>
         <h3>About MJE</h3>
         <p>Your trusted partner for quality electrical products.</p>
@@ -263,15 +293,31 @@
     </div>
   </footer>
 
-    <script src="js/company-topbar-loader.js"></script>
-  <script src="js/preloader.js"></script>
-  <script src="js/logger.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/auth.js"></script>
+    <script src="../js/company-topbar-loader.js"></script>
+  <script src="../js/preloader.js"></script>
+  <script src="../js/logger.js"></script>`n  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/auth.js"></script>
   <script>
     document.getElementById('current-year').textContent = new Date().getFullYear();
+  
+    // Prevent dropdown toggle link from navigating
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownToggle = document.querySelector('.dropdown-toggle');
+      if (dropdownToggle) {
+        dropdownToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+        });
+      }
+    });
+
+    function performNavSearch() {
+      const query = document.getElementById('nav-search-input').value.trim();
+      if (query) {
+        window.location.href = `products.html?search=${encodeURIComponent(query)}`;
+      }
+    }
   </script>
-</body>
+  </body>
 </html>
 

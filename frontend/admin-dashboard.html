@@ -7,34 +7,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - MJE E-Commerce</title>
-  <link rel="icon" type="image/gif" href="mj-images/mj-logo.gif">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive-fixes.css">
-  <link rel="stylesheet" href="css/admin-dashboard-enhanced.css">
-  <link rel="stylesheet" href="css/admin-notifications.css">
-  <link rel="stylesheet" href="css/admin-responsive-modal.css">
-  <script src="js/server-wakeup.js"></script>
-  <script>
-    // Force clear old localStorage cache that causes QuotaExceededError
-    try {
-      localStorage.removeItem('admin_orders');
-      localStorage.removeItem('admin_products');
-      localStorage.removeItem('admin_banners');
-    } catch(e) { console.log('Cache clear:', e); }
-  </script>
-  <style>
-    /* Hide any preloader that might exist */
-    .admin-preloader { display: none !important; }
-  </style>
-  <script src="js/admin-mobile-toggle.js" defer></script>
-  <script src="js/auto-cache-clear.js"></script>
+  <link rel="icon" type="image/gif" href="../mj-images/mj-logo.gif">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive-fixes.css">
+  <link rel="stylesheet" href="../css/topbar-fix.css">
+  <link rel="stylesheet" href="../css/admin-dashboard-enhanced.css">
+  <link rel="stylesheet" href="../css/admin-color-fix.css">
+  <link rel="stylesheet" href="../css/admin-notifications.css">
+  <link rel="stylesheet" href="../css/admin-responsive-modal.css">
+  <link rel="stylesheet" href="../css/admin-preloader.css">
+  <script src="../js/admin-mobile-toggle.js" defer></script>
+  <script src="../js/auto-cache-clear.js"></script>
 </head>
 <body>
+  <!-- Admin Preloader -->
+  <div class="admin-preloader" id="adminPreloader">
+    <div class="admin-preloader-content">
+      <img src="../mj-images/mj-logo.gif" alt="MJ Electricals" class="admin-preloader-logo">
+      <h1 class="admin-preloader-title">MJ ELECTRICALS</h1>
+      <p class="admin-preloader-subtitle">Admin Dashboard</p>
+      <div class="admin-spinner"></div>
+      <div class="admin-progress-bar">
+        <div class="admin-progress-fill"></div>
+      </div>
+      <p class="admin-loading-text">Loading dashboard...</p>
+    </div>
+  </div>
+
   <nav class="navbar" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff8c42 100%); box-shadow: 0 4px 20px rgba(255, 107, 53, 0.3);">
     <div class="nav-container">
       <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
-        <img src="mj-images/mj-logo.gif" alt="MJE Admin" style="height: 45px; vertical-align: middle; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+        <img src="../mj-images/mj-logo.gif" alt="MJE Admin" style="height: 45px; vertical-align: middle; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
         <div style="display: flex; flex-direction: column; line-height: 1.2;">
           <span style="font-weight: 700; font-size: 1.1rem; color: white;">MJ Electricals Ghana Limited</span>
           <span style="font-size: 0.75rem; color: rgba(255,255,255,0.9); font-weight: 500;">Admin Dashboard</span>
@@ -103,6 +107,13 @@
             </a>
           </li>
           <li>
+            <a href="#" onclick="showSection('messages', event); return false;">
+              <i class="fas fa-envelope"></i>
+              <span>Messages</span>
+              <span class="menu-badge" id="pending-messages-badge" style="display:none;">0</span>
+            </a>
+          </li>
+          <li>
             <a href="#" onclick="showSection('reviews', event); return false;">
               <i class="fas fa-star"></i>
               <span>Reviews</span>
@@ -153,20 +164,6 @@
 
         <section id="overview-section">
           <h2>Dashboard Overview</h2>
-          
-          <!-- Server Status Indicator -->
-          <div id="server-status" style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: none;">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-              <div class="spinner" style="width: 24px; height: 24px; border-width: 3px;"></div>
-              <div>
-                <strong style="color: #856404;">Server is waking up...</strong>
-                <p style="margin: 0.25rem 0 0 0; color: #856404; font-size: 0.9rem;">
-                  This may take up to 60 seconds on first visit. Please wait...
-                </p>
-              </div>
-            </div>
-          </div>
-          
           <div class="stats-grid mt-2">
             <div class="stat-card">
               <div class="stat-value" id="stat-products">0</div>
@@ -202,10 +199,6 @@
               <div class="stat-card" style="border-left: 4px solid #3b82f6;">
                 <div class="stat-label">Paid Revenue</div>
                 <div class="stat-value" id="analytics-paid-revenue" style="color: #3b82f6;">GH₵ 0</div>
-              </div>
-              <div class="stat-card" style="border-left: 4px solid #ef4444;">
-                <div class="stat-label">Refunded</div>
-                <div class="stat-value" id="analytics-refunded" style="color: #ef4444;">GH₵ 0</div>
               </div>
               <div class="stat-card" style="border-left: 4px solid #f59e0b;">
                 <div class="stat-label">Pending</div>
@@ -327,10 +320,25 @@
                 <textarea id="product-description" rows="3" required></textarea>
               </div>
               <div class="form-group">
-                <label>Product Image</label>
-                <input type="file" id="product-image-file" accept="image/*" onchange="handleImageSelect(event)">
-                <input type="text" id="product-image" placeholder="Or enter image URL" style="margin-top: 0.5rem;">
-                <div id="image-preview" style="margin-top: 0.5rem;"></div>
+                <label>Product Images (Max 4)</label>
+                <div id="images-container">
+                  <div class="image-input-group" style="margin-bottom: 0.75rem;">
+                    <input type="file" class="product-image-file" accept="image/*" onchange="handleImageSelect(event, 0)">
+                    <input type="text" class="product-image-url" placeholder="Or enter image URL" style="margin-top: 0.5rem;">
+                    <div class="image-preview" style="margin-top: 0.5rem;"></div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addImageInput()" style="margin-top: 0.5rem; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                  <i class="fas fa-plus"></i> Add Another Image
+                </button>
+                <small style="display: block; margin-top: 0.5rem; color: #666;">Add up to 4 images to showcase different angles of the product</small>
+              </div>
+              <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                  <input type="checkbox" id="product-featured" style="width: auto; cursor: pointer;">
+                  <span>Featured Product</span>
+                </label>
+                <small>Featured products appear on the homepage</small>
               </div>
               <div class="form-group">
                 <label>Status</label>
@@ -351,10 +359,20 @@
 
         <section id="orders-section" style="display:none;">
           <h2>Manage Orders</h2>
-          <div style="margin-top: 1rem;">
-            <input type="text" id="order-search" placeholder="Search orders by ID, customer name, or email..." 
-                   style="width: 100%; max-width: 500px; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;"
-                   oninput="searchOrders(this.value)">
+          <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+            <div style="flex: 1; min-width: 300px;">
+              <input type="text" id="order-search" placeholder="Search orders by ID, customer name, or email..." 
+                     style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;"
+                     oninput="searchOrders(this.value)">
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Filter by Date:</label>
+              <input type="date" id="admin-orders-date-filter" onchange="filterAdminOrdersByDate()" 
+                     style="padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;">
+            </div>
+            <button class="btn btn-secondary" onclick="clearAdminOrdersDateFilter()">
+              <i class="fas fa-times"></i> Clear Filter
+            </button>
           </div>
           <div id="orders-list" class="mt-2">
             <div class="loading"><div class="spinner"></div></div>
@@ -364,6 +382,13 @@
         <section id="feedback-section" style="display:none;">
           <h2>Customer Feedback</h2>
           <div id="feedback-list" class="mt-2">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </section>
+
+        <section id="messages-section" style="display:none;">
+          <h2><i class="fas fa-envelope"></i> Contact Messages</h2>
+          <div id="messages-list" class="mt-2">
             <div class="loading"><div class="spinner"></div></div>
           </div>
         </section>
@@ -387,6 +412,13 @@
             </div>
             <button type="submit" class="btn">Add Category</button>
           </form>
+          
+          <div style="margin: 2rem 0;">
+            <input type="text" id="category-search" placeholder="Search categories by name..." 
+                   style="width: 100%; max-width: 400px; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 5px;"
+                   oninput="searchCategories(this.value)">
+          </div>
+          
           <div id="categories-list" class="mt-3"></div>
         </section>
 
@@ -400,7 +432,7 @@
               <input type="hidden" id="delivery-id">
               <div class="form-group">
                 <label>City Name *</label>
-                <input type="text" id="delivery-city" required placeholder="e.g., Accra, Kumasi">
+                <input type="text" id="delivery-city" required placeholder="e.g., Accra, Kumasi, Tamale, Cape Coast">
               </div>
               <div class="form-group">
                 <label>Delivery Charge (GH₵) *</label>
@@ -498,18 +530,27 @@
             <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: var(--shadow-md);">
               <h3 style="margin-top: 0; color: var(--primary-orange);">Change Password</h3>
               <form id="change-password-form">
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                   <label>Current Password</label>
-                  <input type="password" id="current-password" required>
+                  <input type="password" id="current-password" required style="padding-right: 3rem;">
+                  <button type="button" onclick="togglePasswordVisibility('current-password')" style="position: absolute; right: 10px; top: 38px; background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem; padding: 0.5rem;" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye" id="current-password-icon"></i>
+                  </button>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                   <label>New Password</label>
-                  <input type="password" id="new-password" required minlength="8">
+                  <input type="password" id="new-password" required minlength="8" style="padding-right: 3rem;">
+                  <button type="button" onclick="togglePasswordVisibility('new-password')" style="position: absolute; right: 10px; top: 38px; background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem; padding: 0.5rem;" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye" id="new-password-icon"></i>
+                  </button>
                   <small>At least 8 characters</small>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                   <label>Confirm New Password</label>
-                  <input type="password" id="confirm-password" required>
+                  <input type="password" id="confirm-password" required style="padding-right: 3rem;">
+                  <button type="button" onclick="togglePasswordVisibility('confirm-password')" style="position: absolute; right: 10px; top: 38px; background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem; padding: 0.5rem;" aria-label="Toggle password visibility">
+                    <i class="fas fa-eye" id="confirm-password-icon"></i>
+                  </button>
                 </div>
                 <button type="submit" class="btn">
                   <i class="fas fa-key"></i> Change Password
@@ -523,18 +564,55 @@
   </div>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/toast.js"></script>
-  <script src="js/modal.js"></script>
-  <script src="js/logger.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/socket.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/mobile-table-helper.js"></script>
-  <script src="js/admin-reviews.js"></script>
-  <script src="js/search-suggestions.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/toast.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/logger.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/state.js"></script>
+  <script src="../js/socket.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/mobile-table-helper.js"></script>
+  <script src="../js/admin-reviews.js"></script>
+  <script src="../js/search-suggestions.js"></script>
   <script>
+    // Safe date formatting functions to prevent "Daylight" syntax errors
+    function safeFormatDate(dateString) {
+      try {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleDateString();
+      } catch (error) {
+        console.error('Date formatting error:', error);
+        return 'N/A';
+      }
+    }
+
+    function safeFormatTime(dateString) {
+      try {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleTimeString();
+      } catch (error) {
+        console.error('Time formatting error:', error);
+        return 'N/A';
+      }
+    }
+
+    function safeFormatDateTime(dateString) {
+      try {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+      } catch (error) {
+        console.error('DateTime formatting error:', error);
+        return 'N/A';
+      }
+    }
+
     // Ensure api is available before proceeding
     function waitForApi() {
       return new Promise((resolve) => {
@@ -548,25 +626,45 @@
 
     // Wait for user to load before checking role
     document.addEventListener('DOMContentLoaded', async () => {
-      // Wait for api to be available
-      await waitForApi();
-      
-      // Show server status if not ready
-      const serverStatus = document.getElementById('server-status');
-      if (!window.serverWakeup?.isComplete()) {
-        serverStatus.style.display = 'block';
-        
-        // Hide when server is ready
-        window.addEventListener('serverReady', () => {
-          serverStatus.style.display = 'none';
-        });
-        
-        // Auto-hide after 60 seconds
-        setTimeout(() => {
-          serverStatus.style.display = 'none';
-        }, 60000);
+      // Clear old cached data to prevent quota errors
+      try {
+        sessionStorage.removeItem('admin_products');
+        sessionStorage.removeItem('admin_products_time');
+        sessionStorage.removeItem('admin_orders');
+        sessionStorage.removeItem('admin_orders_time');
+      } catch (e) {
+        console.log('Cleared old cache');
       }
       
+      // Wait for api to be available
+      await waitForApi();
+      // Hide preloader after minimum time
+      setTimeout(() => {
+        const preloader = document.getElementById('adminPreloader');
+        if (preloader) {
+          preloader.classList.add('hidden');
+          setTimeout(() => preloader.remove(), 500);
+        }
+      }, 2000);
+
+      if (!requireAuth()) {
+        return;
+      }
+      
+      // Wait for user data to load
+      await stateManager.loadUser();
+      const state = stateManager.getState();
+      
+      // Check if user is admin or super admin
+      if (!state.user || !['admin', 'superadmin'].includes(state.user.role)) {
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      // User is authenticated and has admin access, load the page
+      loadStats();
+      
+      // Restore last viewed section
       const lastSection = localStorage.getItem('adminCurrentSection');
       if (lastSection && lastSection !== 'overview') {
         setTimeout(() => {
@@ -625,6 +723,7 @@
         initOrderSearch();
       }
       if (section === 'feedback') loadFeedback();
+      if (section === 'messages') loadMessages();
       if (section === 'categories') loadCategories();
       if (section === 'delivery') loadDeliveryCharges();
       if (section === 'newsletter') loadNewsletterSubscribers();
@@ -811,7 +910,6 @@
         // Update analytics cards
         document.getElementById('analytics-total-revenue').textContent = formatPrice(analytics.revenue.total);
         document.getElementById('analytics-paid-revenue').textContent = formatPrice(analytics.revenue.paid);
-        document.getElementById('analytics-refunded').textContent = formatPrice(analytics.revenue.refunded);
         document.getElementById('analytics-pending').textContent = formatPrice(analytics.revenue.pending);
         document.getElementById('analytics-net-revenue').textContent = formatPrice(analytics.revenue.net);
         document.getElementById('analytics-orders-count').textContent = analytics.orders.total;
@@ -831,7 +929,6 @@
               <div>
                 <strong>Order #${activity.id.slice(-8)}</strong>
                 <span class="status-badge ${activity.status}" style="margin-left: 0.5rem;">${activity.status}</span>
-                ${activity.refundStatus === 'processed' ? '<span style="color: #10b981; margin-left: 0.5rem;"><i class="fas fa-undo"></i> Refunded</span>' : ''}
               </div>
               <div style="text-align: right;">
                 <strong style="color: var(--primary-orange);">${formatPrice(activity.amount)}</strong>
@@ -854,14 +951,23 @@
 
     async function loadProducts() {
       try {
-        const response = await api.getProducts({ limit: 1000 });
+        // Load with pagination - only 100 at a time
+        const response = await api.getProducts({ limit: 100, page: 1 });
         allProducts = response.products;
+        
+        // Store products in a global map for easy access
+        window.productsMap = {};
+        allProducts.forEach(p => {
+          window.productsMap[p._id] = p;
+        });
+        
         displayProducts(allProducts, 1);
         
         // Update out-of-stock badge
         await updateOutOfStockBadge();
       } catch (error) {
-        document.getElementById('products-list').innerHTML = '<p>Failed to load products</p>';
+        console.error('Failed to load products:', error);
+        document.getElementById('products-list').innerHTML = '<p>Failed to load products. Please refresh the page.</p>';
       }
     }
 
@@ -923,7 +1029,7 @@
                     </td>
                     <td>${p.status}</td>
                     <td>
-                      <button class="btn btn-secondary" onclick='editProduct(${JSON.stringify(p)})'>Edit</button>
+                      <button class="btn btn-secondary" onclick="editProductById('${p._id}')">Edit</button>
                       <button class="btn btn-secondary" onclick="deleteProduct('${p._id}')">Delete</button>
                     </td>
                   </tr>
@@ -933,6 +1039,13 @@
             </table>
           </div>
         `;
+    }
+
+    window.editProductById = function(productId) {
+      const product = window.productsMap[productId];
+      if (product) {
+        editProduct(product);
+      }
     }
 
     window.searchProducts = function(query) {
@@ -953,15 +1066,71 @@
     window.showProductForm = function() {
       document.getElementById('product-form').style.display = 'block';
       loadCategoriesForSelect();
+      resetImageInputs();
     }
 
     window.hideProductForm = function() {
       document.getElementById('product-form').style.display = 'none';
       document.getElementById('product-form-element').reset();
       document.getElementById('product-id').value = '';
-      document.getElementById('image-preview').innerHTML = '';
+      document.getElementById('product-featured').checked = false;
       document.getElementById('discount-info').textContent = '';
       document.getElementById('product-discount').value = 0;
+      resetImageInputs();
+    }
+
+    function resetImageInputs() {
+      const container = document.getElementById('images-container');
+      container.innerHTML = `
+        <div class="image-input-group" style="margin-bottom: 0.75rem;">
+          <input type="file" class="product-image-file" accept="image/*" onchange="handleImageSelect(event, 0)">
+          <input type="text" class="product-image-url" placeholder="Or enter image URL" style="margin-top: 0.5rem;">
+          <div class="image-preview" style="margin-top: 0.5rem;"></div>
+        </div>
+      `;
+    }
+
+    window.addImageInput = function() {
+      const container = document.getElementById('images-container');
+      const currentCount = container.querySelectorAll('.image-input-group').length;
+      
+      if (currentCount >= 4) {
+        showAlert('Maximum 4 images allowed', 'error');
+        return;
+      }
+      
+      const newGroup = document.createElement('div');
+      newGroup.className = 'image-input-group';
+      newGroup.style.cssText = 'margin-bottom: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb;';
+      newGroup.innerHTML = `
+        <input type="file" class="product-image-file" accept="image/*" onchange="handleImageSelect(event, ${currentCount})">
+        <input type="text" class="product-image-url" placeholder="Or enter image URL" style="margin-top: 0.5rem;">
+        <div class="image-preview" style="margin-top: 0.5rem;"></div>
+        <button type="button" class="btn btn-secondary" onclick="removeImageInput(this)" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 0.4rem 0.8rem; background: #ef4444;">
+          <i class="fas fa-times"></i> Remove
+        </button>
+      `;
+      container.appendChild(newGroup);
+    }
+
+    window.removeImageInput = function(button) {
+      button.closest('.image-input-group').remove();
+    }
+
+    window.handleImageSelect = function(event, index) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const group = event.target.closest('.image-input-group');
+        const preview = group.querySelector('.image-preview');
+        const urlInput = group.querySelector('.product-image-url');
+        
+        preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; border-radius: 5px; border: 2px solid #10b981;">`;
+        urlInput.value = e.target.result;
+      };
+      reader.readAsDataURL(file);
     }
 
     async function loadCategoriesForSelect() {
@@ -987,7 +1156,7 @@
       document.getElementById('product-discount').value = product.discount || 0;
       document.getElementById('product-stock').value = product.stock;
       document.getElementById('product-description').value = product.description;
-      document.getElementById('product-image').value = product.images[0] || '';
+      document.getElementById('product-featured').checked = product.featured || false;
       document.getElementById('product-status').value = product.status;
       
       // Update discount info display
@@ -996,9 +1165,29 @@
         document.getElementById('discount-info').textContent = `${discountPercent}% off - Save GH₵ ${(product.oldPrice - product.price).toFixed(2)}`;
       }
       
-      if (product.images[0]) {
-        document.getElementById('image-preview').innerHTML = 
-          `<img src="${product.images[0]}" style="max-width: 200px; border-radius: 5px;">`;
+      // Load existing images
+      const container = document.getElementById('images-container');
+      container.innerHTML = '';
+      
+      if (product.images && product.images.length > 0) {
+        product.images.forEach((img, index) => {
+          const group = document.createElement('div');
+          group.className = 'image-input-group';
+          group.style.cssText = 'margin-bottom: 0.75rem;' + (index > 0 ? ' padding-top: 0.75rem; border-top: 1px solid #e5e7eb;' : '');
+          group.innerHTML = `
+            <input type="file" class="product-image-file" accept="image/*" onchange="handleImageSelect(event, ${index})">
+            <input type="text" class="product-image-url" placeholder="Or enter image URL" value="${img}" style="margin-top: 0.5rem;">
+            <div class="image-preview" style="margin-top: 0.5rem;">
+              <img src="${img}" style="max-width: 200px; border-radius: 5px; border: 2px solid #10b981;">
+            </div>
+            ${index > 0 ? `<button type="button" class="btn btn-secondary" onclick="removeImageInput(this)" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 0.4rem 0.8rem; background: #ef4444;">
+              <i class="fas fa-times"></i> Remove
+            </button>` : ''}
+          `;
+          container.appendChild(group);
+        });
+      } else {
+        resetImageInputs();
       }
     }
 
@@ -1027,6 +1216,17 @@
       const oldPrice = parseFloat(document.getElementById('product-old-price').value) || 0;
       const newPrice = parseFloat(document.getElementById('product-price').value);
       
+      // Collect all image URLs
+      const imageInputs = document.querySelectorAll('.product-image-url');
+      const images = Array.from(imageInputs)
+        .map(input => input.value.trim())
+        .filter(url => url.length > 0);
+      
+      if (images.length === 0) {
+        showAlert('Please add at least one product image', 'error');
+        return;
+      }
+      
       const productData = {
         name: document.getElementById('product-name').value,
         category: document.getElementById('product-category').value,
@@ -1036,7 +1236,8 @@
         discount: parseInt(document.getElementById('product-discount').value) || 0,
         stock: document.getElementById('product-stock').value,
         description: document.getElementById('product-description').value,
-        images: [document.getElementById('product-image').value].filter(Boolean),
+        images: images,
+        featured: document.getElementById('product-featured').checked,
         status: document.getElementById('product-status').value
       };
 
@@ -1073,25 +1274,46 @@
 
     let currentOrdersPage = 1;
     const ordersPerPage = 20;
+    let filteredAdminOrders = [];
 
     async function loadOrders() {
       try {
         const response = await api.getAllOrders();
-        // DON'T store in localStorage - causes QuotaExceededError
-        allOrders = response.orders || [];
-        displayOrders(allOrders, 1);
+        allOrders = response.orders;
+        
+        filteredAdminOrders = allOrders; // Initially show all
+        displayOrders(filteredAdminOrders, 1);
       } catch (error) {
         console.error('Failed to load orders:', error);
-        document.getElementById('orders-list').innerHTML = `
-          <div style="text-align: center; padding: 2rem;">
-            <p style="color: var(--error); margin-bottom: 1rem;">Failed to load orders</p>
-            <p style="color: var(--gray-600); font-size: 0.9rem;">${error.message || 'Server may be waking up. Please wait 60 seconds and try again.'}</p>
-            <button onclick="loadOrders()" class="btn" style="margin-top: 1rem;">
-              <i class="fas fa-redo"></i> Retry
-            </button>
-          </div>
-        `;
+        document.getElementById('orders-list').innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 2rem;">📦 No orders available yet</p>';
       }
+    }
+
+    window.filterAdminOrdersByDate = function() {
+      const dateInput = document.getElementById('admin-orders-date-filter');
+      const selectedDate = dateInput.value;
+      
+      if (!selectedDate) {
+        filteredAdminOrders = allOrders;
+      } else {
+        const filterDate = new Date(selectedDate);
+        filterDate.setHours(0, 0, 0, 0);
+        
+        filteredAdminOrders = allOrders.filter(order => {
+          const orderDate = new Date(order.createdAt);
+          orderDate.setHours(0, 0, 0, 0);
+          return orderDate.getTime() === filterDate.getTime();
+        });
+      }
+      
+      displayOrders(filteredAdminOrders, 1);
+    }
+
+    window.clearAdminOrdersDateFilter = function() {
+      document.getElementById('admin-orders-date-filter').value = '';
+      document.getElementById('order-search').value = '';
+      filteredAdminOrders = allOrders;
+      displayOrders(filteredAdminOrders, 1);
     }
 
     window.displayOrders = function(orders, page = 1) {
@@ -1143,18 +1365,9 @@
                   <td>${formatPrice(order.totalAmount)}</td>
                   <td>${order.status}</td>
                   <td>
-                    <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; margin-right: 0.5rem;" onclick='viewAdminOrderDetails(${JSON.stringify(order).replace(/'/g, "&#39;")})'>
+                    <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; margin-right: 0.5rem;" onclick="viewAdminOrderById('${order._id}')">
                       <i class="fas fa-eye"></i> View
                     </button>
-                    ${order.status === 'cancelled' && order.refundStatus !== 'processed' ? `
-                      <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; margin-right: 0.5rem; background: #10b981;" onclick="processOrderRefund('${order._id}')">
-                        <i class="fas fa-money-bill-wave"></i> Process Refund
-                      </button>
-                    ` : order.refundStatus === 'processed' ? `
-                      <span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">
-                        <i class="fas fa-check-circle"></i> Refunded
-                      </span>
-                    ` : ''}
                     <select onchange="updateOrderStatus('${order._id}', this.value)" style="padding: 0.5rem; font-size: 0.85rem;">
                       <option value="">Change Status</option>
                       <option value="pending">Pending</option>
@@ -1174,11 +1387,11 @@
 
     window.searchOrders = function(query) {
       if (!query.trim()) {
-        displayOrders(allOrders, 1);
+        displayOrders(filteredAdminOrders, 1);
         return;
       }
 
-      const filtered = allOrders.filter(order =>
+      const filtered = filteredAdminOrders.filter(order =>
         order._id.toLowerCase().includes(query.toLowerCase()) ||
         order.user.name.toLowerCase().includes(query.toLowerCase()) ||
         order.status.toLowerCase().includes(query.toLowerCase())
@@ -1189,6 +1402,14 @@
 
     window.updateOrderStatus = async function(orderId, status) {
       if (!status) return;
+      
+      // Optimistically update UI
+      const orderElement = document.querySelector(`select[onchange*="${orderId}"]`);
+      if (orderElement) {
+        orderElement.value = status;
+        orderElement.disabled = true;
+      }
+      
       try {
         await api.updateOrderStatus(orderId, status);
         showAlert(`Order #${orderId.slice(-8)} status updated to "${status}"`, 'success');
@@ -1196,27 +1417,16 @@
         loadStats();
       } catch (error) {
         showAlert(error.message || 'Failed to update order status', 'error');
+        // Revert on error
+        if (orderElement) {
+          orderElement.disabled = false;
+        }
+        loadOrders();
       }
     }
 
-    window.processOrderRefund = async function(orderId) {
-      Modal.confirm(
-        'Are you sure you want to process the refund for this order? This action cannot be undone.',
-        async () => {
-          try {
-            await api.processRefund(orderId);
-            showAlert(`Refund processed successfully for order #${orderId.slice(-8)}`, 'success');
-            loadOrders();
-            loadStats();
-          } catch (error) {
-            showAlert(error.message || 'Failed to process refund', 'error');
-          }
-        }
-      );
-    }
 
-    // Alias for modal usage
-    window.processRefund = window.processOrderRefund;
+    // Alias for modal usage (removed refund functionality)
 
     let allFeedbacks = [];
     let currentFeedbackPage = 1;
@@ -1305,19 +1515,6 @@
       `;
     }
 
-    window.respondToFeedback = async function(event, feedbackId) {
-      event.preventDefault();
-      const response = document.getElementById(`response-${feedbackId}`).value;
-      try {
-        await api.respondToFeedback(feedbackId, response);
-        showAlert('Response sent to customer successfully', 'success');
-        loadFeedback();
-        loadStats();
-      } catch (error) {
-        showAlert(error.message || 'Failed to send response', 'error');
-      }
-    }
-
     window.deleteFeedback = async function(feedbackId) {
       Modal.confirm('Are you sure you want to delete this feedback? This action cannot be undone.', async () => {
         try {
@@ -1331,53 +1528,321 @@
       });
     }
 
+    window.respondToFeedback = async function(event, feedbackId) {
+      event.preventDefault();
+      const response = document.getElementById(`response-${feedbackId}`).value;
+      try {
+        await api.respondToFeedback(feedbackId, response);
+        showAlert('Response sent to customer successfully', 'success');
+        loadFeedback();
+        loadStats();
+      } catch (error) {
+        showAlert(error.message || 'Failed to send response', 'error');
+      }
+    }
+
+    // Messages Management
+    let allMessages = [];
+    let currentMessagesPage = 1;
+    const messagesPerPage = 10;
+
+    window.loadMessages = async function() {
+      const container = document.getElementById('messages-list');
+      try {
+        container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading messages...</p></div>';
+        const response = await api.getAllContactMessages();
+        
+        if (!response || !response.messages) {
+          throw new Error('Invalid response format');
+        }
+
+        allMessages = response.messages;
+        displayMessages(allMessages, 1);
+      } catch (error) {
+        console.error('Load messages error:', error);
+        container.innerHTML = `
+          <div style="text-align: center; padding: 2rem;">
+            <p style="color: var(--error-color); margin-bottom: 1rem;">Failed to load messages</p>
+            <p style="color: var(--gray-600); font-size: 0.9rem;">${error.message || 'Unknown error'}</p>
+            <button onclick="loadMessages()" class="btn" style="margin-top: 1rem;">
+              <i class="fas fa-redo"></i> Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    window.displayMessages = function(messages, page = 1) {
+      const container = document.getElementById('messages-list');
+      currentMessagesPage = page;
+
+      if (messages.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">No messages yet</p>';
+        return;
+      }
+
+      const totalPages = Math.ceil(messages.length / messagesPerPage);
+      const startIndex = (page - 1) * messagesPerPage;
+      const endIndex = startIndex + messagesPerPage;
+      const paginatedMessages = messages.slice(startIndex, endIndex);
+
+      container.innerHTML = `
+        <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <p style="color: var(--gray-600);">Showing ${startIndex + 1}-${Math.min(endIndex, messages.length)} of ${messages.length} messages</p>
+          <div class="pagination">
+            <button class="btn btn-secondary" onclick="displayMessages(allMessages, ${page - 1})" ${page === 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span style="margin: 0 1rem;">Page ${page} of ${totalPages}</span>
+            <button class="btn btn-secondary" onclick="displayMessages(allMessages, ${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        ${paginatedMessages.map(msg => `
+          <div style="background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+              <div style="flex: 1;">
+                <p style="margin-bottom: 0.5rem;"><strong>${msg.name}</strong> (${msg.email})</p>
+                ${msg.phone ? `<p style="margin-bottom: 0.5rem; color: var(--gray-600);"><i class="fas fa-phone"></i> ${msg.phone}</p>` : ''}
+                <p style="color: var(--gray-600); font-size: 0.9rem;">
+                  <i class="fas fa-clock"></i> ${new Date(msg.createdAt).toLocaleString()}
+                </p>
+              </div>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span style="background: ${msg.status === 'responded' ? 'var(--success)' : 'var(--warning)'}; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem;">
+                  ${msg.status || 'pending'}
+                </span>
+                <button onclick="deleteMessage('${msg._id}')" class="btn" style="background: #dc3545; color: white; padding: 0.25rem 0.75rem; font-size: 0.85rem; border: none;" title="Delete message">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <p style="font-weight: 600; margin-bottom: 0.5rem;">Subject: ${msg.subject}</p>
+              <p style="color: var(--gray-700);">${msg.message}</p>
+            </div>
+            ${msg.response ? `
+              <div style="background: var(--gray-100); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--success);">
+                  <i class="fas fa-reply"></i> Your Response:
+                </p>
+                <p>${msg.response}</p>
+                <p style="color: var(--gray-600); font-size: 0.85rem; margin-top: 0.5rem;">
+                  Responded: ${new Date(msg.respondedAt).toLocaleString()}
+                </p>
+              </div>
+            ` : `
+              <form onsubmit="respondToMessage(event, '${msg._id}')" style="margin-top: 1rem;">
+                <textarea id="response-${msg._id}" placeholder="Type your response..." rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: 8px; margin-bottom: 0.5rem;" required></textarea>
+                <button type="submit" class="btn" style="background: var(--success); color: white;">
+                  <i class="fas fa-paper-plane"></i> Send Response
+                </button>
+              </form>
+            `}
+          </div>
+        `).join('')}
+      `;
+    }
+
+    window.respondToMessage = async function(event, messageId) {
+      event.preventDefault();
+      const response = document.getElementById(`response-${messageId}`).value;
+      try {
+        await api.respondToContact(messageId, response);
+        showAlert('Response sent successfully', 'success');
+        loadMessages();
+        loadStats();
+      } catch (error) {
+        showAlert(error.message || 'Failed to send response', 'error');
+      }
+    }
+
+    window.deleteMessage = async function(messageId) {
+      Modal.confirm('Are you sure you want to delete this message? This action cannot be undone.', async () => {
+        try {
+          await api.deleteContactMessage(messageId);
+          showAlert('Message deleted successfully', 'success');
+          loadMessages();
+          loadStats();
+        } catch (error) {
+          showAlert(error.message || 'Failed to delete message', 'error');
+        }
+      });
+    }
+
+    let allCategories = [];
+    let currentCategoriesPage = 1;
+    const categoriesPerPage = 15;
+
     async function loadCategories() {
       try {
         const response = await api.getCategories();
-        const container = document.getElementById('categories-list');
+        allCategories = response.categories || [];
+        displayCategories(allCategories, 1);
+      } catch (error) {
+        document.getElementById('categories-list').innerHTML = '<p>Failed to load categories</p>';
+      }
+    }
 
-        container.innerHTML = `
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Status</th>
+    function displayCategories(categories, page = 1) {
+      const container = document.getElementById('categories-list');
+      currentCategoriesPage = page;
+
+      if (!categories || categories.length === 0) {
+        container.innerHTML = '<p class="text-center">No categories found</p>';
+        return;
+      }
+
+      // Calculate pagination
+      const totalPages = Math.ceil(categories.length / categoriesPerPage);
+      const startIndex = (page - 1) * categoriesPerPage;
+      const endIndex = startIndex + categoriesPerPage;
+      const paginatedCategories = categories.slice(startIndex, endIndex);
+
+      container.innerHTML = `
+        <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <p style="color: var(--gray-600);">Showing ${startIndex + 1}-${Math.min(endIndex, categories.length)} of ${categories.length} categories</p>
+          <div class="pagination">
+            <button class="btn btn-secondary" onclick="displayCategories(allCategories, ${page - 1})" ${page === 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span style="margin: 0 1rem;">Page ${page} of ${totalPages}</span>
+            <button class="btn btn-secondary" onclick="displayCategories(allCategories, ${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Products</th>
+                <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                ${response.categories.map(cat => `
+                ${paginatedCategories.map(cat => `
                   <tr>
+                    <td>
+                      ${cat.image ? `<img src="${cat.image}" alt="${cat.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : '<span style="color: var(--gray-400);">No image</span>'}
+                    </td>
                     <td>${cat.name}</td>
                     <td>${cat.description || '-'}</td>
+                    <td>${cat.productCount || 0}</td>
                     <td>${cat.isActive ? 'Active' : 'Inactive'}</td>
+                    <td>
+                      <button class="btn btn-sm" onclick="editCategory('${cat._id}')" 
+                              style="padding: 0.4rem 0.8rem; font-size: 0.85rem; margin-right: 0.5rem; background: #3b82f6;">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                      <button class="btn-danger btn-sm" onclick="deleteCategory('${cat._id}', '${cat.name}', ${cat.productCount || 0})" 
+                              style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                        <i class="fas fa-trash"></i> Delete
+                      </button>
+                    </td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
           </div>
         `;
+    }
+
+    window.searchCategories = function(query) {
+      if (!query.trim()) {
+        displayCategories(allCategories, 1);
+        return;
+      }
+
+      const filtered = allCategories.filter(cat => 
+        cat.name.toLowerCase().includes(query.toLowerCase()) ||
+        (cat.description && cat.description.toLowerCase().includes(query.toLowerCase()))
+      );
+
+      displayCategories(filtered, 1);
+    }
+
+    window.deleteCategory = async function(categoryId, categoryName, productCount) {
+      const message = productCount > 0
+        ? `Warning: "${categoryName}" has ${productCount} product(s) associated with it.<br><br>Deleting this category may affect those products. Are you sure you want to continue?`
+        : `Are you sure you want to delete the category "${categoryName}"?`;
+
+      Modal.confirm(message, async () => {
+        try {
+          await api.deleteCategory(categoryId);
+          showAlert(`Category "${categoryName}" deleted successfully`, 'success');
+          loadCategories();
+        } catch (error) {
+          showAlert(error.message || 'Failed to delete category', 'error');
+        }
+      });
+    }
+
+
+    let editingCategoryId = null;
+
+    window.editCategory = async function(categoryId) {
+      try {
+        const response = await api.getCategories();
+        const category = response.categories.find(c => c._id === categoryId);
+        
+        if (!category) {
+          showAlert('Category not found', 'error');
+          return;
+        }
+
+        editingCategoryId = categoryId;
+        document.getElementById('category-name').value = category.name;
+        document.getElementById('category-description').value = category.description || '';
+        document.getElementById('category-image').value = category.image || '';
+        
+        if (category.image) {
+          document.getElementById('category-image-preview').innerHTML = 
+            `<img src="${category.image}" style="max-width: 200px; border-radius: 5px;">`;
+        }
+        
+        const submitBtn = document.querySelector('#category-form button[type="submit"]');
+        submitBtn.textContent = 'Update Category';
+        submitBtn.style.background = '#3b82f6';
+        
+        document.getElementById('category-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
       } catch (error) {
-        document.getElementById('categories-list').innerHTML = '<p>Failed to load categories</p>';
+        showAlert(error.message || 'Failed to load category', 'error');
       }
     }
 
     document.getElementById('category-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const categoryName = document.getElementById('category-name').value;
+      const categoryData = {
+        name: categoryName,
+        description: document.getElementById('category-description').value,
+        image: document.getElementById('category-image').value
+      };
+
       try {
-        await api.createCategory({
-          name: categoryName,
-          description: document.getElementById('category-description').value,
-          image: document.getElementById('category-image').value
-        });
-        showAlert(`Category "${categoryName}" created successfully`, 'success');
+        if (editingCategoryId) {
+          await api.updateCategory(editingCategoryId, categoryData);
+          showAlert(`Category "${categoryName}" updated successfully`, 'success');
+          editingCategoryId = null;
+          const submitBtn = document.querySelector('#category-form button[type="submit"]');
+          submitBtn.textContent = 'Add Category';
+          submitBtn.style.background = '';
+        } else {
+          await api.createCategory(categoryData);
+          showAlert(`Category "${categoryName}" created successfully`, 'success');
+        }
+        
         e.target.reset();
         document.getElementById('category-image-preview').innerHTML = '';
         loadCategories();
       } catch (error) {
-        showAlert(error.message || 'Failed to create category', 'error');
+        showAlert(error.message || 'Failed to save category', 'error');
       }
     });
 
@@ -1516,19 +1981,6 @@
       });
     }
 
-    window.handleImageSelect = function(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const preview = document.getElementById('image-preview');
-          preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; border-radius: 5px;">`;
-          document.getElementById('product-image').value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
     let allNewsletterSubscribers = [];
     let currentNewsletterPage = 1;
     const subscribersPerPage = 20;
@@ -1617,6 +2069,16 @@
       if (typeof addr === 'string') return addr;
       return `${addr.street || ''}, ${addr.city || ''}, ${addr.state || ''} ${addr.zipCode || ''}, ${addr.country || ''}`.replace(/,\s*,/g, ',').trim();
     }
+
+    // Helper function to view order by ID
+    window.viewAdminOrderById = function(orderId) {
+      const order = allOrders.find(o => o._id === orderId);
+      if (order) {
+        viewAdminOrderDetails(order);
+      } else {
+        toast.error('Order not found');
+      }
+    };
 
     window.viewAdminOrderDetails = function(order) {
       const itemsList = order.items.map((item, index) => `
@@ -1708,12 +2170,6 @@
                   <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
                   <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                 </select>
-                ${order.paymentStatus === 'paid' && order.status !== 'cancelled' ? `
-                  <button onclick="processRefund('${order._id}')" 
-                          style="padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                    Process Refund
-                  </button>
-                ` : ''}
               </div>
             </div>
           </div>
@@ -1850,6 +2306,124 @@
       toast.show(message, type);
     }
 
+    // Reviews Management
+    let allReviews = [];
+    let currentReviewFilter = 'pending';
+
+    async function loadReviews() {
+      try {
+        await filterReviews('pending');
+        await updatePendingReviewsBadge();
+      } catch (error) {
+        console.error('Failed to load reviews:', error);
+        document.getElementById('reviews-list').innerHTML = '<p>Failed to load reviews</p>';
+      }
+    }
+
+    window.filterReviews = async function(status) {
+      currentReviewFilter = status;
+      
+      // Update button states
+      document.querySelectorAll('[id^="filter-"][id$="-reviews"]').forEach(btn => {
+        btn.classList.remove('btn');
+        btn.classList.add('btn-secondary');
+      });
+      const activeBtn = document.getElementById(`filter-${status}-reviews`);
+      if (activeBtn) {
+        activeBtn.classList.remove('btn-secondary');
+        activeBtn.classList.add('btn');
+      }
+
+      try {
+        const params = status === 'all' ? {} : { status };
+        const response = await api.getAllReviews(params);
+        allReviews = response.reviews || [];
+        displayReviews(allReviews);
+      } catch (error) {
+        console.error('Failed to filter reviews:', error);
+        document.getElementById('reviews-list').innerHTML = '<p>Failed to load reviews</p>';
+      }
+    }
+
+    function displayReviews(reviews) {
+      const container = document.getElementById('reviews-list');
+
+      if (reviews.length === 0) {
+        container.innerHTML = `<p style="text-align: center; padding: 2rem; color: var(--gray-600);">No ${currentReviewFilter === 'all' ? '' : currentReviewFilter} reviews found.</p>`;
+        return;
+      }
+
+      container.innerHTML = reviews.map(review => `
+        <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow-md); margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <div>
+              <h4 style="margin: 0;">${review.title || 'No title'}</h4>
+              <p style="margin: 0.5rem 0; color: var(--gray-600);">
+                <strong>${review.user ? review.user.name : 'Deleted User'}</strong> (${review.user ? review.user.email : 'N/A'})
+              </p>
+              <div style="color: #ffa500; margin: 0.5rem 0;">
+                ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+              </div>
+            </div>
+            <span class="status-badge ${review.status}">${review.status}</span>
+          </div>
+          
+          <div style="margin-bottom: 1rem;">
+            <p style="margin: 0; line-height: 1.6;">${review.comment || 'No comment'}</p>
+          </div>
+          
+          <div style="border-top: 1px solid var(--gray-200); padding-top: 1rem; margin-top: 1rem;">
+            <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">
+              <strong>Product:</strong> ${review.product ? review.product.name : 'Deleted Product'} (${review.product ? review.product.productId : 'N/A'})
+            </p>
+            <p style="margin: 0.5rem 0 0 0; color: var(--gray-600); font-size: 0.9rem;">
+              <strong>Submitted:</strong> ${new Date(review.createdAt).toLocaleString()}
+              ${review.verified ? '<span style="color: #10b981; margin-left: 1rem;"><i class="fas fa-check-circle"></i> Verified Purchase</span>' : ''}
+            </p>
+          </div>
+          
+          ${review.status === 'pending' ? `
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+              <button class="btn" style="background: #10b981;" onclick="updateReviewStatus('${review._id}', 'approved')">
+                <i class="fas fa-check"></i> Approve
+              </button>
+              <button class="btn" style="background: #ef4444;" onclick="updateReviewStatus('${review._id}', 'rejected')">
+                <i class="fas fa-times"></i> Reject
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    window.updateReviewStatus = async function(reviewId, status) {
+      try {
+        await api.updateReviewStatus(reviewId, status);
+        toast.success(`Review ${status} successfully`);
+        await filterReviews(currentReviewFilter);
+        await updatePendingReviewsBadge();
+      } catch (error) {
+        toast.error(error.message || 'Failed to update review status');
+      }
+    }
+
+    async function updatePendingReviewsBadge() {
+      try {
+        const response = await api.getAllReviews({ status: 'pending' });
+        const pendingCount = response.total || 0;
+        
+        const badge = document.getElementById('pending-reviews-badge');
+        if (pendingCount > 0) {
+          badge.textContent = pendingCount;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Failed to update pending reviews badge:', error);
+      }
+    }
+
     // Profile Management
     async function loadProfile() {
       try {
@@ -1910,10 +2484,22 @@
         toast.error(error.message || 'Failed to change password');
       }
     });
-
-    // Reviews Management functions are in admin-reviews.js
-    // No duplicate functions needed here
+  
+    // Password visibility toggle function
+    function togglePasswordVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(inputId + '-icon');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
   </script>
 </body>
 </html>
-
