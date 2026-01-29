@@ -1,22 +1,31 @@
-// Cache busting version - update this when deploying changes
-window.APP_VERSION = '2.0.' + Date.now();
+// AUTOMATIC CACHE BUSTING - Forces fresh files on every page load
+window.APP_VERSION = Date.now();
 
-// Force reload CSS and JS with version parameter
+// Immediately force reload ALL CSS and JS files with unique timestamp
 (function() {
   const version = window.APP_VERSION;
-  const links = document.querySelectorAll('link[rel="stylesheet"]');
-  const scripts = document.querySelectorAll('script[src]');
   
+  // Force reload all CSS files
+  const links = document.querySelectorAll('link[rel="stylesheet"]');
   links.forEach(link => {
-    if (link.href && !link.href.includes('cdnjs') && !link.href.includes('?v=')) {
-      link.href = link.href + '?v=' + version;
+    if (link.href && !link.href.includes('cdnjs') && !link.href.includes('cdn.')) {
+      const url = new URL(link.href);
+      url.searchParams.set('v', version);
+      link.href = url.toString();
     }
   });
   
+  // Force reload all JS files (except this one and CDNs)
+  const scripts = document.querySelectorAll('script[src]');
   scripts.forEach(script => {
-    if (script.src && !script.src.includes('cdn') && !script.src.includes('?v=') && !script.src.includes('version.js')) {
+    if (script.src && !script.src.includes('cdn') && !script.src.includes('version.js')) {
+      const url = new URL(script.src);
+      url.searchParams.set('v', version);
       const newScript = document.createElement('script');
-      newScript.src = script.src + '?v=' + version;
+      newScript.src = url.toString();
+      if (script.type) newScript.type = script.type;
+      if (script.async) newScript.async = true;
+      if (script.defer) newScript.defer = true;
       script.parentNode.replaceChild(newScript, script);
     }
   });

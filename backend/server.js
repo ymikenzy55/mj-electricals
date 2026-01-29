@@ -58,8 +58,9 @@ app.use((req, res, next) => {
   }
   // Very short cache for CSS/JS (1 minute) with revalidation
   else if (req.url.endsWith('.css') || req.url.endsWith('.js')) {
-    res.setHeader('Cache-Control', 'public, max-age=60, must-revalidate');
-    res.setHeader('ETag', `"${Date.now()}"`);
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
   }
   // No cache for version.js
   else if (req.url.includes('version.js')) {
