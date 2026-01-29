@@ -1,5 +1,5 @@
 // Service Worker for cache management
-const CACHE_VERSION = 'v2.1.' + Date.now();
+const CACHE_VERSION = 'v3.0.' + Date.now();
 const CACHE_NAME = 'mj-electricals-' + CACHE_VERSION;
 
 // Install event - clear old caches
