@@ -603,12 +603,24 @@ currentFilter = 'all';
       
       if (section === 'overview') {
         // Show header and stats for overview
-        if (dashboardHeader) dashboardHeader.style.display = 'block';
-        if (statsGrid) statsGrid.style.display = 'grid';
+        if (dashboardHeader) {
+          dashboardHeader.style.display = 'block';
+          dashboardHeader.style.visibility = 'visible';
+        }
+        if (statsGrid) {
+          statsGrid.style.display = 'grid';
+          statsGrid.style.visibility = 'visible';
+        }
       } else {
         // Hide header and stats for other sections
-        if (dashboardHeader) dashboardHeader.style.display = 'none';
-        if (statsGrid) statsGrid.style.display = 'none';
+        if (dashboardHeader) {
+          dashboardHeader.style.display = 'none';
+          dashboardHeader.style.visibility = 'hidden';
+        }
+        if (statsGrid) {
+          statsGrid.style.display = 'none';
+          statsGrid.style.visibility = 'hidden';
+        }
       }
 
       // Update desktop menu active state
@@ -986,6 +998,12 @@ currentFilter = 'all';
 
     async function loadCompare() {
       try {
+        // Check if compareManager exists
+        if (typeof compareManager === 'undefined') {
+          document.getElementById('compare-container').innerHTML = '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">Compare feature is loading... Please refresh if this persists.</p>';
+          return;
+        }
+        
         const compareList = compareManager.getCompareList();
         const container = document.getElementById('compare-container');
         
@@ -1035,7 +1053,9 @@ currentFilter = 'all';
         `;
       } catch (error) {
         console.error('Failed to load compare:', error);
-        document.getElementById('compare-container').innerHTML = '<p style="text-align: center; color: var(--error);">Failed to load comparison</p>';
+        document.getElementById('compare-container').innerHTML = '<p style="text-align: center; color: var(--error); padding: 2rem;">Failed to load comparison. Please try refreshing the page.</p>';
+      }
+    }
       }
     }
 
