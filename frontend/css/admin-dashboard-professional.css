@@ -38,89 +38,89 @@ body {
 
 /* Sidebar Styling */
 .sidebar {
-  background: var(--admin-white);
-  border-right: 1px solid var(--admin-gray-200);
-  position: fixed;
-  left: 0;
-  top: 80px;
-  height: calc(100vh - 80px);
-  width: 280px;
-  overflow-y: auto;
-  z-index: 100;
-  box-shadow: var(--admin-shadow);
+  background: var(--admin-white) !important;
+  border-right: 1px solid var(--admin-gray-200) !important;
+  position: fixed !important;
+  left: 0 !important;
+  top: 80px !important;
+  height: calc(100vh - 80px) !important;
+  width: 280px !important;
+  overflow-y: auto !important;
+  z-index: 100 !important;
+  box-shadow: var(--admin-shadow) !important;
 }
 
 .sidebar-header {
-  background: linear-gradient(135deg, var(--admin-orange) 0%, var(--admin-orange-light) 100%);
-  color: var(--admin-white);
-  padding: 2rem 1.5rem;
-  border-radius: 0;
-  margin-bottom: 0;
+  background: linear-gradient(135deg, var(--admin-orange) 0%, var(--admin-orange-light) 100%) !important;
+  color: var(--admin-white) !important;
+  padding: 2rem 1.5rem !important;
+  border-radius: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .sidebar-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  color: var(--admin-white);
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  color: var(--admin-white) !important;
 }
 
 .sidebar-subtitle {
-  font-size: 0.875rem;
-  opacity: 0.9;
-  margin: 0.5rem 0 0 0;
-  color: var(--admin-white);
+  font-size: 0.875rem !important;
+  opacity: 0.9 !important;
+  margin: 0.5rem 0 0 0 !important;
+  color: var(--admin-white) !important;
 }
 
 /* Sidebar Menu */
 .sidebar-menu {
-  list-style: none;
-  padding: 1rem;
-  margin: 0;
+  list-style: none !important;
+  padding: 1rem !important;
+  margin: 0 !important;
 }
 
 .sidebar-menu li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.25rem !important;
 }
 
 .sidebar-menu li a {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  color: var(--admin-gray-700);
-  text-decoration: none;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  font-size: 0.9375rem;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  padding: 0.875rem 1rem !important;
+  color: var(--admin-gray-700) !important;
+  text-decoration: none !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  font-weight: 500 !important;
+  font-size: 0.9375rem !important;
 }
 
 .sidebar-menu li a i {
-  font-size: 1.125rem;
-  width: 24px;
-  text-align: center;
-  color: var(--admin-gray-600);
-  transition: color 0.2s ease;
+  font-size: 1.125rem !important;
+  width: 24px !important;
+  text-align: center !important;
+  color: var(--admin-gray-600) !important;
+  transition: color 0.2s ease !important;
 }
 
 .sidebar-menu li a:hover {
-  background: var(--admin-gray-100);
-  color: var(--admin-black);
+  background: var(--admin-gray-100) !important;
+  color: var(--admin-black) !important;
 }
 
 .sidebar-menu li a:hover i {
-  color: var(--admin-orange);
+  color: var(--admin-orange) !important;
 }
 
 .sidebar-menu li a.active {
-  background: var(--admin-orange);
-  color: var(--admin-white);
-  font-weight: 600;
+  background: var(--admin-orange) !important;
+  color: var(--admin-white) !important;
+  font-weight: 600 !important;
 }
 
 .sidebar-menu li a.active i {
-  color: var(--admin-white);
+  color: var(--admin-white) !important;
 }
 
 /* Menu Badge */
@@ -136,25 +136,25 @@ body {
 
 /* Dashboard Content */
 .dashboard-content {
-  margin-left: 280px;
-  margin-top: 80px;
-  padding: 2rem;
-  min-height: calc(100vh - 80px);
-  background: var(--admin-gray-50);
+  margin-left: 280px !important;
+  margin-top: 80px !important;
+  padding: 2rem !important;
+  min-height: calc(100vh - 80px) !important;
+  background: var(--admin-gray-50) !important;
 }
 
 .dashboard-content h2 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--admin-black);
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  color: var(--admin-black) !important;
+  margin-bottom: 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
 }
 
 .dashboard-content h2 i {
-  color: var(--admin-orange);
+  color: var(--admin-orange) !important;
 }
 
 .dashboard-content h3 {
@@ -166,95 +166,95 @@ body {
 
 /* Stats Grid */
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  gap: 1.5rem !important;
+  margin-bottom: 2rem !important;
 }
 
 .stat-card {
-  background: var(--admin-white);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: var(--admin-shadow);
-  border: 1px solid var(--admin-gray-200);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  background: var(--admin-white) !important;
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  box-shadow: var(--admin-shadow) !important;
+  border: 1px solid var(--admin-gray-200) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
 .stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--admin-orange);
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: var(--admin-orange) !important;
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--admin-shadow-lg);
+  transform: translateY(-4px) !important;
+  box-shadow: var(--admin-shadow-lg) !important;
 }
 
 .stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--admin-black);
-  margin: 0.5rem 0;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: var(--admin-black) !important;
+  margin: 0.5rem 0 !important;
 }
 
 .stat-label {
-  font-size: 0.875rem;
-  color: var(--admin-gray-600);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 0.875rem !important;
+  color: var(--admin-gray-600) !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
 }
 
 /* Buttons */
 .btn {
-  background: var(--admin-orange);
-  color: var(--admin-white);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: var(--admin-shadow);
+  background: var(--admin-orange) !important;
+  color: var(--admin-white) !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.9375rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  box-shadow: var(--admin-shadow) !important;
 }
 
 .btn:hover {
-  background: var(--admin-orange-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--admin-shadow-lg);
+  background: var(--admin-orange-dark) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--admin-shadow-lg) !important;
 }
 
 .btn:active {
-  transform: translateY(0);
+  transform: translateY(0) !important;
 }
 
 .btn-secondary {
-  background: var(--admin-gray-700);
-  color: var(--admin-white);
+  background: var(--admin-gray-700) !important;
+  color: var(--admin-white) !important;
 }
 
 .btn-secondary:hover {
-  background: var(--admin-gray-800);
+  background: var(--admin-gray-800) !important;
 }
 
 .btn-danger {
-  background: var(--admin-danger);
+  background: var(--admin-danger) !important;
 }
 
 .btn-danger:hover {
-  background: #DC2626;
+  background: #DC2626 !important;
 }
 
 .btn-sm {
