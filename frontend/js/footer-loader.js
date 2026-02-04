@@ -9,7 +9,12 @@
   // Load footer component
   async function loadFooter() {
     try {
-      const response = await fetch('components/footer.html');
+      // Determine the correct path based on current location
+      const path = window.location.pathname;
+      const isInPagesFolder = path.includes('/pages/');
+      const footerPath = isInPagesFolder ? '../components/footer.html' : 'components/footer.html';
+      
+      const response = await fetch(footerPath);
       if (!response.ok) throw new Error('Failed to load footer');
       
       const footerHTML = await response.text();

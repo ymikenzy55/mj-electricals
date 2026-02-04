@@ -1218,6 +1218,85 @@ currentFilter = 'all';
         window.location.href = `products.html?search=${encodeURIComponent(query)}`;
       }
     }
+    
+    // Mobile menu toggle functions for navbar
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        hamburger.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+        
+        // Update user data when menu opens
+        if (sidebar.classList.contains('active')) {
+          updateMobileMenuAuth();
+        }
+      }
+    }
+    
+    function closeMobileMenu() {
+      const sidebar = document.getElementById('mobile-menu-sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      const hamburger = document.getElementById('hamburger-menu');
+      
+      if (sidebar && overlay && hamburger) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    }
+    
+    function updateMobileMenuAuth() {
+      const state = stateManager?.getState();
+      const username = document.getElementById('mobile-menu-username');
+      const email = document.getElementById('mobile-menu-user-email');
+      
+      if (state && state.isAuthenticated && state.user) {
+        if (username) username.textContent = state.user.name || 'User';
+        if (email) email.textContent = state.user.email || '';
+      } else {
+        if (username) username.textContent = 'Guest';
+        if (email) email.textContent = 'Not logged in';
+      }
+      updateMobileMenuBadges();
+    }
+    
+    function updateMobileMenuBadges() {
+      const cartBadge = document.getElementById('mobile-menu-cart-badge');
+      
+      if (cartBadge && typeof stateManager !== 'undefined') {
+        const cartCount = stateManager.getCartCount();
+        cartBadge.textContent = cartCount;
+        cartBadge.style.display = cartCount > 0 ? 'inline-block' : 'none';
+      }
+    }
+    
+    // Search functions
+    function toggleSearch() {
+      const dropdown = document.getElementById('search-dropdown');
+      const overlay = document.getElementById('search-overlay');
+      if (dropdown && overlay) {
+        dropdown.classList.toggle('active');
+        overlay.classList.toggle('active');
+        if (dropdown.classList.contains('active')) {
+          document.getElementById('navbar-search-input')?.focus();
+        }
+      }
+    }
+    
+    function closeSearch() {
+      const dropdown = document.getElementById('search-dropdown');
+      const overlay = document.getElementById('search-overlay');
+      if (dropdown && overlay) {
+        dropdown.classList.remove('active');
+        overlay.classList.remove('active');
+      }
+    }
 
     // Prevent dropdown toggle link from navigating
     document.addEventListener('DOMContentLoaded', function() {

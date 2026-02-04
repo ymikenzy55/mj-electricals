@@ -7,7 +7,12 @@
 
   async function loadCompanyTopbar() {
     try {
-      const response = await fetch('components/company-topbar.html');
+      // Determine the correct path based on current location
+      const path = window.location.pathname;
+      const isInPagesFolder = path.includes('/pages/');
+      const topbarPath = isInPagesFolder ? '../components/company-topbar.html' : 'components/company-topbar.html';
+      
+      const response = await fetch(topbarPath);
       if (!response.ok) {
         throw new Error('Failed to fetch topbar');
       }
