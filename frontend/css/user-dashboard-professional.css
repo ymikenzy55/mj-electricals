@@ -57,6 +57,7 @@ body:not(.overview-active) .stats-grid:not(#overview-section .stats-grid) {
   overflow-y: auto;
   z-index: 100;
   box-shadow: var(--user-shadow);
+  padding-top: 0;
 }
 
 .sidebar-menu {
